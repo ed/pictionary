@@ -1,0 +1,21 @@
+#container {
+  position: relative;
+}
+
+.colors {
+  width: 100px;
+  height: 30px;
+}
+
+#main {
+  position: relative;
+  down: 30px;
+  border: 1px solid #000;
+  background: white;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}

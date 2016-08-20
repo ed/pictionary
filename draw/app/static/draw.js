@@ -1,6 +1,5 @@
-(function() {
-
-    var canvas, draw, ctx;
+$(document).ready(function() {
+    var canvas, draw, ctx, cir, cir_ctx;
     var points = [];
     var hist = [];
     var redo_hist = [];
@@ -8,18 +7,33 @@
     var thickness = 5;
 
     function init() {
-
         canvas = document.getElementById('main');
         ctx = canvas.getContext("2d");
+        cir = document.getElementById('circle');
+        cir_ctx = cir.getContext("2d");
+        cir_ctx.arc(25, 25, 25, 0, 2 * Math.PI, false);
+        cir_ctx.fillStyle = color;
+        cir_ctx.fill();
         d = new draw();
         canvas.addEventListener('mousemove', ev_canvas, false);
         canvas.addEventListener('mousedown', ev_canvas, false);
         canvas.addEventListener('mouseup', ev_canvas, false);
         canvas.addEventListener('mouseout', ev_canvas, false);
-
     }
 
-    // mouse move
+    $("#colormenu").hide();
+    $("#circle").mouseover(function(){
+        $("#colormenu").slideDown('slow');
+    });
+    $("#wrapper").mouseleave(function () {
+        $("#colormenu").slideUp('fast');
+    });
+    $("#wrapper").on('wheel', function(ev) {
+        var delta = ev.originalEvent.deltaY;
+        if (delta > 0) plus();
+        else minus();
+        return false;
+    });
 
     document.getElementById('clear').addEventListener('click', function() {
         clear();
@@ -37,23 +51,18 @@
         points = [];
     }, false);
 
-    document.getElementById('plus').addEventListener('click', function() {
-        plus();
-    }, false);
-
-    document.getElementById('minus').addEventListener('click', function() {
-        minus();
-    }, false);
-
     $(".colors").click(function() {
         var id = this.id
         change_color(id);
+        cir_ctx.fillStyle = color;
+        cir_ctx.fill();
     });
+
 
     function change_color(id) {
         switch (id) {
-            case "#bfff00	":
-                color = "#bfff00	";
+            case "#bfff00":
+                color = "#bfff00";
             break;
             case "#0080ff":
                 color = "#0080ff";
@@ -199,7 +208,5 @@
             func(ev);
         }
     }
-
     init();
-
-})();
+});
