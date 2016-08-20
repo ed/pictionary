@@ -10,16 +10,16 @@
 {% endblock %}
 
 {% block content %}
-<div style="position: relative;">
-    <canvas id="circle" width="50" height="50" style="position: absolute; left: 5px; top: 5px; z-index: 1;"></canvas>
-    <canvas id="main" width="500" height="500" style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+<div id=container>
+    <canvas id="main"></canvas>
+    <canvas id="circle"></canvas>
 </div>
-<button class="control" id="clear">clear</button>
-<button class="control" id="undo">undo</button>
-<button class="control" id="redo">redo</button>
-<button class="control" id="plus">+</button>
-<button class="control" id="minus">-</button>
-<div id="wrapper" style="position:relative; z-index: 2">
+<div style="position:relative; top:5px; left: 365px; z-index: 2">
+    <button class="control" id="clear">clear</button>
+    <button class="control" id="undo">undo</button>
+    <button class="control" id="redo">redo</button>
+</div>
+<div id="wrapper">
     <div id="colormenu">
         <ul>
             <li><button class="colors" style="background-color:black" id="black"></button></li>
