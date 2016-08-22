@@ -10,7 +10,7 @@
         "koa": "next",
         "socket.io": "latest",
         "koa-router": "next",
-        "koa-send": "next"
+        "koa-send": "latest"
     },
     "devDependencies": {
         "babel-plugin-syntax-async-functions": "^6.8.0",
