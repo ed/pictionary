@@ -53,38 +53,11 @@ $(document).ready(function() {
 
     $(".colors").click(function() {
         var id = this.id
-        change_color(id);
+        color = id;
         cir_ctx.fillStyle = color;
         cir_ctx.fill();
         new_cursor();
     });
-
-
-    function change_color(id) {
-        switch (id) {
-            case "#bfff00":
-                color = "#bfff00";
-            break;
-            case "#0080ff":
-                color = "#0080ff";
-            break;
-            case "red":
-                color = "red";
-            break;
-            case "yellow":
-                color = "yellow";
-            break;
-            case "#ffbf00":
-                color = "#ffbf00";
-            break;
-            case "black":
-                color = "black";
-            break;
-            case "white":
-                color = "white";
-            break;
-        }
-    }
 
     function minus() {
         console.log(thickness)
