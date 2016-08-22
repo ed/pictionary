@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var canvas, draw, ctx, cir, cir_ctx;
+    var canvas, draw, ctx, cir, cir_ctx, cursor, cursorctx;
     var points = [];
     var hist = [];
     var redo_hist = [];
@@ -14,6 +14,7 @@ $(document).ready(function() {
         cir_ctx.arc(25, 25, 25, 0, 2 * Math.PI, false);
         cir_ctx.fillStyle = color;
         cir_ctx.fill();
+        new_cursor();
         d = new draw();
         canvas.addEventListener('mousemove', ev_canvas, false);
         canvas.addEventListener('mousedown', ev_canvas, false);
@@ -22,14 +23,15 @@ $(document).ready(function() {
     }
 
     $("#colormenu").hide();
-    $("#circle").mouseover(function(){
+    $("#wrapper").mouseover(function(){
         $("#colormenu").slideDown('slow');
     });
-    $("#wrapper").mouseleave(function () {
-        $("#colormenu").slideUp('fast');
+    $("#colormenu").mouseleave(function () {
+        $("#colormenu").slideUp('slow');
     });
     $("#wrapper").on('wheel', function(ev) {
         var delta = ev.originalEvent.deltaY;
+        // var delta = (ev.detail<0 || ev.wheelDelta>0) ? 1 : -1;
         if (delta > 0) plus();
         else minus();
         return false;
@@ -43,12 +45,10 @@ $(document).ready(function() {
 
     document.getElementById('undo').addEventListener('click', function() {
         undo();
-        points = [];
     }, false);
 
     document.getElementById('redo').addEventListener('click', function() {
         redo();
-        points = [];
     }, false);
 
     $(".colors").click(function() {
@@ -56,6 +56,7 @@ $(document).ready(function() {
         change_color(id);
         cir_ctx.fillStyle = color;
         cir_ctx.fill();
+        new_cursor();
     });
 
 
@@ -86,15 +87,21 @@ $(document).ready(function() {
     }
 
     function minus() {
-        if (thickness > 0)
-            thickness = thickness - 2;
+        console.log(thickness)
+        if (thickness > 1)
+            thickness -= .05;
         else
-            thickness = 1;
+            thickness = 1
+        new_cursor();
     }
 
     function plus() {
-        if (thickness < 20)
-            thickness = thickness + 2;
+        console.log(thickness)
+        if (thickness < 15)
+            thickness += .05;
+        else
+            thickness = 15;
+        new_cursor();
     }
 
     function clear() {
@@ -178,15 +185,6 @@ $(document).ready(function() {
             }
         };
 
-        this.mouseout = function(ev) {
-            if (d.drawing) {
-                d.mousemove(ev);
-                d.drawing = false;
-                hist.push(points);
-                points = []
-            }
-        };
-
         this.mouseup = function(ev) {
             if (d.drawing) {
                 d.mousemove(ev);
@@ -195,6 +193,32 @@ $(document).ready(function() {
                 points = []
             }
         };
+
+        this.mouseout = function(ev) {
+            d.mouseup(ev);
+        }
+    }
+
+    function new_cursor(){
+        cursor = document.createElement('canvas'),
+        cursorctx = cursor.getContext('2d');
+        if (thickness > 4) {
+
+            var cursorLeft = cursor.offsetLeft;
+            cursorRight = cursor.offsetTop;
+
+            cursor.width = thickness*2.5;
+            cursor.height = thickness*2.5;
+
+            cursorctx.fillStyle = color;
+            cursorctx.arc(thickness, thickness, thickness, 0, 2 * Math.PI, false);
+            cursorctx.fill();
+            document.body.style.cursor = 'url(' + cursor.toDataURL() + '), auto';
+        }
+        else {
+            document.body.style.cursor = 'default';
+        }
+
     }
 
     function ev_canvas(ev) {
