@@ -8,7 +8,9 @@
     },
     "dependencies": {
         "koa": "next",
-        "socket.io": "^1.4.8"
+        "socket.io": "latest",
+        "koa-router": "next",
+        "koa-send": "next"
     },
     "devDependencies": {
         "babel-plugin-syntax-async-functions": "^6.8.0",
