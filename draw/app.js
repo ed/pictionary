@@ -15,8 +15,16 @@ app.use(async (ctx) => {
 
 io.on('connection', function(socket){ 
     socket.on('chat message', function(msg) {
-        io.emit('chat message', msg);
+        socket.broadcast.emit('chat message', {
+            username: socket.username,
+            message: msg
+        });
+    });
+    socket.on('add user', function(username) {
+        console.log(username + ' has connected');
+    });
+    socket.on('disconnect', function(username) {
+        console.log(username + ' has disconnected');
     });
 });
-
 server.listen(3000, () => console.log('server started 3000'))
