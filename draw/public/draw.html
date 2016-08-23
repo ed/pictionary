@@ -7,37 +7,40 @@
     </head>
 
     <body>
-        <ul id="menu-nav">
-            <li><a href="/" title="home">home</a></li>
-        </ul>
-        <div id=container>
-            <div id="whiteboard">
-                <canvas id="circle" width="50" height="50"></canvas>
-                <div id="colormenu">
-                    <button class="colors" style="background-color:black" id="black"></button>
-                    <button class="colors" style="background-color:red" id="red"></button>
-                    <button class="colors" style="background-color:yellow" id="yellow"></button>
-                    <button class="colors" style="background-color:#0080ff" id="#0080ff"></button>
-                    <button class="colors" style="background-color:#bfff00" id="#bfff00"></button>
-                    <button class="colors" style="background-color:#ffbf00" id="#ffbf00"></button>
-                    <button class="colors" style="background-color:white" id="white"></button>
-                </div>
-                <canvas id="main" width="500" height="500"></canvas>
-                <div class="toolbox">
-                    <button class="controlclear" id="clear">clear</button>
-                    <button class="controlundo" id="undo">undo</button>
-                    <button class="controlredo" id="redo">redo</button>
-                    <button class="controlsave" id="save">save</button>
-                </div>
-            </div>
-            <div id="left">
-                <div class="chat">
-                    <ul id="msg">
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div id="imgwrapper">
-        </div>
+        
+	<ul id="menu-nav">
+  	<a href="/" title="home">home</a>
+	</ul>
+	<div id=container>
+  	<div id="toolbox">
+    	<canvas id="circle" width="50" height="50"></canvas>
+    	<div class="operations">
+      	<button class="control" id="clear">clear</button>
+      	<button class="control" id="undo">undo</button>
+      	<button class="control" id="redo">redo</button>
+      	<button class="control" id="save">save</button>
+    	</div>
+    	<div id="palette">
+   	   <button class="colors" style="background-color:#2c3e50" id="#2c3e50"></button>
+  	   <button class="colors" style="background-color:#c0392b" id="#c0392b"></button>
+  	   <button class="colors" style="background-color:#d35400" id="#d35400"></button>
+  	   <button class="colors" style="background-color:#f1c40f" id="#f1c40f"></button>
+  	   <button class="colors" style="background-color:#27ae60" id="#27ae60"></button>
+  	   <button class="colors" style="background-color:#1abc9c" id="#1abc9c"></button>
+   	   <button class="colors" style="background-color:#3498db" id="#3498db"></button>
+   	   <button class="colors" style="background-color:#ecf0f1" id="#ecf0f1"></button>
+    	</div>
+
+ 	 </div>
+ 	 <canvas id="main" width="500" height="500"></canvas>
+ 	 <div id="left">
+ 	   <div class="chat">
+ 	     <ul id="msg">
+    	  </ul>
+  	  </div>
+  	</div>
+	</div>
+	<div id="imgwrapper">
+  </div>
     </body>
 </html>

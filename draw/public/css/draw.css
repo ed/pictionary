@@ -1,6 +1,7 @@
 .colors {
   width: 50px;
   height: 30px;
+  background-color: transparent;
 }
 
 #container {
@@ -9,7 +10,7 @@
 }
 
 #whiteboard {
-  width: 90%;
+  width: 700px;
   position: relative;
 }
 
@@ -21,12 +22,12 @@
   width: 50px
 }
 
-.toolbox {
+#toolbox {
   padding-left: 5px;
   padding-right: 5px;
   position: relative;
-  height: 200px;
-  width: 60px;
+  height: 500px;
+  width: 120px;
   float: left;
 }
 
@@ -35,7 +36,6 @@
   padding-left: 5px;
   padding-right: 5px;
   width: 50px;
-  overflow: hidden;
   float: left;
 }
 
@@ -50,25 +50,28 @@
   overflow: hidden;
 }
 
-#colormenu {
+#palette {
   position: relative;
   padding-left: 5px;
   padding-right: 5px;
-  width: 40px;
+  width: 50px;
   height: 200px;
-  display: visible;
+  display: inline;
   float: left;
 }
 
-.colorbuttons li {
+.operations {
   display: inline;
+  width: 50px;
+  height: 100px;
 }
- 
 
 .control {
   background: transparent;
+  transition-duration: .4s;
   border: none;
   text-align: center;
+  font-family: 'Quicksand', sans-serif;
   font: 28px;
   display: inline-block;
 }

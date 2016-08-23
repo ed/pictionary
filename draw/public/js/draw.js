@@ -23,35 +23,35 @@ $(document).ready(function() {
   }
 
 
-  $("#wrapper").mouseover(function() {
-    $("#colormenu").slideDown('fast');
+  $("#clear").mouseenter(function() {
+    $("#clear").css("color", "#e74c3c")
   });
-  $(".controlclear").mouseenter(function() {
-    $(".controlclear").css("color", "red")
+  $("#clear").mouseleave(function() {
+    $("#clear").css("color", "black")
   });
-  $(".controlclear").mouseleave(function() {
-    $(".controlclear").css("color", "black")
+  $("#undo").mouseenter(function() {
+    $("#undo").css("color", "#e67e22")
   });
-  $(".controlundo").mouseenter(function() {
-    $(".controlundo").css("color", "blue")
+  $("#undo").mouseleave(function() {
+    $("#undo").css("color", "black")
   });
-  $(".controlundo").mouseleave(function() {
-    $(".controlundo").css("color", "black")
+  $("#redo").mouseenter(function() {
+    $("#redo").css("color", "#3498db")
   });
-  $(".controlredo").mouseenter(function() {
-    $(".controlredo").css("color", "yellow")
+  $("#redo").mouseleave(function() {
+    $("#redo").css("color", "black")
   });
-  $(".controlredo").mouseleave(function() {
-    $(".controlredo").css("color", "black")
+  $("#save").mouseenter(function() {
+    $("#save").css("color", "#2ecc71")
   });
-  $(".controlsave").mouseenter(function() {
-    $(".controlsave").css("color", "green")
+  $("#save").mouseleave(function() {
+    $("#save").css("color", "black")
   });
-  $(".controlsave").mouseleave(function() {
-    $(".controlsave").css("color", "black")
+  $("#circle").click(function() {
+    $("#palette").css("visibility", "visible")
   });
-  $("#colormenu").mouseleave(function() {
-    $("#colormenu").slideUp('fast');
+  $("#palette").click(function() {
+    $("#palette").css("visibility", "hidden")
   });
   $("#wrapper").on('wheel', function(ev) {
     var delta = ev.originalEvent.deltaY;
