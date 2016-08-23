@@ -1,32 +1,43 @@
-<ul id="menu-nav">
-  <li><a href="/" title="home">home</a></li>
-</ul>
-<div id=container>
-  <div id="whiteboard">
-    <canvas id="circle" width="50" height="50"></canvas>
-    <div id="colormenu">
-      <button class="colors" style="background-color:black" id="black"></button>
-      <button class="colors" style="background-color:red" id="red"></button>
-      <button class="colors" style="background-color:yellow" id="yellow"></button>
-      <button class="colors" style="background-color:#0080ff" id="#0080ff"></button>
-      <button class="colors" style="background-color:#bfff00" id="#bfff00"></button>
-      <button class="colors" style="background-color:#ffbf00" id="#ffbf00"></button>
-      <button class="colors" style="background-color:white" id="white"></button>
-    </div>
-    <canvas id="main" width="500" height="500"></canvas>
-    <div class="toolbox">
-      <button class="controlclear" id="clear">clear</button>
-      <button class="controlundo" id="undo">undo</button>
-      <button class="controlredo" id="redo">redo</button>
-      <button class="controlsave" id="save">save</button>
-    </div>
-  </div>
-  <div id="left">
-    <div class="chat">
-      <ul id="msg">
-      </ul>
-    </div>
-  </div>
-</div>
-<div id="imgwrapper">
-  </div>
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/draw.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script type="text/javascript" src="js/draw.js" async></script>
+    </head>
+
+    <body>
+        <ul id="menu-nav">
+            <li><a href="/" title="home">home</a></li>
+        </ul>
+        <div id=container>
+            <div id="whiteboard">
+                <canvas id="circle" width="50" height="50"></canvas>
+                <div id="colormenu">
+                    <button class="colors" style="background-color:black" id="black"></button>
+                    <button class="colors" style="background-color:red" id="red"></button>
+                    <button class="colors" style="background-color:yellow" id="yellow"></button>
+                    <button class="colors" style="background-color:#0080ff" id="#0080ff"></button>
+                    <button class="colors" style="background-color:#bfff00" id="#bfff00"></button>
+                    <button class="colors" style="background-color:#ffbf00" id="#ffbf00"></button>
+                    <button class="colors" style="background-color:white" id="white"></button>
+                </div>
+                <canvas id="main" width="500" height="500"></canvas>
+                <div class="toolbox">
+                    <button class="controlclear" id="clear">clear</button>
+                    <button class="controlundo" id="undo">undo</button>
+                    <button class="controlredo" id="redo">redo</button>
+                    <button class="controlsave" id="save">save</button>
+                </div>
+            </div>
+            <div id="left">
+                <div class="chat">
+                    <ul id="msg">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="imgwrapper">
+        </div>
+    </body>
+</html>
