@@ -1,62 +1,74 @@
 .colors {
-    width: 50px;
-    height: 30px;
+  width: 50px;
+  height: 30px;
 }
 
 #container {
-    width: 100%;
-    position: relative;
+  width: 100%;
+  position: relative;
+}
 
+#whiteboard {
+  width: 90%;
+  position: relative;
 }
 
 #wrapper {
-    position:relative;
-    left: 5px;
-    top: -15px;
-    z-index: 2;
-    height: 50px;
-    width: 50px
+  position: relative;
+  left: 5px;
+  top: -15px;
+  height: 50px;
+  width: 50px
 }
 
-.controlmenu {
-    top: 5px;
-    left: 365px;
-    z-index: 2;
-    position: relative;
-    height: 20px;
-    width: 150px;
-
+.toolbox {
+  padding-left: 5px;
+  padding-right: 5px;
+  position: relative;
+  height: 200px;
+  width: 60px;
+  float: left;
 }
 
 #circle {
-    position: absolute;
-    left: 5px;
-    top: 5px;
-    width: 50px;
-    height: 50px;
-    z-index: 1;
-    overflow: hidden;
-
+  display: inline;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 50px;
+  overflow: hidden;
+  float: left;
 }
 
 #main {
-    position: absolute; 
-    z-index: 0;
-    border: 2px solid #000;
-    background: white;
-    width: 500px;
-    height: 500px;
-    -webkit-border-radius: 15px;
-           border-radius: 15px;
-    overflow: hidden;
+  position: relative;
+  border: 2px solid #000;
+  background: white;
+  width: 500px;
+  height: 500px;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+#colormenu {
+  position: relative;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 40px;
+  height: 200px;
+  display: visible;
+  float: left;
 }
 
 .colorbuttons li {
-    display: inline;
+  display: inline;
+}
+
+
+.control {
+  background: transparent;
+  border: none;
+  text-align: center;
+  font: 28px;
+  display: inline-block;
 }
