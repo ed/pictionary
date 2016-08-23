@@ -150,4 +150,12 @@ ul {
     display:block;
     clear:both;
 }
+.currooms li{
+    display: block;
+}
+.currooms {
+    text-align: center;
+    margin-top: 100px;
+    top: 50%;
+}
 
