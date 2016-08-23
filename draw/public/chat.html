@@ -1,23 +1,36 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Socket.IO chat</title>
-    <link rel="stylesheet" href="css/chat.css">
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-    <script type="text/javascript" src="js/chat.js" async></script>
-  </head>
-  <body>
-    <ul class="pages">
-    <li class="login page">
-        <div class="form">
-        <h3 class="title">suh </h3>
-        <input class="username" type="text" maxlength="14" />
-    </li>
-    <!-- <ul id="messages"></ul> -->
-    <!-- <form action="" id="send"> -->
-      <!-- <input id="m" autocomplete="off" /><button>Send</button> -->
-    <!-- </form> -->
-    </ul>
-  </body>
+    <head>
+        <title>Socket.IO chat</title>
+        <link rel="stylesheet" href="css/chat.css">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+        <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+        <script type="text/javascript" src="js/chat.js" async></script>
+    </head>
+    <body>
+        <ul class="pages">
+            <li class="login page">
+                <div class="form">
+                    <h3 class="title">suh </h3>
+                    <input class="username" type="text" maxlength="14" />
+            </li>
+            <li class="room page">
+                <div class="clearfix">
+                    <div class="create">
+                        <h3 class="cprom"> create a room </h3>
+                        <i class="fa fa-plus-square-o fa-4x" aria-hidden="true"></i>
+                    </div>
+                    <div class="join"> 
+                        <h3 class="jprom"> join a room </h3>
+                        <i class="fa fa-plus-square-o fa-4x" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </li>
+            <!-- <ul id="messages"></ul> -->
+            <!-- <form action="" id="send"> -->
+            <!-- <input id="m" autocomplete="off" /><button>Send</button> -->
+            <!-- </form> -->
+        </ul>
+    </body>
 </html>

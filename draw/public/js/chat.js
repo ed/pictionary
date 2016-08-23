@@ -6,6 +6,7 @@ $(document).ready(function() {
     var $input = $('.input');
     var $login = $('.login.page');
     var $chat = $('.chat');
+    var $rooms = $('.room.page');
     var $current = $nameInput.focus();
 
     var username;
@@ -38,7 +39,7 @@ $(document).ready(function() {
         username = cleanInput($nameInput.val().trim());
         if (username) {
             $login.fadeOut();
-            $chat.show();
+            $rooms.show();
             $login.off('click');
             $current = $input.focus();
             socket.emit('add user', username);

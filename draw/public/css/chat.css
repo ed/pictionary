@@ -50,7 +50,6 @@ ul {
     height: 100px;
     margin-top: -100px;
     position: absolute;
-
     text-align: center;
     top: 50%;
     width: 100%;
@@ -79,3 +78,76 @@ ul {
 .chat {
     display: none;
 }
+
+.room.page {
+    display: none;
+}
+
+.container {
+    width: 100%;
+    margin: 0;
+}
+
+.room.page .create{
+    margin-top: 100px;
+    text-align: center;
+    top: 50%;
+    float: left;
+    width: 50%;
+}
+
+.room.page .create .roomname{
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #000;
+    outline: none;
+    padding-bottom: 15px;
+    text-align: center;
+    width: 400px;
+}
+
+.room.page .roomname {
+    font-size: 200%;
+    letter-spacing: 3px;
+}
+
+.room.page .cprom, .room.page .roomname {
+    color: #000;
+    font-weight: 100;
+}
+
+.room.page .join{
+    margin-top: 100px;
+    top: 50%;
+    text-align: center;
+    float: right;
+    width: 50%;
+}
+
+.room.page .join .roomid{
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #000;
+    outline: none;
+    padding-bottom: 15px;
+    text-align: center;
+    width: 400px;
+}
+
+.room.page .roomid {
+    font-size: 200%;
+    letter-spacing: 3px;
+}
+
+.room.page .jprom, .room.page .roomid {
+    color: #000;
+    font-weight: 100;
+}
+
+
+.clearfix:after {
+    content:"";
+    display:block;
+    clear:both;
+}
+
