@@ -22,6 +22,7 @@ class WhiteBoard extends Component {
         this.clear = this.clear.bind(this);
         this.undo = this.undo.bind(this);
         this.redo = this.redo.bind(this);
+        this.save = this.save.bind(this);
         this.state = {drawing: false, undo: false, color: "#000000", size: 2}
         this.points = [];
         this.hist = [];
@@ -103,8 +104,13 @@ class WhiteBoard extends Component {
             this.redraw();
             this.points = [];
             this.setState({undo: true});
-            console.log(this.state.undo);
         }
+    }
+
+
+    save() {
+        var img = this.canvas.toDataURL("image/png");
+        document.getElementById('imgwrapper').innerHTML = "<img src='" + img + "'>";
     }
 
     redo() {
@@ -165,7 +171,11 @@ class WhiteBoard extends Component {
             <button className={'redo'} onClick={this.redo}>
             redo
             </button>
+            <button className={'save'} onClick={this.save}>
+            save
+            </button>
             </div>
+            <div id="imgwrapper"></div>
             </div>
         )
     }
