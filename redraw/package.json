@@ -2,16 +2,13 @@
   "name": "draw",
   "version": "0.0.1",
   "description": "draw in react",
-  "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --progress",
-    "build": "./node_modules/.bin/webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
-    "babel": "^6.5.2",
+    "babel-core": "^6.13.2",
     "babel-loader": "^6.2.5",
     "babel-plugin-react-transform": "^2.0.2",
     "babel-plugin-transform-class-properties": "^6.11.5",

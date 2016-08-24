@@ -42,7 +42,6 @@ class WhiteBoard extends Component {
             color: this.props.color,
             size: this.props.size 
         });
-        console.log(this.points);
         this.ctx.beginPath();
         this.ctx.moveTo(pos.x, pos.y);
         this.drawing = true;
@@ -82,7 +81,6 @@ class WhiteBoard extends Component {
 
     render() {
         const {width, height, name} = this.props;
-        console.log(this.props);
         return (
             <canvas 
             onMouseDown={this.onMouseDown}

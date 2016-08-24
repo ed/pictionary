@@ -1,11 +1,16 @@
 var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: __dirname + '/src/main.jsx',
+    devtool: 'eval',
+    entry: [
+        __dirname + '/src/main',
+        'webpack-dev-server/client?http://localhost:3000',
+        'webpack/hot/only-dev-server'
+    ],
     output: {
         path: __dirname + '/bin',
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath: '/public/'
     },
     resolve: {
         extensions: ['', '.js', '.jsx']
@@ -19,15 +24,6 @@ module.exports = {
     },
 
     plugins: [
-        new HtmlWebpackPlugin({
-            template: __dirname + "/src/index.tmpl.html"
-        }),
         new webpack.HotModuleReplacementPlugin()
-    ],
-    devServer: {
-        colors: true,
-        historyApiFallback: true,
-        inline: true,
-        hot: true
-    }
+    ]
 }
