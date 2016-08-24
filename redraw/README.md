@@ -2,4 +2,4 @@ install node && npm
 
 npm install   
 npm start  
-localhost:8080
+localhost:3000
