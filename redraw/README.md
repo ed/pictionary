@@ -1,4 +1,4 @@
 install node && npm
 
-npm install 
+npm install   
 npm start
