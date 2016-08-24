@@ -1,5 +1,5 @@
 install node && npm
 
 npm install   
-npm start
+npm start  
 localhost:8080
