@@ -47,6 +47,7 @@ class WhiteBoard extends Component {
     onMouseDown(e) {
         var pos = this.xy(e);
         this.setState({undo: false});
+        this.redo_hist = [];
         this.ctx.strokeStyle = this.state.color;
         this.ctx.lineWidth = this.state.size;
         this.points.push({
