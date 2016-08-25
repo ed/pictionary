@@ -18,14 +18,8 @@ export class Canvas extends Component {
         super(props);
         this.state = {
             drawing: false, 
-            undo: false
         };
-        this.points = [];
         this.markHistory = [];
-    }
-
-    setDrawing() {
-        this.setState({drawing: !this.state.drawing});
     }
 
     componentDidMount() {
@@ -37,7 +31,8 @@ export class Canvas extends Component {
     startStroke(e) {
         var pos = this.xy(e);
         this.curMark = new Mark(this.ctx, this.props.color, this.props.size, pos);
-        this.setDrawing();
+        this.curMark.startStroke();
+        this.setState({ drawing: true });
     }
 
 
@@ -52,7 +47,7 @@ export class Canvas extends Component {
     endStroke(e) {
         if (this.state.drawing) {
             this.drawStroke(e);
-            this.setDrawing();
+            this.setState({ drawing: false });
             this.actionHistory.pushAction(this.curMark);
         }
     }
@@ -105,29 +100,33 @@ export class Canvas extends Component {
 
 class Mark {
   constructor(ctx, color, size, startPosition) {
-      this.ctx = ctx;
-      this.color = color;
-      this.size = size;
-      this.points = [];
-      this.ctx.strokeStyle = color;
-      this.ctx.lineWidth = size;
-      this.points.push({
-        pos: startPosition,
-        color: color,
-        size: size 
-      });
-      this.ctx.beginPath();
-      this.ctx.moveTo(startPosition.x, startPosition.y);
+    this.ctx = ctx;
+    this.color = color;
+    this.size = size;
+    this.startPosition = startPosition;
+    this.points = [];
+  }
+
+  startStroke(){
+    this.ctx.strokeStyle = this.color;
+    this.ctx.lineWidth = this.size;
+    this.points.push({
+      pos: this.startPosition,
+      color: this.color,
+      size: this.size 
+    });
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.startPosition.x, this.startPosition.y);
   }
 
   addStroke(pos){
-      this.points.push({
-        pos: pos,
-        color: this.color,
-        size: this.size 
-      });
-      this.ctx.lineTo(pos.x, pos.y);
-      this.ctx.stroke();
+    this.points.push({
+      pos: pos,
+      color: this.color,
+      size: this.size 
+    });
+    this.ctx.lineTo(pos.x, pos.y);
+    this.ctx.stroke();
   }
 
   do() {
