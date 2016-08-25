@@ -23,11 +23,10 @@ class MessageSection extends Component{
     }
 
     render() {
-        var messageListItems = this.state.messages.map(this.getMessage);
         return (
             <div className="message-section">
                 <ul className="message-list" ref="messageList">
-                    {messageListItems}
+                    {this.state.messages}
                 </ul>
                 <MessageComposer threadID={1}/>
             </div>
