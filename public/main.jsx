@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import Login from './../src/components/login';
+import MessageSection from './../src/components/MessageSection';
 
 render(
-    <Login />, document.getElementById('app'));
+    <MessageSection />, document.getElementById('app'));

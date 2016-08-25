@@ -1,51 +1,39 @@
-var React = require('react');
-var MessageComposer = require('./MessageComposer.react');
-var MessageListItem = require('./MessageListItem.react');
+import React, { Component } from 'react';
+import { findDOMNode } from 'react-dom';
+import MessageComposer from './MessageComposer';
+import Message from './Message';
 
+class MessageSection extends Component{
 
-function getMessageListItem(message) {
-  return (
-    <MessageListItem
-      key={message.id}
-      message={message}
-    />
-  );
-}
-
-var MessageSection = React.createClass({
-
-  componentDidMount: function() {
+  componentDidMount() {
     this._scrollToBottom();
-  },
+  }
 
-  render: function() {
-    var messageListItems = this.state.messages.map(getMessageListItem);
+  render() {
     return (
       <div className="message-section">
         <ul className="message-list" ref="messageList">
-          {messageListItems}
         </ul>
-        <MessageComposer threadID={this.state.thread.id}/>
+        <MessageComposer threadID={1}/>
       </div>
     );
-  },
-
-  componentDidUpdate: function() {
-    this._scrollToBottom();
-  },
-
-  _scrollToBottom: function() {
-    var ul = this.refs.messageList.getDOMNode();
-    ul.scrollTop = ul.scrollHeight;
-  },
-
-  /**
-   * Event handler for 'change' events coming from the MessageStore
-   */
-  _onChange: function() {
-    this.setState(getStateFromStores());
   }
 
-});
+  componentDidUpdate() {
+    this._scrollToBottom();
+  }
 
-module.exports = MessageSection;
+  _scrollToBottom() {
+    var ul = findDOMNode(this.refs.messageList);
+    ul.scrollTop = ul.scrollHeight;
+  }
+
+  _onChange() {
+      console.log('new message!');
+      // socket api call
+    // this.setState();
+  }
+
+};
+
+export default MessageSection;
