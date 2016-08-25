@@ -1,7 +1,7 @@
 export class ActionHistory {
 	constructor(clear) {
 		this.clear = clear;
-		this.list = [];
+		this.actionList = [];
 		this.position = 0;
 	}
 
@@ -10,20 +10,22 @@ export class ActionHistory {
 			this.clear();
 			this.position--;
 			for (var i = 0; i < this.position; i++){
-				this.list[i].do();
+				var action = this.actionList[i];
+				action();
 			}
 		}
 	}
 
 	pushAction(action) {
-		this.list = this.list.slice(0,this.position);
-		this.list.push(action);
-		this.position = this.list.length;
+		this.actionList = this.actionList.slice(0,this.position);
+		this.actionList.push(action);
+		this.position = this.actionList.length;
 	}
 
 	redoAction() {
-		if( this.position < this.list.length ){
-			this.list[this.position].do();
+		if( this.position < this.actionList.length ){
+			var action = this.actionList[this.position];
+			action();
 			this.position++;
 		}
 	}
@@ -60,7 +62,7 @@ export class Mark {
     this.ctx.stroke();
   }
 
-  do() {
+  reDraw() {
     this.ctx.beginPath();
     this.ctx.moveTo(this.points[0].pos.x, this.points[0].pos.y);
     this.ctx.strokeStyle = this.color;
@@ -72,14 +74,4 @@ export class Mark {
     }
     this.ctx.stroke();
   }
-}
-
-export class ClearAction {
-    constructor(clear) {
-      this.clear = clear;
-    }
-
-    do() {
-      this.clear();
-    }
 }
