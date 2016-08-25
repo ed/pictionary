@@ -3,7 +3,7 @@ var webpack = require('webpack');
 module.exports = {
     devtool: 'eval',
     entry: [
-        __dirname + '/src/main',
+        __dirname + '/public/main',
         'webpack-dev-server/client?http://localhost:3000',
         'webpack/hot/only-dev-server'
     ],
