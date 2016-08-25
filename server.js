@@ -23,6 +23,7 @@ io.on('connection', function(socket){
     });
     socket.on('chat msg', function(msg) {
         console.log('msg', msg)
+        socket.broadcast.to(msg.threadID).emit('update', msg);
     });
     socket.on('add user', function(username) {
         console.log(username + ' has connected');

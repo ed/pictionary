@@ -2,37 +2,67 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import MessageComposer from './MessageComposer';
 import Message from './Message';
+var socket = io.connect();
 
 class MessageSection extends Component{
 
-  componentDidMount() {
-    this._scrollToBottom();
-  }
+    constructor(props) {
+        super(props);
+        this.state = {messages: [] }
+    }
 
-  render() {
-    return (
-      <div className="message-section">
-        <ul className="message-list" ref="messageList">
-        </ul>
-        <MessageComposer threadID={1}/>
-      </div>
-    );
-  }
+    componentDidMount() {
+        this._scrollToBottom();
+        {/* edward is placeholder for user */}
+        socket.emit('add user', 'edward');
+        {/* 1 is placeholder for threadID */}
+        socket.emit('subscribe', 1);
+        socket.on('update', msg => 
+                  this.setMessage(msg)
+                 );
+    }
 
-  componentDidUpdate() {
-    this._scrollToBottom();
-  }
+    render() {
+        var messageListItems = this.state.messages.map(this.getMessage);
+        return (
+            <div className="message-section">
+                <ul className="message-list" ref="messageList">
+                    {messageListItems}
+                </ul>
+                <MessageComposer threadID={1}/>
+            </div>
+        );
+    }
 
-  _scrollToBottom() {
-    var ul = findDOMNode(this.refs.messageList);
-    ul.scrollTop = ul.scrollHeight;
-  }
+    getMessage(message) {
+        return (
+            <Message
+                key={message.id}
+                message={message}
+            />
+        );
+    }
 
-  _onChange() {
-      console.log('new message!');
-      // socket api call
-    // this.setState();
-  }
+    setMessage(msg) {
+        var mv = this.state.messages.slice();
+        mv.push(this.getMessage(msg));
+        this.setState({messages: mv});
+    }
+
+    componentDidUpdate() {
+        this._scrollToBottom();
+    }
+
+    _scrollToBottom() {
+        var ul = findDOMNode(this.refs.messageList);
+        ul.scrollTop = ul.scrollHeight;
+    }
+
+    _onChange() {
+        console.log('new message!');
+        // socket api call
+        // this.setState();
+    }
 
 };
 
