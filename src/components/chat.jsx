@@ -5,15 +5,13 @@ import { findDOMNode } from 'react-dom';
 class Chat extends Component {
     constructor(props) {
         super(props);
+        this._handleKeyPress = this._handleKeyPress.bind(this);
+        this.state = {typing: false};
     }
 
     render() {
         return(
             <div>
-            <div className="chatArea">
-            <ul className="messages"></ul>
-            </div>
-            <input className="inputMessage" placeholder="Type here..."/>
             </div>
         )
     }
