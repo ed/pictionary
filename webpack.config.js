@@ -3,14 +3,13 @@ var webpack = require('webpack');
 module.exports = {
     devtool: 'eval',
     entry: [
-        __dirname + '/public/main',
+        __dirname + '/src/main',
         'webpack-dev-server/client?http://localhost:3000',
         'webpack/hot/only-dev-server'
     ],
     output: {
         path: __dirname + '/bin',
         filename: 'bundle.js',
-        publicPath: '/public/'
     },
     resolve: {
         extensions: ['', '.js', '.jsx']

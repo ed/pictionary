@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "draw in react",
   "scripts": {
-    "start": "node server.js"
+    "start": "./node_modules/.bin/nodemon server.js"
   },
   "author": "",
   "devDependencies": {
@@ -16,6 +16,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "css-loader": "^0.23.1",
     "html-webpack-plugin": "^2.22.0",
+    "nodemon": "^1.10.2",
     "react-dom": "^15.3.1",
     "react-transform-hmr": "^1.0.4",
     "socket-io": "0.0.0",
