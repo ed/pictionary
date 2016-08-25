@@ -32,11 +32,8 @@ io.on('connection', function(socket){
         console.log('id: ', id);
         socket.join(id);
     });
-    socket.on('chat message', function(msg) {
-        socket.broadcast.emit('chat message', {
-            username: socket.username,
-            message: msg
-        });
+    socket.on('chat msg', function(msg) {
+        console.log('msg', msg)
     });
     socket.on('add user', function(username) {
         console.log(username + ' has connected');

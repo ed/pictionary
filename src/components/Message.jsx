@@ -6,7 +6,7 @@ class Message extends Component {
         message: ReactPropTypes.object
     };
 
-    render{
+    render (){
         var message = this.props.message;
         return (
             <li className="message-list-item">
@@ -20,4 +20,4 @@ class Message extends Component {
     }
 }
 
-module.exports = Message;
+export default Message;
