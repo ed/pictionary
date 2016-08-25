@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {ActionHistory} from './actionHistory';
+import {ActionHistory, Mark, ClearAction} from './canvasUtils';
 
 export class Canvas extends Component {
     static propTypes = {
@@ -98,57 +98,37 @@ export class Canvas extends Component {
     }
 }
 
-class Mark {
-  constructor(ctx, color, size, startPosition) {
-    this.ctx = ctx;
-    this.color = color;
-    this.size = size;
-    this.startPosition = startPosition;
-    this.points = [];
-  }
 
-  startStroke(){
-    this.ctx.strokeStyle = this.color;
-    this.ctx.lineWidth = this.size;
-    this.points.push({
-      pos: this.startPosition,
-      color: this.color,
-      size: this.size 
-    });
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.startPosition.x, this.startPosition.y);
-  }
-
-  addStroke(pos){
-    this.points.push({
-      pos: pos,
-      color: this.color,
-      size: this.size 
-    });
-    this.ctx.lineTo(pos.x, pos.y);
-    this.ctx.stroke();
-  }
-
-  do() {
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.points[0].pos.x, this.points[0].pos.y);
-    this.ctx.strokeStyle = this.color;
-    this.ctx.lineWidth = this.size;
-    for (var j = 0; j < this.points.length; j++) {
-      this.ctx.strokeStyle = this.color;
-      this.ctx.lineWidth = this.size;
-      this.ctx.lineTo(this.points[j].pos.x, this.points[j].pos.y);
+export class SizeOptions extends Component {
+    render() {
+        return (
+            <div className="options" style={{marginBottom:20}}>
+            <label htmlFor="">size: </label>
+            <input min="1" max="20" type="range" value={this.props.size} onChange={this.props.onChange} />
+            </div>
+        );
     }
-    this.ctx.stroke();
-  }
 }
 
-class ClearAction {
-    constructor(clear) {
-      this.clear = clear;
-    }
 
-    do() {
-      this.clear();
+export class ColorOptions extends Component {
+    render() {
+        return (
+            <div className="options" style={{marginBottom:20}}>
+            <label htmlFor="">color: </label>
+            <input type="color" value={this.props.color} onChange={this.props.onChange} />
+            </div>
+        );
+    }
+}
+
+
+export class CanvasButton extends Component {
+    render() {
+        return (
+            <button className={this.props.class} onClick={this.props.onClick}>
+            {this.props.text}
+            </button>
+        );
     }
 }

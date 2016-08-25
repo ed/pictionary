@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import { Canvas } from './canvas'
-import { SizeOptions, ColorOptions, CanvasButton } from './canvasUtils';
+import { Canvas, SizeOptions, ColorOptions, CanvasButton } from './canvas'
 
 export class WhiteBoard extends Component {
     constructor(props){
