@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {ActionHistory} from './actionHistory';
 
 export class Canvas extends Component {
     static propTypes = {
@@ -20,8 +21,7 @@ export class Canvas extends Component {
             undo: false
         };
         this.points = [];
-        this.hist = [];
-        this.redo_hist = [];
+        this.markHistory = [];
     }
 
     setDrawing() {
@@ -30,21 +30,13 @@ export class Canvas extends Component {
 
     componentDidMount() {
         this.ctx = this.canvas.getContext('2d');
+        this.clearCanvas = () => this.ctx.clearRect(0,0,this.props.width, this.props.height);
+        this.actionHistory = new ActionHistory(this.clearCanvas);
     }
 
     startStroke(e) {
         var pos = this.xy(e);
-        this.setState({undo: false});
-        this.redo_hist = [];
-        this.ctx.strokeStyle = this.props.color;
-        this.ctx.lineWidth = this.props.size;
-        this.points.push({
-            pos: pos,
-            color: this.props.color,
-            size: this.props.size 
-        });
-        this.ctx.beginPath();
-        this.ctx.moveTo(pos.x, pos.y);
+        this.curMark = new Mark(this.ctx, this.props.color, this.props.size, pos);
         this.setDrawing();
     }
 
@@ -52,25 +44,18 @@ export class Canvas extends Component {
     drawStroke(e) {
         if (this.state.drawing) {
             var pos = this.xy(e);
-            this.points.push({
-                pos: pos,
-                color: this.props.color,
-                size: this.props.size 
-            });
-            this.ctx.lineTo(pos.x, pos.y);
-            this.ctx.stroke();
+            this.curMark.addStroke(pos);
         }
-    };
+    }
 
 
     endStroke(e) {
         if (this.state.drawing) {
             this.drawStroke(e);
             this.setDrawing();
-            this.hist.push(this.points);
-            this.points = []
+            this.actionHistory.pushAction(this.curMark);
         }
-    };
+    }
 
     xy(e) {
         const {top, left} = this.canvas.getBoundingClientRect();
@@ -78,22 +63,16 @@ export class Canvas extends Component {
             x: e.clientX - left,
             y: e.clientY - top
         }
-    };
+    }
 
     clear() {
-        this.ctx.clearRect(0,0,this.props.width, this.props.height);
-        this.points=[];
+      var clear = new ClearAction(this.clearCanvas);
+      clear.do();
+      this.actionHistory.pushAction(clear);
     }
 
     undo() {
-        if (this.hist.length > 0) {
-            this.clear();
-            this.redo_hist.push(this.hist[this.hist.length - 1]);
-            this.hist.pop()
-            this.redraw();
-            this.points = [];
-            this.setState({undo: true});
-        }
+        this.actionHistory.undoAction();
     }
 
     save() {
@@ -102,29 +81,7 @@ export class Canvas extends Component {
     }
 
     redo() {
-        if (this.redo_hist.length > 0 && this.state.undo == true) {
-            this.clear();
-            this.hist.push(this.redo_hist[this.redo_hist.length - 1]);
-            this.redo_hist.pop()
-            this.redraw();
-            this.points = [];
-        }
-    }
-
-    redraw() {
-        for (var i = 0; i < this.hist.length; i++) {
-            this.points = this.hist[i];
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.points[0].pos.x, this.points[0].pos.y);
-            this.ctx.strokeStyle = this.points[0].color;
-            this.ctx.lineWidth = this.points[0].size;
-            for (var j = 0; j < this.points.length; j++) {
-                this.ctx.strokeStyle = this.points[j].color;
-                this.ctx.lineWidth = this.points[j].size;
-                this.ctx.lineTo(this.points[j].pos.x, this.points[j].pos.y);
-            }
-            this.ctx.stroke();
-        }
+        this.actionHistory.redoAction();
     }
 
     render() {
@@ -146,35 +103,53 @@ export class Canvas extends Component {
     }
 }
 
-export class SizeOptions extends Component {
-    render() {
-        return (
-            <div className="options" style={{marginBottom:20}}>
-            <label htmlFor="">size: </label>
-            <input min="1" max="20" type="range" value={this.props.size} onChange={this.props.onChange} />
-            </div>
-        );
+class Mark {
+  constructor(ctx, color, size, startPosition) {
+      this.ctx = ctx;
+      this.color = color;
+      this.size = size;
+      this.points = [];
+      this.ctx.strokeStyle = color;
+      this.ctx.lineWidth = size;
+      this.points.push({
+        pos: startPosition,
+        color: color,
+        size: size 
+      });
+      this.ctx.beginPath();
+      this.ctx.moveTo(startPosition.x, startPosition.y);
+  }
+
+  addStroke(pos){
+      this.points.push({
+        pos: pos,
+        color: this.color,
+        size: this.size 
+      });
+      this.ctx.lineTo(pos.x, pos.y);
+      this.ctx.stroke();
+  }
+
+  do() {
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.points[0].pos.x, this.points[0].pos.y);
+    this.ctx.strokeStyle = this.color;
+    this.ctx.lineWidth = this.size;
+    for (var j = 0; j < this.points.length; j++) {
+      this.ctx.strokeStyle = this.color;
+      this.ctx.lineWidth = this.size;
+      this.ctx.lineTo(this.points[j].pos.x, this.points[j].pos.y);
     }
+    this.ctx.stroke();
+  }
 }
 
-export class ColorOptions extends Component {
-    render() {
-        return (
-            <div className="options" style={{marginBottom:20}}>
-            <label htmlFor="">color: </label>
-            <input type="color" value={this.props.color} onChange={this.props.onChange} />
-            </div>
-        );
+class ClearAction {
+    constructor(clear) {
+      this.clear = clear;
     }
-}
 
-
-export class CanvasButton extends Component {
-    render() {
-        return (
-            <button className={this.props.class} onClick={this.props.onClick}>
-            {this.props.text}
-            </button>
-        );
+    do() {
+      this.clear();
     }
 }
