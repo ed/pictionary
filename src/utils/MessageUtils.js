@@ -1,14 +1,17 @@
 import uuid from 'node-uuid';
 
+var socket = io.connect();
+
 module.exports = {
-  template: function(text, author, currentThreadID) {
-    var timestamp = Date.now();
-    return {
-      id: 'm_'+uuid.v4()+timestamp,
-      threadID: currentThreadID,
-      authorName: author,
-      text: text,
-      timestamp: new Date(timestamp)
-    };
-  }
+    createMessage: function(text, author, currentThreadID) {
+        var message = {
+            id: 'm_'+uuid.v4(),
+            threadID: currentThreadID,
+            authorName: author,
+            text: text,
+            timestamp: (new Date).toISOString().replace(/z|t/gi,' ').trim()
+        };
+        socket.emit('chat msg', message);
+    }
+    // redis store here
 }

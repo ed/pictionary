@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import MessageCreator from 'actions/MessageActionCreator';
+import MessageUtils from 'utils/MessageUtils';
 
 class MessageComposer extends Component {
 
@@ -54,7 +54,7 @@ class MessageComposer extends Component {
             }
                 ;
             if (text) {
-                MessageCreator.createMessage(text, user.name, this.props.threadID);
+                MessageUtils.createMessage(text, user.name, this.props.threadID);
             }
             this.setState({text: ''});
         }
