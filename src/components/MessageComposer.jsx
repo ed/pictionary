@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import MessageCreator from '../actions/MessageActionCreator';
+import MessageCreator from 'actions/MessageActionCreator';
 
 class MessageComposer extends Component {
 

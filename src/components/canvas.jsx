@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActionHistory, Mark } from './canvasUtils';
+import { ActionHistory, Mark } from 'utils/canvasUtils';
 
 export class Canvas extends Component {
   static propTypes = {

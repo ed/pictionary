@@ -1,5 +1,5 @@
-var WebUtils = require('../utils/WebUtils');
-var MessageUtils = require('../utils/MessageUtils');
+var WebUtils = require('utils/WebUtils');
+var MessageUtils = require('utils/MessageUtils');
 
 module.exports = {
   createMessage: function(text, author, currentThreadID) {
