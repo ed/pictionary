@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "draw in react",
   "scripts": {
-    "start": "./node_modules/.bin/nodemon server.js"
+    "start": "./node_modules/.bin/nodemon server.js",
+    "eslint": "./node_modules/.bin/eslint",
+    "lint": "npm run eslint",
+    "test": "./node_modules/.bin/mocha"
   },
   "author": "",
   "devDependencies": {
@@ -15,11 +18,16 @@
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
     "css-loader": "^0.23.1",
+    "eslint": "^3.3.1",
+    "eslint-config-airbnb": "^10.0.1",
+    "eslint-plugin-import": "^1.14.0",
+    "eslint-plugin-jsx-a11y": "^2.1.0",
+    "eslint-plugin-react": "^6.1.2",
     "html-webpack-plugin": "^2.22.0",
+    "mocha": "^3.0.2",
     "nodemon": "^1.10.2",
     "react-dom": "^15.3.1",
     "react-transform-hmr": "^1.0.4",
-    "socket-io": "0.0.0",
     "socket.io": "^1.4.8",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.2",

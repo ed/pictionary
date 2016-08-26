@@ -1,15 +1,15 @@
-var webpack = require('webpack');
-var WebpackDevServer = require('webpack-dev-server');
-var config = require('./webpack.config');
-fs = require('fs');
+const webpack = require('webpack');
+const WebpackDevServer = require('webpack-dev-server');
+const config = require('./webpack.config');
+const fs = require('fs');
 
 // to test whiteboard
 // index = fs.readFileSync(__dirname + '/index.html');
 // also in webpack.config.js change /public/main to /src/main
-// to test chat 
-index = fs.readFileSync(__dirname + '/index.html');
+// to test chat
+let index = fs.readFileSync(__dirname + '/index.html');
 
-var http = require('http').createServer(function(req, res) {
+let http = require('http').createServer(function(req, res) {
     res.writeHeader(200);  
     res.end(index);
 }).listen(3001);
