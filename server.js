@@ -7,33 +7,23 @@ fs = require('fs');
 // index = fs.readFileSync(__dirname + '/index.html');
 // also in webpack.config.js change /public/main to /src/main
 // to test chat 
-index = fs.readFileSync(__dirname + '/public/chat.html');
+index = fs.readFileSync(__dirname + '/index.html');
 
 var http = require('http').createServer(function(req, res) {
-    if (req.url == '/') {
-        res.writeHeader(200);  
-        res.end(index);
-    }
-    else {
-        fs.readFile(__dirname + '/public' + req.url, function (err,data) {
-            if (!err) {
-                res.writeHeader(200);  
-                res.end(data);
-            }
-        });
-    }
+    res.writeHeader(200);  
+    res.end(index);
 }).listen(3001);
 
 var io = require('socket.io').listen(http);
 
 io.on('connection', function(socket){ 
-
     socket.on('subscribe', function(id) {
         console.log('id: ', id);
         socket.join(id);
     });
     socket.on('chat msg', function(msg) {
         console.log('msg', msg)
+        socket.broadcast.to(msg.threadID).emit('update', msg);
     });
     socket.on('add user', function(username) {
         console.log(username + ' has connected');
