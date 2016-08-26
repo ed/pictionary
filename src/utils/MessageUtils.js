@@ -1,6 +1,8 @@
 import uuid from 'node-uuid';
 
 var socket = io.connect();
+var moment = require('moment');
+moment().format();
 
 module.exports = {
     unpackMessage: function(message, currentThreadID) {
@@ -9,7 +11,7 @@ module.exports = {
             threadID: message.threadID,
             authorName: message.authorName,
             text: message.text,
-            timestamp: (new Date).toISOString().replace(/z|t/gi,' ').trim()
+            timestamp: message.timestamp
         };
     },
     createMessage: function(text, author, currentThreadID) {
@@ -18,7 +20,7 @@ module.exports = {
             threadID: currentThreadID,
             authorName: author,
             text: text,
-            timestamp: (new Date).toISOString().replace(/z|t/gi,' ').trim()
+            timestamp: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
         };
         // redis store here
         socket.emit('chat msg', message);
