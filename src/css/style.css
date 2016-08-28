@@ -1,14 +1,10 @@
 * {
     box-sizing: border-box;
-}
+}s
 
 html {
     font-weight: 300;
     -webkit-font-smoothing: antialiased;
-}
-
-html, input {
-    font-family: 'Lato', sans-serif;
 }
 
 html, body {
@@ -60,13 +56,12 @@ html, body {
 
 .social-area {
     height:100%;
-    padding:0 0 0 0;
 }
 
     #message-section{
         display: table;
         height: 100%;
-        padding-left: 200px;
+        padding-left: 240px;
         width: 40%;
     }
 
@@ -104,22 +99,20 @@ html, body {
                         display: inline-block;
                     }
 
-                    .message-author-name {
-                        font-weight: 800;
-                        padding-bottom: 7px;
-                    }
+                        .message-author-name {
+                            font-weight: 800;
+                            padding-bottom: 7px;
+                        }
 
-                    .message-time {
-                        color:#767676;
-                    }
+                        .message-time {
+                            font-size: 80%;
+                            color:#767676;
+                        }
 
         #msg-send {
             display:table-row;
             height:150px;
             width: 100%;
-            bottom: 0;
-            left: 200px;
-            right: 0;
             height: 10%;
             width: 40%;
         }
@@ -134,7 +127,8 @@ html, body {
                 margin:auto;
                 border-radius: 4px;
                 resize:none;
-                padding-top: 7px;
+                padding-top: 8px;
+                padding-bottom: 7px;
                 padding-left: 10px;
                 margin-left: 30px;
                 margin-top: 15px;
@@ -144,36 +138,48 @@ html, body {
     #sidebar {
         position:absolute;
         top:0; bottom:0; left:0;
-        width:200px;
-        color:#7e7e7e;
-        background:#fb7575;
-        font-weight: 800;
+        width:240px;
+        color:#e9e9e9;
+        background:#2f2c2f;
+        font-weight: 400;
     }
-        #sidebar .sidebarElement {
-            padding-top: 20px;
-        }
-        #sidebar .sidebarElement >span {
-            margin-left: 30px;
-            opacity: .4;
+
+        #sidebar .sidebarHeader {
+            padding: 15px;
+            font-weight: 900;
+            color:white;
+            height: 70px;
+            width: 100%;
+
         }
 
-/* Turn on custom 8px wide scrollbar */
+        #sidebar .sidebarHeader:hover {
+            background:#252525;
+        }
+
+        #sidebar .sidebarElement {
+            margin-top: 20px;
+            width:100%;
+        }
+
+            #sidebar .sidebarElement:hover {
+                background:#252525;
+            }
+
+        #sidebar .sidebarElement >span {
+            padding-left: 15px;
+            opacity: .3;
+        }
+
+/* Pretty Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px; /* 1px wider than Lion. */
-  /* This is more usable for users trying to click it. */
+  width: 8px;
   background-color: rgba(0, 0, 0, 0.04);
   -webkit-border-radius: 100px;
 }
 
-/* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
 ::-webkit-scrollbar-thumb:vertical {
-  /* This is the EXACT color of Mac OS scrollbars. 
-     Yes, I pulled out digital color meter */
   background: rgba(0,0,0,0.23);
-  -webkit-border-radius: 100px;
-}
-::-webkit-scrollbar-thumb:vertical:active {
-  background: rgba(0,0,0,0.23); /* Some darker color when you click it */
   -webkit-border-radius: 100px;
 }
 

@@ -14,8 +14,10 @@ class MessageSection extends Component{
     componentDidMount() {
         this._scrollToBottom();
         {/* edward is placeholder for user */}
-        this.user = 'edward';
-        socket.emit('add user', this.user);
+        this.user = {
+            username: 'edward',
+        };
+        socket.emit('add user', this.user.username);
         {/* 1 is placeholder for threadID */}
         socket.emit('subscribe', 1);
         socket.on('update', msg => 
@@ -46,7 +48,6 @@ class MessageSection extends Component{
         for (var i = 0; i < this.state.messages.length; i++){
             var message = this.state.messages[i];
             var displayHeader = (i == 0 || this.state.messages[i-1].authorName != message.authorName);
-            console.log(displayHeader)
             messageDivs.push(
                 <Message
                 displayHeader={displayHeader}
@@ -85,8 +86,9 @@ export class SideBar extends Component {
     render() {
         return (
             <div id="sidebar">
+                <a href='#'><div className="sidebarHeader">Ultra Gaming Platform</div></a>
                 <div className="sidebarElement">
-                    <span></span>
+                    <span><i>#</i> draw stuff</span>
                 </div>
             </div>
         );
