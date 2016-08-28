@@ -8,17 +8,18 @@ html {
 }
 
 html, input {
-    font-family:
-    "HelveticaNeue-Light",
-    "Helvetica Neue Light",
-    "Helvetica Neue",
-    Helvetica,
-    Arial,
-    "Lucida Grande",
-    sans-serif;
+    font-family: 'Lato', sans-serif;
 }
 
 html, body {
+    height: 100%;
+    margin: 0;
+    color: #545454;
+    font-family: 'Lato', sans-serif;
+    padding: 0;
+}
+
+#app{
     height: 100%;
     margin: 0;
     padding: 0;
@@ -57,29 +58,123 @@ html, body {
     font-weight: 100;
 }
 
-.chatArea {
-    height: 100%;
-    padding-bottom: 60px;
+.social-area {
+    height:100%;
+    padding:0 0 0 0;
 }
 
-.messages {
-    height: 100%;
-    margin: 0;
-    overflow-y: scroll;
-    padding: 10px 20px 10px 20px;
+    #message-section{
+        display: table;
+        height: 100%;
+        padding-left: 200px;
+        width: 40%;
+    }
+
+        .message-list {
+            display:table-row;
+        }
+            .messages {
+                display: table-cell;
+                vertical-align: bottom;
+            }
+
+            .messageDiv {
+                overflow: auto;
+                max-height: 100%;
+                vertical-align: bottom;
+            }
+
+                .message {
+                    width:100%;
+                    padding-top:2px;
+                    padding-bottom: 4px;
+                }
+
+                .message:hover {
+                    background:#f1f1f1;
+                }
+
+                    .leftMessage {
+                        width: 40px;
+                        height: 100%;
+                        display: inline-block;
+                    }
+
+                    .rightMessage {
+                        display: inline-block;
+                    }
+
+                    .message-author-name {
+                        font-weight: 800;
+                        padding-bottom: 7px;
+                    }
+
+                    .message-time {
+                        color:#767676;
+                    }
+
+        #msg-send {
+            display:table-row;
+            height:150px;
+            width: 100%;
+            bottom: 0;
+            left: 200px;
+            right: 0;
+            height: 10%;
+            width: 40%;
+        }
+
+            .message-composer {
+                font-family: 'Lato', sans-serif;
+                font-size: 102%;
+                border: 2px solid #dddddd;
+                height: 40px;
+                width: 85%;
+                outline: none;
+                margin:auto;
+                border-radius: 4px;
+                resize:none;
+                padding-top: 7px;
+                padding-left: 10px;
+                margin-left: 30px;
+                margin-top: 15px;
+                margin-bottom: auto;
+            }
+
+    #sidebar {
+        position:absolute;
+        top:0; bottom:0; left:0;
+        width:200px;
+        color:#7e7e7e;
+        background:#fb7575;
+        font-weight: 800;
+    }
+        #sidebar .sidebarElement {
+            padding-top: 20px;
+        }
+        #sidebar .sidebarElement >span {
+            margin-left: 30px;
+            opacity: .4;
+        }
+
+/* Turn on custom 8px wide scrollbar */
+::-webkit-scrollbar {
+  width: 8px; /* 1px wider than Lion. */
+  /* This is more usable for users trying to click it. */
+  background-color: rgba(0, 0, 0, 0.04);
+  -webkit-border-radius: 100px;
 }
 
-.message-composer {
-    font-size: 150%;
-    border: 5px solid #000;
-    bottom: 0;
-    height: 60px;
-    left: 0;
-    outline: none;
-    padding-left: 10px;
-    position: absolute;
-    right: 0;
-    width: 100%;
+/* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
+::-webkit-scrollbar-thumb:vertical {
+  /* This is the EXACT color of Mac OS scrollbars. 
+     Yes, I pulled out digital color meter */
+  background: rgba(0,0,0,0.23);
+  -webkit-border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:vertical:active {
+  background: rgba(0,0,0,0.23); /* Some darker color when you click it */
+  -webkit-border-radius: 100px;
 }
 
 .form1 {

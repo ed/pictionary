@@ -18,14 +18,16 @@ class MessageComposer extends Component {
 
     render() {
         return (
-            <textarea
-            className="message-composer"
-            ref="mcomposer"
-            name="message"
-            value={this.state.text}
-            onChange={this._onChange}
-            onKeyDown={this._onKeyDown}
-            />
+            <div id="msg-send">
+                <textarea
+                className="message-composer"
+                ref={(messageComposer) => this.messageComposer = messageComposer}
+                name="message"
+                value={this.state.text}
+                onChange={this._onChange}
+                onKeyDown={this._onKeyDown}
+                />
+            </div>
         );
     }
 
@@ -43,7 +45,7 @@ class MessageComposer extends Component {
 
     _onKeyDown(e) {
         if (!(event.ctrlKey || event.metaKey || event.altKey)) {
-            findDOMNode(this.refs.mcomposer).focus(); 
+            this.messageComposer.focus(); 
         }
         if (e.keyCode === 13) {
             e.preventDefault();

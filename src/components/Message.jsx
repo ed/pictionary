@@ -7,17 +7,27 @@ class Message extends Component {
     };
 
     render (){
-        var message = this.props.message;
         return (
-            <li className="message-list-item">
-            <h5 className="message-author-name">{message.authorName}</h5>
-            <div className="message-time">
-            {message.timestamp}
+            <div className="message">
+                <div className="leftMessage"></div>
+                <div className="rightMessage">
+                    {this.props.displayHeader ? <MessageHeader message={this.props.message}/> : null}
+                    <div className="message-text">{this.props.message.text}</div>
+                </div>
             </div>
-            <div className="message-text">{message.text}</div>
-            </li>
         );
     }
 }
+
+class MessageHeader extends Component {
+    render() {
+        return (
+            <span>
+                <span className="message-author-name">{this.props.message.authorName}  </span> <span className="message-time">{this.props.message.timestamp}</span>
+            </span>
+        );
+    }
+}
+
 
 export default Message;

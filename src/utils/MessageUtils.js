@@ -20,7 +20,7 @@ module.exports = {
             threadID: currentThreadID,
             authorName: author,
             text: text,
-            timestamp: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
+            timestamp: moment(Date.now()).format("h:mm a")
         };
         // redis store here
         socket.emit('chat msg', message);

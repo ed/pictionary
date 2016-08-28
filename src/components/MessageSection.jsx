@@ -14,37 +14,53 @@ class MessageSection extends Component{
     componentDidMount() {
         this._scrollToBottom();
         {/* edward is placeholder for user */}
-        socket.emit('add user', 'edward');
+        this.user = 'edward';
+        socket.emit('add user', this.user);
         {/* 1 is placeholder for threadID */}
         socket.emit('subscribe', 1);
         socket.on('update', msg => 
-                  this.setMessage(msg)
-                 );
+                  this.addMessage(msg)
+        );
     }
 
     render() {
         return (
-            <div className="message-section">
-                <ul className="message-list" ref="messageList">
-                    {this.state.messages}
-                </ul>
-                <MessageComposer threadID={1}/>
+            <div className="social-area">
+                <SideBar/>
+                <div id="message-section">
+                    <div className="message-list" >
+                        <div className="messages">
+                            <div className="messageDiv" ref={(messageList) => this.messageList = messageList}>
+                                {this.displayMessages()}
+                            </div>
+                        </div>
+                    </div>
+                    <MessageComposer threadID={1}/>
+                </div>
             </div>
         );
     }
 
-    getMessage(message) {
-        return (
-            <Message
+    displayMessages() {
+        var messageDivs = [];
+        for (var i = 0; i < this.state.messages.length; i++){
+            var message = this.state.messages[i];
+            var displayHeader = (i == 0 || this.state.messages[i-1].authorName != message.authorName);
+            console.log(displayHeader)
+            messageDivs.push(
+                <Message
+                displayHeader={displayHeader}
                 key={message.id}
                 message={message}
-            />
-        );
+                />
+            );
+        }
+        return messageDivs;
     }
 
-    setMessage(msg) {
+    addMessage(msg) {
         var mv = this.state.messages.slice();
-        mv.push(this.getMessage(msg));
+        mv.push(msg);
         this.setState({messages: mv});
     }
 
@@ -53,8 +69,7 @@ class MessageSection extends Component{
     }
 
     _scrollToBottom() {
-        var ul = findDOMNode(this.refs.messageList);
-        ul.scrollTop = ul.scrollHeight;
+        this.messageList.scrollTop = this.messageList.scrollHeight;
     }
 
     _onChange() {
@@ -64,5 +79,19 @@ class MessageSection extends Component{
     }
 
 };
+
+
+export class SideBar extends Component {
+    render() {
+        return (
+            <div id="sidebar">
+                <div className="sidebarElement">
+                    <span></span>
+                </div>
+            </div>
+        );
+    }
+}
+
 
 export default MessageSection;
