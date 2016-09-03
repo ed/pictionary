@@ -2,29 +2,24 @@ import React, { Component } from 'react';
 import { ActionHistory, Mark } from 'utils/CanvasUtils';
 
 export class Canvas extends Component {
-  static propTypes = {
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
-    name: React.PropTypes.string,
-  };
-
-  static defaultProps = {
-    width: 400,
-    height: 400,
-    name: "canvas",
-  };
 
   constructor(props) {
     super(props);
     this.state = {
-      drawing: false, 
+      drawing: false,
+      canvasWidth: 0,
+      canvasHeight: 0, 
     };
     this.markHistory = [];
   }
 
   componentDidMount() {
+    this.setState({
+      canvasHeight: this.canvas.offsetWidth,
+      canvasWidth: this.canvas.offsetHeight
+    });
     this.ctx = this.canvas.getContext('2d');
-    this.clearCanvas = () => this.ctx.clearRect(0,0,this.props.width, this.props.height);
+    this.clearCanvas = () => this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
     this.actionHistory = new ActionHistory(this.clearCanvas);
   }
 
@@ -54,6 +49,8 @@ export class Canvas extends Component {
 
   xy(e) {
     const {top, left} = this.canvas.getBoundingClientRect();
+    console.log(top)
+    console.log(left)
     return {
       x: e.clientX - left,
       y: e.clientY - top
@@ -79,19 +76,24 @@ export class Canvas extends Component {
   }
 
   render() {
-    const {width, height, name} = this.props;
     return (
-      <div>
+      <div className="canvasContainer">
       <canvas 
       onMouseDown={(e) => this.startStroke(e)}
       onMouseMove={(e) => this.drawStroke(e)}
       onMouseOut={(e) => this.endStroke(e)}
       onMouseUp={(e) => this.endStroke(e)}
-      width={width}
-      height={height}
-      className={name}
+      className="canvas"
+      width={window.innerWidth}
+      height={window.innerHeight}
       ref={(canvas) => this.canvas = canvas}
       />
+      <div className="options">
+      <CanvasButton class='clear' text='clear' onClick={() => this.clear()} />
+      <CanvasButton class='undo' text='undo' onClick={() => this.undo()} />
+      <CanvasButton class='redo' text='redo' onClick={() => this.redo()} />
+      <CanvasButton class='save' text='save' onClick={() => this.save()} />
+      </div>
       </div>
       )
   }
@@ -101,7 +103,7 @@ export class Canvas extends Component {
 export class SizeOptions extends Component {
   render() {
     return (
-      <div className="options" style={{marginBottom:20}}>
+      <div className={this.props.class} style={{marginBottom:20}}>
       <label htmlFor="">size: </label>
       <input min="1" max="20" type="range" value={this.props.size} onChange={this.props.onChange} />
       </div>
@@ -113,7 +115,7 @@ export class SizeOptions extends Component {
 export class ColorOptions extends Component {
   render() {
     return (
-      <div className="options" style={{marginBottom:20}}>
+      <div className={this.props.class} style={{marginBottom:20}}>
       <label htmlFor="">color: </label>
       <input type="color" value={this.props.color} onChange={this.props.onChange} />
       </div>

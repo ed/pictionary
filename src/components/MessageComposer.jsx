@@ -49,8 +49,8 @@ class MessageComposer extends Component {
         }
         if (e.keyCode === 13) {
             e.preventDefault();
-            var text = this.state.text.trim();
-            var user = {
+            let text = this.state.text.trim();
+            let user = {
                 name: 'edward',
                 id: 1
             }

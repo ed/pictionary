@@ -6,6 +6,7 @@ var ReactPropTypes = React.PropTypes;
  * {!this.props.displayHeader && this.state.hover ? <span className="message-time">{this.props.message.timestamp}</span> : null}
  * to display side timestamp
  */
+
 class Message extends Component {
     propTypes: {
         message: ReactPropTypes.object
@@ -16,9 +17,11 @@ class Message extends Component {
             <div className="message">
                 <div className="leftMessage">
                 </div>
-                <div className="rightMessage">
+                <div className="innerMessage">
                     {this.props.displayHeader ? <MessageHeader message={this.props.message}/> : null}
-                    <div className="message-text">{this.props.message.text}</div>
+                    <div className="messageText">{this.props.message.text}</div>
+                </div>
+                <div className="rightMessage">
                 </div>
             </div>
         );
@@ -29,8 +32,8 @@ class MessageHeader extends Component {
     render() {
         return (
             <span>
-                <span className="message-author-name">{this.props.message.authorName}  </span> 
-                <span className="message-time">{this.props.message.timestamp}</span>
+                <span className="authorName">{this.props.message.authorName}  </span> 
+                <span className="messageTime">{this.props.message.timestamp}</span>
             </span>
         );
     }

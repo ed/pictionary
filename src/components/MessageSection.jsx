@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import MessageComposer from './MessageComposer';
 import Message from './Message';
+import WhiteBoard from './WhiteBoard'
+
 var socket = io.connect();
 
 class MessageSection extends Component{
@@ -29,13 +31,11 @@ class MessageSection extends Component{
         return (
             <div className="social-area">
                 <SideBar/>
+                
                 <div id="message-section">
-                    <div className="message-list" >
-                        <div className="messages">
-                            <div className="messageDiv" ref={(messageList) => this.messageList = messageList}>
-                                {this.displayMessages()}
-                            </div>
-                        </div>
+                    <div className="message-list" ref={(messageList) => this.messageList = messageList}>
+                        <div className="messageListHeader"></div> 
+                        {this.displayMessages()}
                     </div>
                     <MessageComposer threadID={1}/>
                 </div>
@@ -87,8 +87,12 @@ export class SideBar extends Component {
         return (
             <div id="sidebar">
                 <a href='#'><div className="sidebarHeader">Ultra Gaming Platform</div></a>
+                <div className="sidebarElementArea">
+                <a href="#">
                 <div className="sidebarElement">
                     <span><i>#</i> draw stuff</span>
+                </div>
+                </a>
                 </div>
             </div>
         );

@@ -4,5 +4,7 @@ import 'css/style.css';
 import WhiteBoard from 'components/WhiteBoard';
 import MessageSection from 'components/MessageSection';
 
-render(<MessageSection />, document.getElementById('app'));
-//render(<WhiteBoard />, document.getElementById('app')); 
+render(
+	<MessageSection />,
+	//<WhiteBoard />, 
+	document.getElementById('app'));
