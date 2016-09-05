@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ActionHistory, Mark } from 'utils/CanvasUtils';
+import { CompactPicker } from 'react-color';
 
 export class Canvas extends Component {
 
@@ -8,36 +9,48 @@ export class Canvas extends Component {
     this.state = {
       drawing: false,
       canvasWidth: 0,
-      canvasHeight: 0, 
+      canvasHeight: 0,
+      brushColor: "#000000", 
+      brushSize: 8, 
     };
-    this.markHistory = [];
   }
 
   componentDidMount() {
     this.setState({
-      canvasHeight: this.canvas.offsetWidth,
-      canvasWidth: this.canvas.offsetHeight
+      canvasHeight: this.canvas.offsetHeight,
+      canvasWidth: this.canvas.offsetWidth
     });
-    this.ctx = this.canvas.getContext('2d');
+    this.ctx = this.canvas.getContext('2d');    
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
     this.actionHistory = new ActionHistory(this.clearCanvas);
   }
+  
+  componentWillMount() {
+    window.addEventListener('resize', () => this.setCanvasSize());
+  }
+  
+  setCanvasSize(){
+    this.setState({
+      canvasHeight: this.canvas.offsetHeight,
+      canvasWidth: this.canvas.offsetWidth
+    });
+    this.actionHistory.remakeCanvas();
+  }
 
+  
   startStroke(e) {
-    var pos = this.xy(e);
-    this.curMark = new Mark(this.ctx, this.props.color, this.props.size, pos);
+    let pos = this.xy(e);
+    this.curMark = new Mark(this.ctx, this.state.brushColor, this.state.brushSize, pos);
     this.curMark.startStroke();
     this.setState({ drawing: true });
   }
 
-
   drawStroke(e) {
     if (this.state.drawing) {
-      var pos = this.xy(e);
+      let pos = this.xy(e);
       this.curMark.addStroke(pos);
     }
   }
-
 
   endStroke(e) {
     if (this.state.drawing) {
@@ -49,8 +62,6 @@ export class Canvas extends Component {
 
   xy(e) {
     const {top, left} = this.canvas.getBoundingClientRect();
-    console.log(top)
-    console.log(left)
     return {
       x: e.clientX - left,
       y: e.clientY - top
@@ -67,12 +78,20 @@ export class Canvas extends Component {
   }
 
   save() {
-    var img = this.canvas.toDataURL("image/png");
+    let img = this.canvas.toDataURL("image/png");
     document.getElementById('imgwrapper').innerHTML = "<img src='" + img + "'>";
   }
 
   redo() {
     this.actionHistory.redoAction();
+  }
+
+  setBrushColor(color) {
+    alert(this.state.brushColor)
+    alert(color.hex)
+    this.setState({
+      brushColor: color.hex
+    });
   }
 
   render() {
@@ -84,52 +103,97 @@ export class Canvas extends Component {
       onMouseOut={(e) => this.endStroke(e)}
       onMouseUp={(e) => this.endStroke(e)}
       className="canvas"
-      width={window.innerWidth}
-      height={window.innerHeight}
+      width={this.state.canvasWidth}
+      height={this.state.canvasHeight}
       ref={(canvas) => this.canvas = canvas}
       />
-      <div className="options">
-      <CanvasButton class='clear' text='clear' onClick={() => this.clear()} />
-      <CanvasButton class='undo' text='undo' onClick={() => this.undo()} />
-      <CanvasButton class='redo' text='redo' onClick={() => this.redo()} />
-      <CanvasButton class='save' text='save' onClick={() => this.save()} />
-      </div>
+      <ColorCircle 
+        radius={this.state.brushSize + 10} 
+        color={this.state.brushColor} 
+        onColorChange={(color) => this.setBrushColor(color)}
+        />
+        <div className="canvasOptions">
+        <CanvasButton id="clear" iconName="square-o" onClick={() => this.clear()} />
+        <CanvasButton id='undo' iconName='undo' onClick={() => this.undo()} />
+        <CanvasButton id='redo' iconName='repeat' onClick={() => this.redo()} />
+        <CanvasButton id='save' iconName='check' onClick={() => this.save()} />
+        </div>
       </div>
       )
   }
 }
 
-
-export class SizeOptions extends Component {
-  render() {
-    return (
-      <div className={this.props.class} style={{marginBottom:20}}>
-      <label htmlFor="">size: </label>
-      <input min="1" max="20" type="range" value={this.props.size} onChange={this.props.onChange} />
-      </div>
-      );
-  }
-}
-
-
-export class ColorOptions extends Component {
-  render() {
-    return (
-      <div className={this.props.class} style={{marginBottom:20}}>
-      <label htmlFor="">color: </label>
-      <input type="color" value={this.props.color} onChange={this.props.onChange} />
-      </div>
-      );
-  }
-}
-
-
 export class CanvasButton extends Component {
   render() {
     return (
-      <button className={this.props.class} onClick={this.props.onClick}>
-      {this.props.text}
-      </button>
+      <div className="option">
+        <i id={this.props.id} className={`fa fa-${this.props.iconName}`} aria-hidden="true" onClick={this.props.onClick}></i>
+      </div>
       );
   }
 }
+
+
+export class ColorCircle extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      displayColorPicker: false,
+    };
+  }
+
+  toggleColorPicker() {
+    this.setState({
+      displayColorPicker: !this.state.displayColorPicker
+    });
+  }
+
+  hideColorPicker() {
+    this.setState({
+      displayColorPicker: false
+    });
+  }
+
+  handleChange(color) {
+    this.props.onColorChange(color);
+    this.hideColorPicker();
+  }
+
+  render() {
+    let circleStyle = {
+      width: this.props.radius, 
+      height: this.props.radius, 
+      backgroundColor: this.props.color
+    };
+
+    let popoverStyle = {
+      position: 'fixed',
+      zIndex: '2',
+      top:0,
+      left:0,
+      height:400,
+      width:400,
+      backgroundColor:'red'
+    }
+
+    return (
+      <div className="brushOptions">
+        <div className="colorCircle" onClick={() => this.toggleColorPicker()} style={circleStyle}></div>
+        {this.state.displayColorPicker ?
+          <div>
+          <div className="cover" onClick={() => this.hideColorPicker()}/> 
+          <CompactPicker
+            className="colorPicker" 
+            color={this.props.color} 
+            onChange={(color) => this.handleChange(color)}
+            />
+            </div>
+        : null}
+      </div>
+    );
+  }
+}
+
+

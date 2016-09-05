@@ -1,20 +1,24 @@
 export class ActionHistory {
-	constructor(clear) {
-		this.clear = clear;
+	constructor(clearCanvas) {
+		this.clearCanvas = clearCanvas;
 		this.actionList = [];
 		this.position = 0;
 	}
 
 	undoAction() {
 		if( this.position > 0){
-			this.clear();
 			this.position--;
-			for (var i = 0; i < this.position; i++){
+			this.remakeCanvas();
+		}
+	}
+
+  remakeCanvas() {
+    this.clearCanvas();
+    for (var i = 0; i < this.position; i++){
 				var action = this.actionList[i];
 				action();
 			}
-		}
-	}
+  }
 
 	pushAction(action) {
 		this.actionList = this.actionList.slice(0,this.position);

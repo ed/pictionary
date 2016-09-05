@@ -4,7 +4,7 @@ import MessageComposer from './MessageComposer';
 import Message from './Message';
 import WhiteBoard from './WhiteBoard'
 
-var socket = io.connect();
+let socket = io.connect();
 
 class MessageSection extends Component{
 
@@ -31,7 +31,7 @@ class MessageSection extends Component{
         return (
             <div className="social-area">
                 <SideBar/>
-                
+                <WhiteBoard/>
                 <div id="message-section">
                     <div className="message-list" ref={(messageList) => this.messageList = messageList}>
                         <div className="messageListHeader"></div> 
@@ -44,10 +44,10 @@ class MessageSection extends Component{
     }
 
     displayMessages() {
-        var messageDivs = [];
-        for (var i = 0; i < this.state.messages.length; i++){
-            var message = this.state.messages[i];
-            var displayHeader = (i == 0 || this.state.messages[i-1].authorName != message.authorName);
+        let messageDivs = [];
+        for (let i = 0; i < this.state.messages.length; i++){
+            let message = this.state.messages[i];
+            let displayHeader = (i == 0 || this.state.messages[i-1].authorName != message.authorName);
             messageDivs.push(
                 <Message
                 displayHeader={displayHeader}
@@ -60,7 +60,7 @@ class MessageSection extends Component{
     }
 
     addMessage(msg) {
-        var mv = this.state.messages.slice();
+        let mv = this.state.messages.slice();
         mv.push(msg);
         this.setState({messages: mv});
     }
@@ -88,13 +88,22 @@ export class SideBar extends Component {
             <div id="sidebar">
                 <a href='#'><div className="sidebarHeader">Ultra Gaming Platform</div></a>
                 <div className="sidebarElementArea">
-                <a href="#">
-                <div className="sidebarElement">
-                    <span><i>#</i> draw stuff</span>
-                </div>
-                </a>
+                <SidebarElement title="draw stuff"/>
                 </div>
             </div>
+        );
+    }
+}
+
+
+class SidebarElement extends Component {
+    render() {
+        return (
+            <a href="#">
+                <div className="sidebarElement">
+                    <span><i>#</i> {this.props.title}</span>
+                </div>
+            </a>
         );
     }
 }

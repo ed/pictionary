@@ -4,10 +4,6 @@ import MessageUtils from 'utils/MessageUtils';
 
 class MessageComposer extends Component {
 
-    propTypes: {
-        threadID: React.PropTypes.string.isRequired,
-    }
-
     constructor(props) {
         super(props);
         this.state = {text: '', typing: false};
@@ -61,6 +57,10 @@ class MessageComposer extends Component {
             this.setState({text: ''});
         }
     }
+};
+
+MessageComposer.propTypes =  {
+        threadID: React.PropTypes.number.isRequired,
 };
 
 export default MessageComposer;

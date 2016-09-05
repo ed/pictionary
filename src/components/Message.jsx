@@ -8,10 +8,6 @@ var ReactPropTypes = React.PropTypes;
  */
 
 class Message extends Component {
-    propTypes: {
-        message: ReactPropTypes.object
-    };
-
     render (){
         return (
             <div className="message">
