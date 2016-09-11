@@ -10,7 +10,7 @@ export class Canvas extends Component {
       drawing: false,
       canvasWidth: 0,
       canvasHeight: 0,
-      brushColor: "#000000", 
+      brushColor: "#C45100", 
       brushSize: 8, 
     };
   }
@@ -87,8 +87,6 @@ export class Canvas extends Component {
   }
 
   setBrushColor(color) {
-    alert(this.state.brushColor)
-    alert(color.hex)
     this.setState({
       brushColor: color.hex
     });
@@ -107,6 +105,7 @@ export class Canvas extends Component {
       height={this.state.canvasHeight}
       ref={(canvas) => this.canvas = canvas}
       />
+        <CanvasButton id='save' iconName='arrow-right' onClick={() => this.save()} />      
       <ColorCircle 
         radius={this.state.brushSize + 10} 
         color={this.state.brushColor} 
@@ -116,7 +115,6 @@ export class Canvas extends Component {
         <CanvasButton id="clear" iconName="square-o" onClick={() => this.clear()} />
         <CanvasButton id='undo' iconName='undo' onClick={() => this.undo()} />
         <CanvasButton id='redo' iconName='repeat' onClick={() => this.redo()} />
-        <CanvasButton id='save' iconName='check' onClick={() => this.save()} />
         </div>
       </div>
       )
@@ -126,7 +124,7 @@ export class Canvas extends Component {
 export class CanvasButton extends Component {
   render() {
     return (
-      <div className="option">
+      <div className={`option ${this.props.id}`}>
         <i id={this.props.id} className={`fa fa-${this.props.iconName}`} aria-hidden="true" onClick={this.props.onClick}></i>
       </div>
       );
@@ -175,7 +173,6 @@ export class ColorCircle extends Component {
       left:0,
       height:400,
       width:400,
-      backgroundColor:'red'
     }
 
     return (
@@ -189,7 +186,7 @@ export class ColorCircle extends Component {
             color={this.props.color} 
             onChange={(color) => this.handleChange(color)}
             />
-            </div>
+          </div>
         : null}
       </div>
     );

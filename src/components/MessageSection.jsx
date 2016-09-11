@@ -10,20 +10,19 @@ class MessageSection extends Component{
 
     constructor(props) {
         super(props);
-        this.state = {messages: [] }
+        this.state = {messages: [] };
+        this.user = {
+            username: 'eugene',
+        };
     }
 
     componentDidMount() {
         this._scrollToBottom();
-        {/* edward is placeholder for user */}
-        this.user = {
-            username: 'edward',
-        };
         socket.emit('add user', this.user.username);
         {/* 1 is placeholder for threadID */}
         socket.emit('subscribe', 1);
         socket.on('update', msg => 
-                  this.addMessage(msg)
+            this.addMessage(msg)
         );
     }
 
@@ -37,7 +36,7 @@ class MessageSection extends Component{
                         <div className="messageListHeader"></div> 
                         {this.displayMessages()}
                     </div>
-                    <MessageComposer threadID={1}/>
+                    <MessageComposer user={this.user} threadID={1}/>
                 </div>
             </div>
         );
@@ -86,7 +85,7 @@ export class SideBar extends Component {
     render() {
         return (
             <div id="sidebar">
-                <a href='#'><div className="sidebarHeader">Ultra Gaming Platform</div></a>
+                <a href='#'><div className="sidebarHeader">Pretty Pictures</div></a>
                 <div className="sidebarElementArea">
                 <SidebarElement title="draw stuff"/>
                 </div>

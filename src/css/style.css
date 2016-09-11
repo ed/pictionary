@@ -21,6 +21,7 @@ html, body {
     color: #545454;
     font-family: 'Lato', sans-serif;
     padding: 0;
+    overflow-x: hidden;
 }
 
 #app{
@@ -41,7 +42,6 @@ html, body {
     overflow: hidden;
     display:inline-block;
     width: calc(80% - 240px);
-    min-width:500px;
     height:99%;
     margin:0;
     padding:0;
@@ -54,16 +54,15 @@ canvas {
 }
 
 .canvasOptions {
-    width:80%;
+    border-top: 1px solid #DEDEDE;
+    width:100%;
     height: 50px;
     line-height: 50px;
     position: absolute;
-    bottom:10px;
+    bottom:0px;
     left:0;
     right:0;
     margin: 0 auto 0 auto;
-    border: 1px solid black;
-    border-radius: 3px;
     display: flex;
 }
 
@@ -71,16 +70,23 @@ canvas {
     cursor: pointer;
     float:left;
     line-height: inherit;
-    color: lightcoral;
+    color: #2f2c2f;
     font-size: 30px;
     transition: font-size 0.35s ease;
-    text-shadow: 1px 1px 1px #ccc;
+    padding: 0 10px 0 10px;
     margin: 0 auto 0 auto;
 }
 
-.option:hover {
-    font-size: 50px;
+#save {
+    position:absolute;
+    top:25px;
+    right:30px;
 }
+
+.option:hover {
+    color: #FF8669;
+}
+
 
 .brushOptions {
     position: absolute;
@@ -89,11 +95,13 @@ canvas {
 }
 
 .colorCircle {
+    cursor: pointer;
     border-radius: 50%;
 }
 
 .social-area {
     height:100%;
+    width:100%;
 }
 
     #message-section {
@@ -131,7 +139,7 @@ canvas {
                 }
 
                     .leftMessage {
-                        width: 40px;
+                        width: 20px;
                         height: 100%;
                         display: inline-block;
                     }
@@ -191,6 +199,7 @@ canvas {
 
         .sidebarHeader {
             padding: 15px;
+            font-size: 130%;
             font-weight: 900;
             color:white;
             height: 70px;

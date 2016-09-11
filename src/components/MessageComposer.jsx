@@ -6,7 +6,11 @@ class MessageComposer extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {text: '', typing: false};
+        this.state = {
+            text: '', 
+            typing: false,
+            focused: false
+        };
         this._onChange = this._onChange.bind(this);
         this._onKeyDown = this._onKeyDown.bind(this);
     }
@@ -16,10 +20,13 @@ class MessageComposer extends Component {
         return (
             <div id="msg-send">
                 <textarea
+                style={{border: `2px solid ${this.state.focused ? '#bdbdbd' : '#e9e9e9'}`}}
                 className="message-composer"
                 ref={(messageComposer) => this.messageComposer = messageComposer}
                 name="message"
                 value={this.state.text}
+                onFocus={() => this.setState({focused: true})}
+                onBlur={() => this.setState({focused: false})}
                 onChange={this._onChange}
                 onKeyDown={this._onKeyDown}
                 />
@@ -46,13 +53,8 @@ class MessageComposer extends Component {
         if (e.keyCode === 13) {
             e.preventDefault();
             let text = this.state.text.trim();
-            let user = {
-                name: 'edward',
-                id: 1
-            }
-                ;
             if (text) {
-                MessageUtils.createMessage(text, user.name, this.props.threadID);
+                MessageUtils.createMessage(text, this.props.user.username, this.props.threadID);
             }
             this.setState({text: ''});
         }
