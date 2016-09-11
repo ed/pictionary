@@ -1,9 +1,6 @@
 'use strict'
 
 const webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
-const config = require('./webpack.config');
-const fs = require('fs');
 const express = require('express');
 const app = express();
 const path = require('path');
