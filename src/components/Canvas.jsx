@@ -124,8 +124,8 @@ export class Canvas extends Component {
 export class CanvasButton extends Component {
   render() {
     return (
-      <div className={`option ${this.props.id}`}>
-        <i id={this.props.id} className={`fa fa-${this.props.iconName}`} aria-hidden="true" onClick={this.props.onClick}></i>
+      <div className={`option ${this.props.id}`} onClick={this.props.onClick}>
+        <i id={this.props.id} className={`fa fa-${this.props.iconName}`} aria-hidden="true"></i>
       </div>
       );
   }
