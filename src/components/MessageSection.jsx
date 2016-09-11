@@ -12,8 +12,8 @@ class MessageSection extends Component{
         super(props);
         this.state = {messages: [] };
         this.user = {
-            username: 'eugene',
-        };
+           username: this.props.user,
+       };
     }
 
     componentDidMount() {
