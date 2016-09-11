@@ -85,7 +85,7 @@ export class SideBar extends Component {
     render() {
         return (
             <div id="sidebar">
-                <a href='#'><div className="sidebarHeader">Pretty Pictures</div></a>
+                <a href='#'><div className="sidebarHeader"><span className="headerText">Pretty Pictures</span></div></a>
                 <div className="sidebarElementArea">
                 <SidebarElement title="draw stuff"/>
                 </div>

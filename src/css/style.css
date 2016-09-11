@@ -1,7 +1,3 @@
-* {
-    box-sizing: border-box;
-}s
-
 html {
     font-weight: 300;
     -webkit-font-smoothing: antialiased;
@@ -30,13 +26,6 @@ html, body {
     padding: 0;
 }
 
-.cover {
-    position: fixed;
-    top:0;
-    left:0;
-    bottom:0;
-    right: 0;
-}
 
 .canvasContainer {
     overflow: hidden;
@@ -48,44 +37,46 @@ html, body {
     position:absolute;
 }
 
-canvas {
-    width:100%;
-    height:100%;
-}
+    canvas {
+        width:100%;
+        height:100%;
+    }
 
-.canvasOptions {
-    border-top: 1px solid #DEDEDE;
-    width:100%;
-    height: 50px;
-    line-height: 50px;
-    position: absolute;
-    bottom:0px;
-    left:0;
-    right:0;
-    margin: 0 auto 0 auto;
-    display: flex;
-}
+    .canvasOptions {
+        border-top: 1px solid #DEDEDE;
+        width:100%;
+        height: 50px;
+        line-height: 50px;
+        position: absolute;
+        bottom:0px;
+        left:0;
+        right:0;
+        margin: 0 auto 0 auto;
+        display: flex;
+    }
 
-.option {
-    cursor: pointer;
-    float:left;
-    line-height: inherit;
-    color: #2f2c2f;
-    font-size: 30px;
-    transition: font-size 0.35s ease;
-    padding: 0 10px 0 10px;
-    margin: 0 auto 0 auto;
-}
+        .option {
+            cursor: pointer;
+            float:left;
+            line-height: inherit;
+            color: #2f2c2f;
+            font-size: 30px;
+            transition: font-size 0.35s ease;
+            padding: 0 10px 0 10px;
+            margin: 0 auto 0 auto;
+        }
 
-#save {
-    position:absolute;
-    top:25px;
-    right:30px;
-}
+        .option:hover {
+            color: #FF8669;
+        }
 
-.option:hover {
-    color: #FF8669;
-}
+
+        #save {
+            position:absolute;
+            top:25px;
+            right:30px;
+        }
+
 
 
 .brushOptions {
@@ -94,10 +85,19 @@ canvas {
     left:30px;
 }
 
-.colorCircle {
-    cursor: pointer;
-    border-radius: 50%;
-}
+    .colorCircle {
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    .cover {
+        position: fixed;
+        top:0;
+        left:0;
+        bottom:0;
+        right: 0;
+    }
+
 
 .social-area {
     height:100%;
@@ -148,7 +148,7 @@ canvas {
                         white-space:normal;
                         display: inline-block;
                         word-wrap: break-word;
-                        width:200px;
+                        width:90%;
                         padding-right: 10px;
                     }
 
@@ -172,7 +172,7 @@ canvas {
                 font-family: 'Lato', sans-serif;
                 font-size: 102%;
                 border: 2px solid #dddddd;
-                height: 40px;
+                height: 20px;
                 width: 85%;
                 outline: none;
                 margin:auto;
@@ -183,7 +183,7 @@ canvas {
                 padding-bottom: 7px;
                 padding-left: 10px;
                 margin-right: auto;
-                margin-left: 15px;
+                margin-left: 25px;
                 margin-top: 15px;
                 margin-bottom: auto;
             }
@@ -198,14 +198,16 @@ canvas {
     }
 
         .sidebarHeader {
-            padding: 15px;
+            padding-bottom: 15px;
             font-size: 130%;
             font-weight: 900;
             color:white;
             height: 70px;
             width: 100%;
-
         }
+            .headerText {
+                padding: 15px;
+            }
 
         .sidebarHeader:hover {
             background:#252525;
@@ -252,6 +254,3 @@ canvas {
   border-radius: 100px;
 }
 
-.form1 {
-    display: none;
-}

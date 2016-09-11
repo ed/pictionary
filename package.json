@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "draw in react",
   "scripts": {
-    "start": "./node_modules/.bin/nodemon server.js",
+    "build": "webpack --config ./webpack.prod.config.js --progress --colors",
+    "start": "node server.js",
     "eslint": "./node_modules/.bin/eslint",
     "lint": "npm run eslint",
     "test": "./node_modules/.bin/mocha"
@@ -35,9 +36,11 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "express": "^4.14.0",
     "moment": "^2.14.1",
     "node-uuid": "^1.4.7",
     "react": "^15.3.1",
+    "react-color": "^2.2.7",
     "react-dom": "^15.3.1"
   }
 }

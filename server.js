@@ -4,19 +4,20 @@ const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const config = require('./webpack.config');
 const fs = require('fs');
+const express = require('express');
+const app = express();
+const path = require('path');
+var server = require('http').Server(app);
 
-// to test whiteboard
-// index = fs.readFileSync(__dirname + '/index.html');
-// also in webpack.config.js change /public/main to /src/main
-// to test chat
-let index = fs.readFileSync(__dirname + '/index.html');
+const indexPath = path.join(__dirname, '/index.html')
+const publicPath = express.static(path.join(__dirname, '/bin'))
 
-let http = require('http').createServer(function(req, res) {
-    res.writeHeader(200);  
-    res.end(index);
-}).listen(3001);
+var io = require('socket.io')(server);
 
-var io = require('socket.io').listen(http);
+server.listen(3000);
+
+app.use('/bin', publicPath)
+app.get('/', function (_, res) { res.sendFile(indexPath) })
 
 io.on('connection', function(socket){ 
     socket.on('subscribe', function(id) {
@@ -35,15 +36,15 @@ io.on('connection', function(socket){
     });
 });
 
-new WebpackDevServer(webpack(config), {
-    hot: true,
-    colors: true,
-    inline: true,
-    proxy: {'**': 'http://localhost:3001'},
-    historyApiFallback: true
-}).listen(3000, 'localhost', function (err, result) {
-    if (err) {
-        return console.log(err);
-    }
-    console.log('Listening at http://localhost:3000/');
-});
+// new WebpackDevServer(webpack(config), {
+//     hot: true,
+//     colors: true,
+//     inline: true,
+//     proxy: {'**': 'http://localhost:3001'},
+//     historyApiFallback: true
+// }).listen(3000, 'localhost', function (err, result) {
+//     if (err) {
+//         return console.log(err);
+//     }
+//     console.log('Listening at http://localhost:3000/');
+// });

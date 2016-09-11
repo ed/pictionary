@@ -11,7 +11,6 @@ export class WhiteBoard extends Component {
     return (
       <div>
       <Canvas ref={(canvas) => this.canvas = canvas} />
-      <div id="imgwrapper"></div>
       </div>
       );
   }

@@ -17,8 +17,6 @@ class Message extends Component {
                     {this.props.displayHeader ? <MessageHeader message={this.props.message}/> : null}
                     <div className="messageText">{this.props.message.text}</div>
                 </div>
-                <div className="rightMessage">
-                </div>
             </div>
         );
     }

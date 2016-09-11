@@ -3,21 +3,25 @@ var path = require('path');
 
 module.exports = {
     devtool: 'eval',
+
     entry: [
-        __dirname + '/src/main',
+        './src/main',
         'webpack-dev-server/client?http://localhost:3000',
         'webpack/hot/only-dev-server'
     ],
+
     output: {
-        path: __dirname + '/bin',
+        path: path.join(__dirname, 'bin'),
         filename: 'bundle.js',
     },
+
     resolve: {
         extensions: ['', '.js', '.jsx'],
         root: [
           path.resolve('./src')
         ]
     },
+
     module: {
         loaders:[
             { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
@@ -27,6 +31,6 @@ module.exports = {
     },
 
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
     ]
 }
