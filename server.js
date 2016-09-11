@@ -1,5 +1,6 @@
 'use strict'
 
+const port = process.env.PORT || 3000;
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -10,7 +11,7 @@ const publicPath = express.static(path.join(__dirname, '/bin'))
 
 var io = require('socket.io')(server);
 
-server.listen(3000);
+server.listen(port);
 
 app.use('/bin', publicPath)
 app.get('/', function (_, res) { res.sendFile(indexPath) })
