@@ -206,6 +206,7 @@ html, body {
             width: 100%;
         }
             .headerText {
+                position: absolute;
                 padding: 15px;
             }
 

@@ -1,6 +1,10 @@
 'use strict'
 
-const port = process.env.PORT || 3000;
+/*
+*   Run 'npm run build' to run production envioronment
+*/
+
+const port = (process.env.PORT || 3000);
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -9,9 +13,10 @@ var server = require('http').Server(app);
 const indexPath = path.join(__dirname, '/index.html')
 const publicPath = express.static(path.join(__dirname, '/bin'))
 
-var io = require('socket.io')(server);
+var io = require('socket.io')(server);  
 
 server.listen(port);
+console.log(`Listening at http://localhost:${port}`)
 
 app.use('/bin', publicPath)
 app.get('/', function (_, res) { res.sendFile(indexPath) })
@@ -33,15 +38,25 @@ io.on('connection', function(socket){
     });
 });
 
-// new WebpackDevServer(webpack(config), {
-//     hot: true,
-//     colors: true,
-//     inline: true,
-//     proxy: {'**': 'http://localhost:3001'},
-//     historyApiFallback: true
-// }).listen(3000, 'localhost', function (err, result) {
-//     if (err) {
-//         return console.log(err);
-//     }
-//     console.log('Listening at http://localhost:3000/');
-// });
+
+/*
+*   Run 'webpack --config webpack.dev.config' for dev mode
+*/
+
+if (process.env.NODE_ENV !== 'production') {
+    var config = require('./webpack.dev.config');
+    var webpack = require('webpack');
+    var WebpackDevServer = require('webpack-dev-server');
+    new WebpackDevServer(webpack(config), {
+        hot: true,
+        colors: true,
+        inline: true,
+        proxy: {'**': 'http://localhost:3000'},
+        historyApiFallback: true
+    }).listen(3001, 'localhost', function (err, result) {
+        if (err) {
+            return console.log(err);
+        }
+        console.log('Dev Server listening at http://localhost:3001/');
+    });
+}

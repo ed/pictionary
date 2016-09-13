@@ -6,11 +6,13 @@ import WhiteBoard from './WhiteBoard'
 
 let socket = io.connect();
 
-class MessageSection extends Component{
+class MessageSection extends Component { 
 
     constructor(props) {
         super(props);
-        this.state = {messages: [] };
+        this.state = {
+            messages: [] 
+        };
         this.user = {
            username: this.props.user,
        };
