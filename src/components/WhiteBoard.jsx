@@ -10,7 +10,7 @@ export class WhiteBoard extends Component {
   render() {
     return (
       <div>
-      <Canvas ref={(canvas) => this.canvas = canvas} />
+      <Canvas ref={(canvas) => this.canvas = canvas} user={this.props.user} drawer={this.props.drawer} />
       </div>
       );
   }

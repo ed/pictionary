@@ -22,7 +22,7 @@ module.exports = {
             text: text,
             timestamp: moment(Date.now()).format("h:mm a")
         };
-        // redis store here
+      // redis store here
         socket.emit('chat msg', message);
     }
 };

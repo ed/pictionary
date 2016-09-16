@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react'
 import { findDOMNode } from 'react-dom';
 import MessageComposer from './MessageComposer';
 import Message from './Message';
@@ -8,105 +8,105 @@ let socket = io.connect();
 
 class MessageSection extends Component { 
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            messages: [] 
-        };
-        this.user = {
-           username: this.props.user,
-       };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      messages: [] 
+    };
+    this.user = {
+      user: this.props.user,
+    };
+  }
 
-    componentDidMount() {
-        this._scrollToBottom();
-        socket.emit('add user', this.user.username);
-        {/* 1 is placeholder for threadID */}
-        socket.emit('subscribe', 1);
-        socket.on('update', msg => 
-            this.addMessage(msg)
-        );
-    }
+  componentDidMount() {
+    this._scrollToBottom();
+    socket.emit('add user', this.user.user);
+    socket.emit('subscribe', 1);
+    socket.on('update', msg => 
+      this.addMessage(msg)
+    );
+  }
 
-    render() {
-        return (
-            <div className="social-area">
-                <SideBar/>
-                <WhiteBoard/>
-                <div id="message-section">
-                    <div className="message-list" ref={(messageList) => this.messageList = messageList}>
-                        <div className="messageListHeader"></div> 
-                        {this.displayMessages()}
-                    </div>
-                    <MessageComposer user={this.user} threadID={1}/>
-                </div>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className="social-area">
+        <SideBar/>
+        <WhiteBoard user={this.user.user} drawer={this.props.drawer}/>
+        <div id="message-section">
+          <div className="message-list" ref={(messageList) => this.messageList = messageList}>
+            <div className="messageListHeader"></div> 
+            {this.displayMessages()}
+          </div>
+          <MessageComposer user={this.user} threadID={1}/>
+        </div>
+      </div>
+    );
+  }
 
-    displayMessages() {
-        let messageDivs = [];
-        for (let i = 0; i < this.state.messages.length; i++){
-            let message = this.state.messages[i];
-            let displayHeader = (i == 0 || this.state.messages[i-1].authorName != message.authorName);
-            messageDivs.push(
-                <Message
-                displayHeader={displayHeader}
-                key={message.id}
-                message={message}
-                />
-            );
-        }
-        return messageDivs;
+  displayMessages() {
+    let messageDivs = [];
+    for (let i = 0; i < this.state.messages.length; i++){
+      let message = this.state.messages[i];
+      let displayHeader = (i == 0 || this.state.messages[i-1].authorName != message.authorName);
+      messageDivs.push(
+        <Message
+          displayHeader={displayHeader}
+          key={message.id}
+          message={message}
+        />
+      );
     }
+    return messageDivs;
+  }
 
-    addMessage(msg) {
-        let mv = this.state.messages.slice();
-        mv.push(msg);
-        this.setState({messages: mv});
-    }
+  addMessage(msg) {
+    let mv = this.state.messages.slice();
+    mv.push(msg);
+    this.setState({messages: mv});
 
-    componentDidUpdate() {
-        this._scrollToBottom();
-    }
+  }
 
-    _scrollToBottom() {
-        this.messageList.scrollTop = this.messageList.scrollHeight;
-    }
+  componentDidUpdate() {
+    this._scrollToBottom();
+  }
 
-    _onChange() {
-        console.log('new message!');
-        // socket api call
-        // this.setState();
-    }
+  _scrollToBottom() {
+    this.messageList.scrollTop = this.messageList.scrollHeight;
+  }
+
+  _onChange() {
+    console.log('new message!');
+    // socket api call
+    // this.setState();
+  }
 
 };
 
 
 export class SideBar extends Component {
-    render() {
-        return (
-            <div id="sidebar">
-                <a href='#'><div className="sidebarHeader"><span className="headerText">Pretty Pictures</span></div></a>
-                <div className="sidebarElementArea">
-                <SidebarElement title="draw stuff"/>
-                </div>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div id="sidebar">
+        <a href='#'><div className="sidebarHeader"><span className="headerText">Pretty Pictures</span></div></a>
+        <div className="sidebarElementArea">
+          <SidebarElement title="draw stuff"/>
+        </div>
+      </div>
+    );
+  }
 }
 
 
 class SidebarElement extends Component {
-    render() {
-        return (
-            <a href="#">
-                <div className="sidebarElement">
-                    <span><i>#</i> {this.props.title}</span>
-                </div>
-            </a>
-        );
-    }
+  render() {
+    return (
+      <a href="#">
+        <div className="sidebarElement">
+          <span><i>#</i> {this.props.title}</span>
+        </div>
+      </a>
+    );
+  }
 }
 
 

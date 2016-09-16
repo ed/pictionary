@@ -30,6 +30,21 @@ io.on('connection', function(socket){
         console.log('msg', msg)
         socket.broadcast.to(msg.threadID).emit('update', msg);
     });
+    socket.on('new stroke', function(stroke) {
+        socket.broadcast.to(stroke.threadID).emit('update canvas', stroke.canvas);
+    });
+
+  socket.on('undo stroke', function(position) {
+        socket.broadcast.emit('undo');
+    });
+
+  socket.on('clear all', function(position) {
+        socket.broadcast.emit('clear');
+    });
+    socket.on('redo stroke', function() {
+        socket.broadcast.emit('redo');
+    });
+
     socket.on('add user', function(username) {
         console.log(username + ' has connected');
     });

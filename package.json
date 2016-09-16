@@ -4,7 +4,7 @@
   "description": "draw in react",
   "scripts": {
     "build": "webpack --config ./webpack.prod.config.js --progress --colors",
-    "start": "node server.js",
+    "start": "./node_modules/.bin/nodemon server.js",
     "eslint": "./node_modules/.bin/eslint",
     "lint": "npm run eslint",
     "test": "./node_modules/.bin/mocha"

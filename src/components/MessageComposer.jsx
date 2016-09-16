@@ -53,8 +53,9 @@ class MessageComposer extends Component {
         if (e.keyCode === 13) {
             e.preventDefault();
             let text = this.state.text.trim();
-            if (text) {
-                MessageUtils.createMessage(text, this.props.user.username, this.props.threadID);
+          if (text) {
+            console.log(this.props.user.user)
+                MessageUtils.createMessage(text, this.props.user.user, this.props.threadID);
             }
             this.setState({text: ''});
         }

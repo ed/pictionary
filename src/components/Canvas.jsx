@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { ActionHistory, Mark } from 'utils/CanvasUtils';
 import { CompactPicker } from 'react-color';
 
+
+const socket = io.connect();
+
 export class Canvas extends Component {
 
   constructor(props) {
@@ -23,6 +26,21 @@ export class Canvas extends Component {
     this.ctx = this.canvas.getContext('2d');    
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
     this.actionHistory = new ActionHistory(this.clearCanvas);
+    socket.emit('subscribe', 1)
+    socket.on('update canvas', stroke => {
+      const s = Object.values(stroke).map(s => s)
+      s.shift()
+      this.curMark = new Mark(this.ctx, ...s);
+      this.curMark.reDraw.bind(this.curMark);
+      this.curMark.reDraw();
+      this.actionHistory.pushAction(this.curMark.reDraw.bind(this.curMark));
+    })
+    socket.on('undo', _ => { this.actionHistory.undoAction() })
+    socket.on('redo', _ => { this.actionHistory.redoAction() })
+    socket.on('clear', _ => { 
+      this.clearCanvas();
+      this.actionHistory.pushAction(() => this.clearCanvas())
+    });
   }
   
   componentWillMount() {
@@ -57,6 +75,11 @@ export class Canvas extends Component {
       this.drawStroke(e);
       this.setState({ drawing: false });
       this.actionHistory.pushAction(this.curMark.reDraw.bind(this.curMark));
+      const stroke = {
+        threadID: 1,
+        canvas: this.curMark
+      }
+      socket.emit('new stroke', stroke)
     }
   }
 
@@ -71,10 +94,12 @@ export class Canvas extends Component {
   clear() {
     this.clearCanvas();
     this.actionHistory.pushAction(() => this.clearCanvas());
+    socket.emit('clear all')
   }
 
   undo() {
     this.actionHistory.undoAction();
+    socket.emit('undo stroke')
   }
 
   save() {
@@ -84,6 +109,7 @@ export class Canvas extends Component {
 
   redo() {
     this.actionHistory.redoAction();
+    socket.emit('redo stroke')
   }
 
   setBrushColor(color) {
@@ -93,13 +119,14 @@ export class Canvas extends Component {
   }
 
   render() {
+    const canIDraw = this.props.user===this.props.drawer
     return (
       <div className="canvasContainer">
       <canvas 
-      onMouseDown={(e) => this.startStroke(e)}
-      onMouseMove={(e) => this.drawStroke(e)}
-      onMouseOut={(e) => this.endStroke(e)}
-      onMouseUp={(e) => this.endStroke(e)}
+      onMouseDown={canIDraw ? (e) => this.startStroke(e) : null}
+      onMouseMove={canIDraw ? (e) => this.drawStroke(e) : null}
+      onMouseOut={canIDraw ? (e) => this.endStroke(e) : null}
+      onMouseUp={canIDraw ? (e) => this.endStroke(e) : null}
       className="canvas"
       width={this.state.canvasWidth}
       height={this.state.canvasHeight}
@@ -112,9 +139,9 @@ export class Canvas extends Component {
         onColorChange={(color) => this.setBrushColor(color)}
         />
         <div className="canvasOptions">
-        <CanvasButton id="clear" iconName="square-o" onClick={() => this.clear()} />
-        <CanvasButton id='undo' iconName='undo' onClick={() => this.undo()} />
-        <CanvasButton id='redo' iconName='repeat' onClick={() => this.redo()} />
+          <CanvasButton id="clear" iconName="square-o" onClick={canIDraw ? () => this.clear() : null} />
+        <CanvasButton id='undo' iconName='undo' onClick={canIDraw ? () => this.undo() : null} />
+        <CanvasButton id='redo' iconName='repeat' onClick={canIDraw ? () => this.redo() : null} />
         </div>
       </div>
       )

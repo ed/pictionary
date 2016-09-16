@@ -8,7 +8,7 @@ export class ActionHistory {
 	undoAction() {
 		if( this.position > 0){
 			this.position--;
-			this.remakeCanvas();
+      this.remakeCanvas();
 		}
 	}
 
@@ -36,12 +36,12 @@ export class ActionHistory {
 }
 
 export class Mark {
-  constructor(ctx, color, size, startPosition) {
+  constructor(ctx, color, size, startPosition, points=[]) {
     this.ctx = ctx;
     this.color = color;
     this.size = size;
     this.startPosition = startPosition;
-    this.points = [];
+    this.points = points ? points : []
   }
 
   startStroke(){
