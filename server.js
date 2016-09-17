@@ -19,6 +19,8 @@ server.listen(port);
 console.log(`Listening at http://localhost:${port}`)
 
 let clients = []
+let words = ['white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps']
+global.gaming = false;
 
 app.use('/bin', publicPath)
 app.get('/', function (_, res) { res.sendFile(indexPath) })
@@ -47,6 +49,21 @@ io.on('connection', function(socket){
     socket.broadcast.emit('redo');
   });
 
+  socket.on('winner', function(guesser) {
+    socket.broadcast.emit('congrats', guesser)
+    socket.emit('start game')
+  })
+
+  socket.on('start game', function() {
+    if (global.gaming == false) {
+      global.gaming = true;
+      console.log('game is starting, users:', clients)
+      dmtLoop();
+      clearInterval(dmtLoop);
+      setInterval(dmtLoop, 60000);
+    }
+  });
+
   socket.on('add user', function(username) {
     console.log(username + ' has connected');
     clients.push({id: socket.id, user:username})
@@ -54,15 +71,29 @@ io.on('connection', function(socket){
   });
 });
 
-setInterval(() => {
+function dmtLoop() {
   try{
-    io.sockets.emit('drawer',
-      clients[Math.floor(Math.random()*clients.length)+0].user)
+    endGame();
+    const payload =
+      {
+        user: clients[Math.floor(Math.random()*clients.length)+0].user,
+        word: words[Math.floor(Math.random()*words.length)+0],
+      }
+    io.sockets.emit('artist', payload)
   }
   catch(e) {
     console.log(e)
   }
-},10000)
+}
+
+function endGame() {
+  if (clients.length == 0) {
+    clearInterval(dmtLogic);
+    io.sockets.emit('game over')
+    global.gaming = false;
+    console.log('game has ended', clients)
+  }
+}
 
   /*
    *   Run 'webpack --config webpack.dev.config' for dev mode

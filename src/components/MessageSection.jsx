@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import { findDOMNode } from 'react-dom';
 import MessageComposer from './MessageComposer';
 import Message from './Message';
-import WhiteBoard from './WhiteBoard'
 
 let socket = io.connect();
 
@@ -28,17 +27,13 @@ class MessageSection extends Component {
 
   render() {
     return (
-      <div className="social-area">
-        <SideBar/>
-        <WhiteBoard user={this.user.user} drawer={this.props.drawer}/>
         <div id="message-section">
           <div className="message-list" ref={(messageList) => this.messageList = messageList}>
             <div className="messageListHeader"></div> 
             {this.displayMessages()}
           </div>
-          <MessageComposer user={this.user} threadID={1}/>
+          <MessageComposer artist={this.props.artist} word={this.props.word} user={this.user} threadID={1}/>
         </div>
-      </div>
     );
   }
 
@@ -59,7 +54,6 @@ class MessageSection extends Component {
   }
 
   addMessage(msg) {
-    console.log(msg)
     let mv = this.state.messages.slice();
     mv.push(msg);
     this.setState({messages: mv});
@@ -82,31 +76,6 @@ class MessageSection extends Component {
 };
 
 
-export class SideBar extends Component {
-  render() {
-    return (
-      <div id="sidebar">
-        <a href='#'><div className="sidebarHeader"><span className="headerText">Pretty Pictures</span></div></a>
-        <div className="sidebarElementArea">
-          <SidebarElement title="draw stuff"/>
-        </div>
-      </div>
-    );
-  }
-}
-
-
-class SidebarElement extends Component {
-  render() {
-    return (
-      <a href="#">
-        <div className="sidebarElement">
-          <span><i>#</i> {this.props.title}</span>
-        </div>
-      </a>
-    );
-  }
-}
 
 
 export default MessageSection;

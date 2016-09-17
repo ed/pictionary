@@ -119,7 +119,7 @@ export class Canvas extends Component {
   }
 
   render() {
-    const canIDraw = this.props.user===this.props.drawer
+    const canIDraw = this.props.user===this.props.artist
     return (
       <div className="canvasContainer">
       <canvas 
