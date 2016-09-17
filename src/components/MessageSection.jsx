@@ -20,7 +20,6 @@ class MessageSection extends Component {
 
   componentDidMount() {
     this._scrollToBottom();
-    socket.emit('add user', this.user.user);
     socket.emit('subscribe', 1);
     socket.on('update', msg => 
       this.addMessage(msg)
@@ -60,10 +59,10 @@ class MessageSection extends Component {
   }
 
   addMessage(msg) {
+    console.log(msg)
     let mv = this.state.messages.slice();
     mv.push(msg);
     this.setState({messages: mv});
-
   }
 
   componentDidUpdate() {
