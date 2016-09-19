@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import 'css/style.css';
 import MessageSection from './MessageSection';
 import Sidebar from './Sidebar';
@@ -6,7 +6,7 @@ import WhiteBoard from './WhiteBoard';
 
 const socket = io.connect();
 
-export default class App extends React.Component {
+export default class App extends Component {
   constructor() {
     super()
     this.state = {
@@ -36,8 +36,8 @@ export default class App extends React.Component {
     return(
       <div className="social-area">
         <Sidebar />
-        <WhiteBoard user={this.props.person} artist={this.state.artist}/>
-        <MessageSection user={this.props.person} artist={this.state.artist} word={this.state.gaming ? this.state.word : ''}/>
+        <WhiteBoard user={this.props.person} artist={this.state.artist} socket={socket}/>
+        <MessageSection socket={socket} user={this.props.person} artist={this.state.artist} word={this.state.gaming ? this.state.word : ''}/>
       </div>
     )
   }

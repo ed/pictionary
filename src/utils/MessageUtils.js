@@ -1,6 +1,5 @@
 import uuid from 'node-uuid';
 
-var socket = io.connect();
 var moment = require('moment');
 moment().format();
 
@@ -14,7 +13,7 @@ module.exports = {
             timestamp: message.timestamp
         };
     },
-    createMessage: function(text, artist, author, currentThreadID, word) {
+    createMessage: function(text, artist, author, currentThreadID, word, socket) {
         var message = {
             id: 'm_'+uuid.v4(),
             threadID: currentThreadID,

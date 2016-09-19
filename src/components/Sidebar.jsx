@@ -18,7 +18,8 @@ export default class SideBar extends Component {
       <div id="sidebar">
         <a href='#'><div className="sidebarHeader"><span className="headerText">Pretty Pictures</span></div></a>
         <div className="sidebarElementArea">
-          <SidebarElement title="draw stuff" startGame={this.startGame}/>
+          <SidebarElement title="draw stuff"/>
+          <SidebarElement title="start game" onClick={this.startGame}/>
         </div>
       </div>
     );
@@ -30,10 +31,9 @@ class SidebarElement extends Component {
   render() {
     return (
       <a href="#">
-        <div className="sidebarElement">
+        <div className="sidebarElement" onClick={this.props.onClick}>
           <span><i>#</i> {this.props.title}</span>
           <br></br>
-          <span onClick={this.props.startGame}><i>#</i> {'start game'}</span>
         </div>
       </a>
     );

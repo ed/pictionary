@@ -3,8 +3,6 @@ import { findDOMNode } from 'react-dom';
 import MessageComposer from './MessageComposer';
 import Message from './Message';
 
-let socket = io.connect();
-
 class MessageSection extends Component { 
 
   constructor(props) {
@@ -19,8 +17,7 @@ class MessageSection extends Component {
 
   componentDidMount() {
     this._scrollToBottom();
-    socket.emit('subscribe', 1);
-    socket.on('update', msg => 
+    this.props.socket.on('update', msg => 
       this.addMessage(msg)
     );
   }
@@ -32,7 +29,7 @@ class MessageSection extends Component {
             <div className="messageListHeader"></div> 
             {this.displayMessages()}
           </div>
-          <MessageComposer artist={this.props.artist} word={this.props.word} user={this.user} threadID={1}/>
+          <MessageComposer socket={this.props.socket} artist={this.props.artist} word={this.props.word} user={this.user} threadID={1}/>
         </div>
     );
   }

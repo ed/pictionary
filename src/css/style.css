@@ -77,6 +77,11 @@ html, body {
             right:30px;
         }
 
+.timer {
+    position: absolute;
+    left:50%;
+    top:50px;
+}
 
 
 .brushOptions {
@@ -198,7 +203,7 @@ html, body {
     }
 
         .sidebarHeader {
-            padding-bottom: 15px;
+            margin-bottom: 20px;
             font-size: 130%;
             font-weight: 900;
             color:white;
@@ -219,7 +224,6 @@ html, body {
         }
 
         .sidebarElement {
-            margin-top: 20px;
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
             padding-bottom: 3px;

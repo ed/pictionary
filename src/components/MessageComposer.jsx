@@ -54,7 +54,7 @@ class MessageComposer extends Component {
             e.preventDefault();
             let text = this.state.text.trim();
           if (text) {
-                MessageUtils.createMessage(text, this.props.artist, this.props.user.user, this.props.threadID, this.props.word);
+                MessageUtils.createMessage(text, this.props.artist, this.props.user.user, this.props.threadID, this.props.word, this.props.socket);
             }
             this.setState({text: ''});
         }
