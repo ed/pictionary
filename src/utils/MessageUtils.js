@@ -7,25 +7,19 @@ module.exports = {
     unpackMessage: function(message, currentThreadID) {
         return {
             id: message.id,
-            threadID: message.threadID,
-            authorName: message.authorName,
+            author: message.authorName,
             text: message.text,
             timestamp: message.timestamp
         };
     },
-    createMessage: function(text, artist, author, currentThreadID, word, socket) {
+    createMessage: function(text, author, socket) {
         var message = {
             id: 'm_'+uuid.v4(),
-            threadID: currentThreadID,
-            authorName: author,
+            author,
             text: text,
             timestamp: moment(Date.now()).format("h:mm a")
         };
       // redis store here
       socket.emit('chat msg', message);
-      if (word === text && artist !== author) {
-        socket.emit('winner', author);
-      }
-
     }
 };

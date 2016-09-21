@@ -200,6 +200,11 @@ html, body {
         color:#DEDEDE;
         background:#2f2c2f;
         font-weight: 400;
+          -webkit-touch-callout: none; /* iOS Safari */
+         -webkit-user-select: none;   /* Chrome/Safari/Opera */
+         -moz-user-select: none;      /* Firefox */
+         -ms-user-select: none;       /* Internet Explorer/Edge */
+        user-select: none;
     }
 
         .sidebarHeader {
@@ -223,26 +228,45 @@ html, body {
             padding-right: 10px;
         }
 
+        .channelHeader {
+            padding-left: 15px;
+            font-weight: 900;
+            color:#DEDEDE;
+            padding-bottom: 6px;
+            opacity: .7;
+            font-size: 75%;
+        }
+
+            .channelHeader:hover {
+                opacity: 1;
+            }
+
         .sidebarElement {
-            border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
-            padding-bottom: 3px;
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+            padding-bottom: 4px;
+            padding-top: 2px;
             width:100%;
             opacity: .7;
-
         }
 
             .sidebarElement:hover {
                 background:#5C6380;
             }
 
+            .sidebarElement.active {
+                background: #D39B46;
+                opacity: 1;
+            }
+
         .sidebarElement>span>i {
-            color: darkgrey;
+            opacity: .4;
         }
 
         #sidebar .sidebarElement >span {
             padding-left: 15px;
             color:#DEDEDE;
+            user-select: none;
         }
 
 /* Pretty Scrollbar */

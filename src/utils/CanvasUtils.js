@@ -66,16 +66,16 @@ export class Mark {
     this.ctx.stroke();
   }
 
-  reDraw() {
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.points[0].pos.x, this.points[0].pos.y);
-    this.ctx.strokeStyle = this.color;
-    this.ctx.lineWidth = this.size;
+  reDraw(ctx=this.ctx) {
+    ctx.beginPath();
+    ctx.moveTo(this.points[0].pos.x, this.points[0].pos.y);
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = this.size;
     for (var j = 0; j < this.points.length; j++) {
-      this.ctx.strokeStyle = this.color;
-      this.ctx.lineWidth = this.size;
-      this.ctx.lineTo(this.points[j].pos.x, this.points[j].pos.y);
+      ctx.strokeStyle = this.color;
+      ctx.lineWidth = this.size;
+      ctx.lineTo(this.points[j].pos.x, this.points[j].pos.y);
     }
-    this.ctx.stroke();
+    ctx.stroke();
   }
 }

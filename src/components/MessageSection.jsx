@@ -10,9 +10,6 @@ class MessageSection extends Component {
     this.state = {
       messages: [] 
     };
-    this.user = {
-      user: this.props.user,
-    };
   }
 
   componentDidMount() {
@@ -29,7 +26,7 @@ class MessageSection extends Component {
             <div className="messageListHeader"></div> 
             {this.displayMessages()}
           </div>
-          <MessageComposer socket={this.props.socket} artist={this.props.artist} word={this.props.word} user={this.user} threadID={1}/>
+          <MessageComposer {...this.props}/>
         </div>
     );
   }

@@ -47,22 +47,15 @@ class MessageComposer extends Component {
     }
 
     _onKeyDown(e) {
-        if (!(event.ctrlKey || event.metaKey || event.altKey)) {
-            this.messageComposer.focus(); 
-        }
         if (e.keyCode === 13) {
             e.preventDefault();
             let text = this.state.text.trim();
           if (text) {
-                MessageUtils.createMessage(text, this.props.artist, this.props.user.user, this.props.threadID, this.props.word, this.props.socket);
+                MessageUtils.createMessage(text, this.props.user, this.props.socket);
             }
             this.setState({text: ''});
         }
     }
-};
-
-MessageComposer.propTypes =  {
-        threadID: React.PropTypes.number.isRequired,
 };
 
 export default MessageComposer;

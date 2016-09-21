@@ -51,15 +51,17 @@ export class Canvas extends Component {
       this.setState ({
         timeLeft: 60
       });
-      clearInterval(() => this.tickDown());
-      setInterval(() => this.tickDown(),1000);
+      this.timer = setInterval(() => this.tickDown(),1000);
     }
   }
 
   tickDown() {
     this.setState ({
-        timeLeft: this.state.timeLeft - 1
-      });
+      timeLeft: this.state.timeLeft - 1
+    });
+    if(this.state.timeLeft === 0) {
+      clearInterval(this.timer);
+    }
   }
   
   setCanvasSize(){
@@ -151,17 +153,19 @@ export class Canvas extends Component {
       ref={(canvas) => this.canvas = canvas}
       />
         {canIDraw ? <div className="timer"> Time left: {this.state.timeLeft} </div> : null}
-        <CanvasButton id='save' iconName='arrow-right' onClick={() => this.save()} />      
+        <CanvasButton id='save' iconName='play' onClick={() => this.props.socket.emit('start game')} />      
         <ColorCircle 
           radius={this.state.brushSize + 10} 
           color={this.state.brushColor} 
           onColorChange={(color) => this.setBrushColor(color)}
         />
-        <div className="canvasOptions">
-          <CanvasButton id="clear" iconName="square-o" onClick={canIDraw ? () => this.clear() : null} />
-        <CanvasButton id='undo' iconName='undo' onClick={canIDraw ? () => this.undo() : null} />
-        <CanvasButton id='redo' iconName='repeat' onClick={canIDraw ? () => this.redo() : null} />
+        {canIDraw ?
+        <div className="canvasOptions">        
+        <CanvasButton id="clear" iconName="square-o" onClick={() => this.clear()} />
+        <CanvasButton id='undo' iconName='undo' onClick={() => this.undo()} />
+        <CanvasButton id='redo' iconName='repeat' onClick={() => this.redo()} />
         </div>
+        : null }
       </div>
       )
   }
