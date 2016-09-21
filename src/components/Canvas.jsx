@@ -25,7 +25,7 @@ export class Canvas extends Component {
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
     this.actionHistory = new ActionHistory(this.clearCanvas);
     this.props.socket.on('update canvas', stroke => {
-      const s = Object.values(stroke).map(s => s)
+      const s = Object.keys(stroke).map(key => stroke[key]);
       s.shift()
       this.curMark = new Mark(this.ctx, ...s);
       this.curMark.reDraw.bind(this.curMark);
