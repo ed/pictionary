@@ -50,7 +50,7 @@ class MessageComposer extends Component {
         if (e.keyCode === 13) {
             e.preventDefault();
             let text = this.state.text.trim();
-          if (text) {
+            if (text) {
                 MessageUtils.createMessage(text, this.props.user, this.props.socket);
             }
             this.setState({text: ''});

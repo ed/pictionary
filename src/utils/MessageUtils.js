@@ -7,7 +7,7 @@ module.exports = {
     unpackMessage: function(message, currentThreadID) {
         return {
             id: message.id,
-            author: message.authorName,
+            author: message.author,
             text: message.text,
             timestamp: message.timestamp
         };

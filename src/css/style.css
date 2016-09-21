@@ -27,7 +27,7 @@ html, body {
 }
 
 
-.canvasContainer {
+.whiteboard {
     overflow: hidden;
     display:inline-block;
     width: calc(80% - 240px);
@@ -37,12 +37,22 @@ html, body {
     position:absolute;
 }
 
+    .canvasContainer {
+        width:100%;
+        height:100%;
+    }
+
     canvas {
         width:100%;
         height:100%;
     }
 
-    .canvasOptions {
+    .artistOptions {
+        width:100%;
+        height:100%;
+    }
+
+    .editOptions {
         border-top: 1px solid #DEDEDE;
         width:100%;
         height: 50px;
@@ -61,26 +71,35 @@ html, body {
             line-height: inherit;
             color: #2f2c2f;
             font-size: 30px;
-            transition: font-size 0.35s ease;
+            transition: font-size 0.5s ease;
             padding: 0 10px 0 10px;
             margin: 0 auto 0 auto;
         }
 
         .option:hover {
             color: #FF8669;
+            font-size: 50px;
         }
 
 
-        #save {
+        #startGame {
+            line-height: 60px;
+            color:#F79F66;
             position:absolute;
-            top:25px;
-            right:30px;
+            font-size: 200%;
+            top:50%;
+            right:50%;
+        }
+
+        #startGame:hover {
+            color:#F79F66;
         }
 
 .timer {
     position: absolute;
     left:50%;
     top:50px;
+    font-size: 250%;
 }
 
 
@@ -231,15 +250,31 @@ html, body {
         .channelHeader {
             padding-left: 15px;
             font-weight: 900;
-            color:#DEDEDE;
             padding-bottom: 6px;
-            opacity: .7;
-            font-size: 75%;
         }
 
-            .channelHeader:hover {
-                opacity: 1;
+            .channelHeaderText {
+                color:#DEDEDE;
+                opacity: .7;
+                display: inline-block;
+                width: 90%;
+                font-size: 78%;
             }
+
+                .channelHeaderText:hover {
+                    opacity: 1;
+                }
+
+            .addChannel {
+                font-size: 85%;
+                opacity: .4;
+                color:#DEDEDE;
+                display: inline-block;
+            }
+
+                .addChannel:hover {
+                    opacity: 1;
+                }
 
         .sidebarElement {
             border-top-right-radius: 3px;

@@ -42,6 +42,13 @@ export class Canvas extends Component {
   
   componentWillMount() {
     window.addEventListener('resize', () => this.setCanvasSize());
+    let canIDraw = this.props.user===this.props.artist;
+    if ( canIDraw ) {
+      this.setState ({
+        timeLeft: 60
+      });
+      this.timer = setInterval(() => this.tickDown(),1000);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -142,32 +149,46 @@ export class Canvas extends Component {
     const canIDraw = this.props.user===this.props.artist;
     return (
       <div className="canvasContainer">
-      <canvas 
-      onMouseDown={canIDraw ? (e) => this.startStroke(e) : (e) => e.preventDefault()}
-      onMouseMove={canIDraw ? (e) => this.drawStroke(e) : (e) => e.preventDefault()}
-      onMouseOut={canIDraw ? (e) => this.endStroke(e) : (e) => e.preventDefault()}
-      onMouseUp={canIDraw ? (e) => this.endStroke(e) : (e) => e.preventDefault()}
-      className="canvas"
-      width={this.state.canvasWidth}
-      height={this.state.canvasHeight}
-      ref={(canvas) => this.canvas = canvas}
-      />
-        {canIDraw ? <div className="timer"> Time left: {this.state.timeLeft} </div> : null}
-        <CanvasButton id='save' iconName='play' onClick={() => this.props.socket.emit('start game')} />      
-        <ColorCircle 
-          radius={this.state.brushSize + 10} 
-          color={this.state.brushColor} 
-          onColorChange={(color) => this.setBrushColor(color)}
+        <canvas 
+        onMouseDown={canIDraw ? (e) => this.startStroke(e) : (e) => e.preventDefault()}
+        onMouseMove={canIDraw ? (e) => this.drawStroke(e) : (e) => e.preventDefault()}
+        onMouseOut={canIDraw ? (e) => this.endStroke(e) : (e) => e.preventDefault()}
+        onMouseUp={canIDraw ? (e) => this.endStroke(e) : (e) => e.preventDefault()}
+        className="canvas"
+        width={this.state.canvasWidth}
+        height={this.state.canvasHeight}
+        ref={(canvas) => this.canvas = canvas}
         />
-        {canIDraw ?
-        <div className="canvasOptions">        
-        <CanvasButton id="clear" iconName="square-o" onClick={() => this.clear()} />
-        <CanvasButton id='undo' iconName='undo' onClick={() => this.undo()} />
-        <CanvasButton id='redo' iconName='repeat' onClick={() => this.redo()} />
-        </div>
+        <div className="timer"> {this.state.timeLeft} </div>  
+        {canIDraw ? <ArtistOptions 
+          color={this.state.brushColor} 
+          radius={this.state.brushSize} 
+          clear={() => this.clear()} 
+          redo={() => this.redo()} 
+          undo={() => this.undo()} 
+          setBrushColor={() => this.setBrushColor()}/> 
         : null }
       </div>
       )
+  }
+}
+
+class ArtistOptions extends Component {
+  render () {
+    return (
+      <div className="artistOptions">
+        <ColorCircle 
+          radius={this.props.radius + 10} 
+          color={this.props.color} 
+          onColorChange={(color) => this.props.setBrushColor(color)}
+        />
+        <div className="editOptions">        
+          <CanvasButton id="clear" iconName="square-o" onClick={() => this.props.clear()} />
+          <CanvasButton id='undo' iconName='undo' onClick={() => this.props.undo()} />
+          <CanvasButton id='redo' iconName='repeat' onClick={() => this.props.redo()} />
+        </div>
+      </div>
+    )
   }
 }
 

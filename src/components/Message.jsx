@@ -26,7 +26,7 @@ class MessageHeader extends Component {
     render() {
         return (
             <span>
-                <span className="authorName">{this.props.message.authorName}  </span> 
+                <span className="authorName">{this.props.message.author}  </span> 
                 <span className="messageTime">{this.props.message.timestamp}</span>
             </span>
         );
