@@ -1,3 +1,4 @@
+'use strict';
 const server = require('./server');
 
 var io = require('socket.io')(server);
@@ -99,7 +100,7 @@ class DMT {
 
 let dmtManager = new DMTManager();
 
-usersByRoom = (room) => {
+let usersByRoom = (room) => {
   let sockets = io.sockets.adapter.rooms[room].sockets;
   return Object.keys(sockets).map((socketId) => {
     var clientSocket = io.sockets.connected[socketId];
