@@ -23,6 +23,7 @@ export class ActionHistory {
 
 	pushAction(action) {
 		this.actionList = this.actionList.slice(0,this.position);
+    this.rawActions = this.rawActions.slice(0,this.position);
 		this.actionList.push(action.action);
     this.rawActions.push({
       action: action.command,

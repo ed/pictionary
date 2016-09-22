@@ -20,7 +20,7 @@ export class Canvas extends Component {
 
   componentDidMount() {
     this.ctx = this.canvas.getContext('2d');    
-    this.clearCanvas = () => this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
+    this.clearCanvas = () => this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.actionHistory = new ActionHistory(this.clearCanvas);
     this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData));
     let canIDraw = this.props.user === this.props.artist;
@@ -32,11 +32,12 @@ export class Canvas extends Component {
   }
 
   buildRemoteCanvas(canvasData) {
+    console.log(canvasData)
     this.clearCanvas();
     for (let i = 0; i < canvasData.length; i++) {
       if(canvasData[i].action == 'stroke') {
         let mark = new Mark(this.ctx,null,null,null,canvasData[i].data);
-        mark.action(this.canvas.offsetWidth, this.canvas.offsetHeight);
+        mark.action(this.state.canvasWidth, this.state.canvasHeight);
       }
       else {
         this.clearCanvas();
@@ -74,6 +75,7 @@ export class Canvas extends Component {
       this.remakeCanvasRemote();
     }
   }
+
   setCanvasSize(){
     if (this.canvas) {
       this.setState({
