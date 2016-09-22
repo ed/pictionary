@@ -153,6 +153,17 @@ html, body {
     }
 
 
+.spinner {
+    text-align: center;
+    width:100%;
+    height: 100%;
+}
+
+.spinner>i, .spinner>span {
+    position:relative;
+    top: calc(50% - 10px);
+}
+
 .social-area {
     height:100%;
     width:100%;

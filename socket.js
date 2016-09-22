@@ -57,6 +57,12 @@ class DMTManager {
       return emptyGame;
     }
   }
+
+  updateGame(room,stateChange) {
+    if (room in this.activeGames) {
+      this.activeGames[room].setState(stateChange);
+    } 
+  }  
 }
 
 class DMT {
@@ -124,6 +130,12 @@ class DMT {
     }
     return players;
   }
+
+  setState(newStates) {
+    for (let key in newStates) { 
+      this.gameState[key] = newStates[key]; 
+    }
+  }
 }
 
 let dmtManager = new DMTManager();
@@ -151,6 +163,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('client update canvas', (canvasData) => {
+    dmtManager.updateGame(socket.curRoom,{canvasData});
     socket.broadcast.to(socket.curRoom).emit('update canvas', canvasData);
   });
 

@@ -19,14 +19,16 @@ export class Canvas extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      canvasHeight: this.canvas.offsetHeight,
-      canvasWidth: this.canvas.offsetWidth
-    });
     this.ctx = this.canvas.getContext('2d');    
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
     this.actionHistory = new ActionHistory(this.clearCanvas);
     this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData));
+    let canIDraw = this.props.user === this.props.artist;
+    if (!canIDraw && this.props.canvasData) {
+      this.buildRemoteCanvas(this.props.canvasData);
+    }
+
+    this.setCanvasSize();
   }
 
   buildRemoteCanvas(canvasData) {
@@ -34,7 +36,7 @@ export class Canvas extends Component {
     for (let i = 0; i < canvasData.length; i++) {
       if(canvasData[i].action == 'stroke') {
         let mark = new Mark(this.ctx,null,null,null,canvasData[i].data);
-        mark.action(this.state.canvasWidth, this.state.canvasHeight);
+        mark.action(this.canvas.offsetWidth, this.canvas.offsetHeight);
       }
       else {
         this.clearCanvas();
@@ -63,18 +65,21 @@ export class Canvas extends Component {
     }
   }
 
+
+  remakeCanvas() {
+    if (this.canIDraw){
+      this.actionHistory.remakeCanvas(this.state.canvasWidth, this.state.canvasHeight);
+    }
+    else {
+      this.remakeCanvasRemote();
+    }
+  }
   setCanvasSize(){
     if (this.canvas) {
       this.setState({
         canvasHeight: this.canvas.offsetHeight,
         canvasWidth: this.canvas.offsetWidth
-      });
-      if (this.canIDraw){
-        this.actionHistory.remakeCanvas(this.state.canvasWidth, this.state.canvasHeight);
-      }
-      else {
-        this.remakeCanvasRemote();
-      }
+      }, () => this.remakeCanvas());
     }
     else {
       setTimeout(() => this.setCanvasSize, 1000);
