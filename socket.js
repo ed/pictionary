@@ -150,20 +150,8 @@ io.on('connection', (socket) => {
     io.sockets.in(socket.curRoom).emit('update chat', msg);
   });
 
-  socket.on('new stroke', (stroke) => {
-    socket.broadcast.to(socket.curRoom).emit('update canvas', stroke);
-  });
-
-  socket.on('undo stroke', (position) => {
-    socket.broadcast.to(socket.curRoom).emit('undo');
-  });
-
-  socket.on('clear all', (position) => {
-    socket.broadcast.to(socket.curRoom).emit('clear');
-  });
-
-  socket.on('redo stroke', () => {
-    socket.broadcast.to(socket.curRoom).emit('redo');
+  socket.on('client update canvas', (canvasData) => {
+    socket.broadcast.to(socket.curRoom).emit('update canvas', canvasData);
   });
 
   socket.on('start game', () => {

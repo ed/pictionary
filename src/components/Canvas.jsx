@@ -14,6 +14,8 @@ export class Canvas extends Component {
       brushColor: "#C45100", 
       brushSize: 8, 
     };
+    this.remakeCanvasRemote = () => null;
+    this.canIDraw = this.props.user === this.props.artist;
   }
 
   componentDidMount() {
@@ -24,20 +26,21 @@ export class Canvas extends Component {
     this.ctx = this.canvas.getContext('2d');    
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
     this.actionHistory = new ActionHistory(this.clearCanvas);
-    this.props.socket.on('update canvas', stroke => {
-      const s = Object.keys(stroke).map(key => stroke[key]);
-      s.shift()
-      this.curMark = new Mark(this.ctx, ...s);
-      this.curMark.reDraw.bind(this.curMark);
-      this.curMark.reDraw(this.state.canvasWidth,this.state.canvasHeight);
-      this.actionHistory.pushAction(this.curMark.reDraw.bind(this.curMark));
-    })
-    this.props.socket.on('undo', _ => { this.actionHistory.undoAction() })
-    this.props.socket.on('redo', _ => { this.actionHistory.redoAction() })
-    this.props.socket.on('clear', _ => { 
-      this.clearCanvas();
-      this.actionHistory.pushAction(() => this.clearCanvas())
-    });
+    this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData));
+  }
+
+  buildRemoteCanvas(canvasData) {
+    this.clearCanvas();
+    for (let i = 0; i < canvasData.length; i++) {
+      if(canvasData[i].action == 'stroke') {
+        let mark = new Mark(this.ctx,null,null,null,canvasData[i].data);
+        mark.action(this.state.canvasWidth, this.state.canvasHeight);
+      }
+      else {
+        this.clearCanvas();
+      }
+    }
+    this.remakeCanvasRemote = () => this.buildRemoteCanvas(canvasData);
   }
   
   componentWillMount() {
@@ -49,13 +52,13 @@ export class Canvas extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let canIDraw = this.props.user === this.props.artist;
-    let couldIDraw = nextProps.user === nextProps.artist;
+    this.canIDraw = nextProps.user === nextProps.artist;
+    let couldIDraw = this.props.user === this.props.artist;
     if (this.props.artist !== nextProps.artist) {
       this.clearCanvas();
       this.actionHistory.clearHistory();
     }
-    if (canIDraw && !couldIDraw) {
+    if (this.canIDraw && !couldIDraw) {
       alert(`your turn! your word is ${nextProps.word}`)
     }
   }
@@ -66,7 +69,12 @@ export class Canvas extends Component {
         canvasHeight: this.canvas.offsetHeight,
         canvasWidth: this.canvas.offsetWidth
       });
-      this.actionHistory.remakeCanvas(this.state.canvasWidth, this.state.canvasHeight);
+      if (this.canIDraw){
+        this.actionHistory.remakeCanvas(this.state.canvasWidth, this.state.canvasHeight);
+      }
+      else {
+        this.remakeCanvasRemote();
+      }
     }
     else {
       setTimeout(() => this.setCanvasSize, 1000);
@@ -96,7 +104,7 @@ export class Canvas extends Component {
       this.setState({ drawing: false });
       this.curMark.scalePoints(this.state.canvasWidth, this.state.canvasHeight);
       this.actionHistory.pushAction(this.curMark);
-      this.props.socket.emit('new stroke', this.curMark);
+      this.props.socket.emit('client update canvas', this.actionHistory.exportData());
     }
     e.preventDefault();
   }
@@ -112,12 +120,12 @@ export class Canvas extends Component {
   clear() {
     this.clearCanvas();
     this.actionHistory.pushAction(new ClearCanvas(() => this.clearCanvas()));
-    this.props.socket.emit('clear all');
+    this.props.socket.emit('client update canvas', this.actionHistory.exportData());
   }
 
   undo() {
     this.actionHistory.undoAction(this.state.canvasWidth, this.state.canvasHeight);
-    this.props.socket.emit('undo stroke');
+    this.props.socket.emit('client update canvas', this.actionHistory.exportData());
   }
 
   save() {
@@ -127,7 +135,7 @@ export class Canvas extends Component {
 
   redo() {
     this.actionHistory.redoAction(this.state.canvasWidth, this.state.canvasHeight);
-    this.props.socket.emit('redo stroke')
+    this.props.socket.emit('client update canvas', this.actionHistory.exportData());
   }
 
   setBrushColor(color) {
