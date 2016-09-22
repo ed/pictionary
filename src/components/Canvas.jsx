@@ -51,17 +51,26 @@ export class Canvas extends Component {
   componentWillReceiveProps(nextProps) {
     let canIDraw = this.props.user === this.props.artist;
     let couldIDraw = nextProps.user === nextProps.artist;
+    if (this.props.artist !== nextProps.artist) {
+      this.clearCanvas();
+      this.actionHistory.clearHistory();
+    }
     if (canIDraw && !couldIDraw) {
       alert(`your turn! your word is ${nextProps.word}`)
     }
   }
 
   setCanvasSize(){
-    this.setState({
-      canvasHeight: this.canvas.offsetHeight,
-      canvasWidth: this.canvas.offsetWidth
-    });
-    this.actionHistory.remakeCanvas();
+    if (this.canvas) {
+      this.setState({
+        canvasHeight: this.canvas.offsetHeight,
+        canvasWidth: this.canvas.offsetWidth
+      });
+      this.actionHistory.remakeCanvas(this.state.canvasWidth, this.state.canvasHeight);
+    }
+    else {
+      setTimeout(() => this.setCanvasSize, 1000);
+    }
   }
 
   
@@ -87,6 +96,8 @@ export class Canvas extends Component {
       this.setState({ drawing: false });
       this.actionHistory.pushAction(this.curMark.reDraw.bind(this.curMark));
       this.props.socket.emit('new stroke', this.curMark);
+      this.curMark.scalePoints(this.state.canvasWidth, this.state.canvasHeight);
+      console.log(this.curMark.points)
     }
     e.preventDefault();
   }
@@ -106,7 +117,7 @@ export class Canvas extends Component {
   }
 
   undo() {
-    this.actionHistory.undoAction();
+    this.actionHistory.undoAction(this.state.canvasWidth, this.state.canvasHeight);
     this.props.socket.emit('undo stroke');
   }
 
@@ -116,7 +127,7 @@ export class Canvas extends Component {
   }
 
   redo() {
-    this.actionHistory.redoAction();
+    this.actionHistory.redoAction(this.state.canvasWidth, this.state.canvasHeight);
     this.props.socket.emit('redo stroke')
   }
 

@@ -5,18 +5,18 @@ export class ActionHistory {
 		this.position = 0;
 	}
 
-	undoAction() {
+	undoAction(w,h) {
 		if( this.position > 0){
 			this.position--;
-      this.remakeCanvas();
+      this.remakeCanvas(w,h);
 		}
 	}
 
-  remakeCanvas() {
+  remakeCanvas(w,h) {
     this.clearCanvas();
     for (var i = 0; i < this.position; i++){
 				var action = this.actionList[i];
-				action();
+				action(w,h);
 			}
   }
 
@@ -26,13 +26,18 @@ export class ActionHistory {
 		this.position = this.actionList.length;
 	}
 
-	redoAction() {
+	redoAction(w,h) {
 		if( this.position < this.actionList.length ){
 			var action = this.actionList[this.position];
-			action();
+			action(w,h);
 			this.position++;
 		}
 	}
+
+  clearHistory() {
+    this.position = 0;
+    this.actionList = [];
+  }
 }
 
 export class Mark {
@@ -66,16 +71,24 @@ export class Mark {
     this.ctx.stroke();
   }
 
-  reDraw(ctx=this.ctx) {
-    ctx.beginPath();
-    ctx.moveTo(this.points[0].pos.x, this.points[0].pos.y);
-    ctx.strokeStyle = this.color;
-    ctx.lineWidth = this.size;
+  reDraw(width, height) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.points[0].pos.x*width, this.points[0].pos.y*height);
+    this.ctx.strokeStyle = this.color;
+    this.ctx.lineWidth = this.size;
     for (var j = 0; j < this.points.length; j++) {
-      ctx.strokeStyle = this.color;
-      ctx.lineWidth = this.size;
-      ctx.lineTo(this.points[j].pos.x, this.points[j].pos.y);
+      this.ctx.strokeStyle = this.color;
+      this.ctx.lineWidth = this.size;
+      this.ctx.lineTo(this.points[j].pos.x*width, this.points[j].pos.y*height);
     }
-    ctx.stroke();
+    this.ctx.stroke();
+  }
+
+  scalePoints(width, height) {
+    this.points = this.points.map((point) => {
+      point.pos.x /= width;
+      point.pos.y /= height;
+      return point;
+    });
   }
 }

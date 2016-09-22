@@ -174,7 +174,6 @@ io.on('connection', (socket) => {
 
   socket.on('add user', (username) => {
     socket.user = username;
-    socket.rooms = [mainRoom];
     socket.curRoom = mainRoom;
     socket.join(mainRoom);
     socket.emit('update game', dmtManager.getGame(mainRoom));
