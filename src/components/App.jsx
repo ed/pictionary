@@ -25,8 +25,8 @@ export default class App extends Component {
        artist: game.artist,
        players: game.players,
        word: game.word, 
+       timeLeft: game.timeLeft
       });
-      console.log(this.state);
     });
 
     socket.on('winner', (winner) => {
@@ -45,10 +45,6 @@ export default class App extends Component {
   }
 
   render() {
-    if (this.props.person===this.state.artist) {
-      alert(`${this.props.person} your word is ${this.state.word}`)
-    }
-    console.log('current artist: ' + this.state.artist)
     return(
       <div className="social-area">
         <Sidebar socket={socket}/>

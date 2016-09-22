@@ -42,35 +42,20 @@ export class Canvas extends Component {
   
   componentWillMount() {
     window.addEventListener('resize', () => this.setCanvasSize());
-    let canIDraw = this.props.user===this.props.artist;
-    if ( canIDraw ) {
-      this.setState ({
-        timeLeft: 60
-      });
-      this.timer = setInterval(() => this.tickDown(),1000);
-    }
+    let canIDraw = this.props.user === this.props.artist;
+    if (canIDraw) {
+      alert(`your word is ${this.props.word}`)
+    } 
   }
 
   componentWillReceiveProps(nextProps) {
-    let couldIDraw = this.props.user===this.props.artist;
-    let canIDraw = nextProps.user===nextProps.artist;
-    if ( canIDraw && !couldIDraw ) {
-      this.setState ({
-        timeLeft: 60
-      });
-      this.timer = setInterval(() => this.tickDown(),1000);
+    let canIDraw = this.props.user === this.props.artist;
+    let couldIDraw = nextProps.user === nextProps.artist;
+    if (canIDraw && !couldIDraw) {
+      alert(`your turn! your word is ${nextProps.word}`)
     }
   }
 
-  tickDown() {
-    this.setState ({
-      timeLeft: this.state.timeLeft - 1
-    });
-    if(this.state.timeLeft === 0) {
-      clearInterval(this.timer);
-    }
-  }
-  
   setCanvasSize(){
     this.setState({
       canvasHeight: this.canvas.offsetHeight,
@@ -105,7 +90,7 @@ export class Canvas extends Component {
         threadID: 1,
         canvas: this.curMark
       }
-      this.props.socket.emit('new stroke', stroke)
+      this.props.socket.emit('new stroke', stroke);
     }
     e.preventDefault();
   }
@@ -159,14 +144,15 @@ export class Canvas extends Component {
         height={this.state.canvasHeight}
         ref={(canvas) => this.canvas = canvas}
         />
-        <div className="timer"> {this.state.timeLeft} </div>  
+        <div className="timer"> {this.props.timeLeft} </div>
+        {canIDraw ? <div className="word"> <span>{this.props.word}</span> </div> : null}
         {canIDraw ? <ArtistOptions 
           color={this.state.brushColor} 
           radius={this.state.brushSize} 
           clear={() => this.clear()} 
           redo={() => this.redo()} 
           undo={() => this.undo()} 
-          setBrushColor={() => this.setBrushColor()}/> 
+          setBrushColor={(color) => this.setBrushColor(color)}/> 
         : null }
       </div>
       )

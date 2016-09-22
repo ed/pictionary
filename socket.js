@@ -4,13 +4,14 @@ const server = require('./server');
 var io = require('socket.io')(server);
 
 let mainRoom = 'draw stuff';
-let clients = [];
+let users = {};
 const words = ['white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps'];
 const emptyGame = {
   afoot: false,
   players: [],
   word : '',
-  artist: 'doesntmatter'
+  artist: 'doesntmatter',
+  timeLeft: -1
 };
 
 class DMTManager {
@@ -33,7 +34,7 @@ class DMTManager {
     console.log(`end game in room ${room}`)
     if (room in this.activeGames){
       io.sockets.in(room).emit('update game', emptyGame);
-      clearTimeout(this.activeGames[room].turnTimer);
+      clearInterval(this.activeGames[room].turnTimer);
       delete this.activeGames[room];
     }
   } 
@@ -47,6 +48,15 @@ class DMTManager {
       }
     }
   }
+
+  getGame(room) {
+    if (room in this.activeGames) {
+      return this.activeGames[room].gameState;
+    }
+    else {
+      return emptyGame;
+    }
+  }
 }
 
 class DMT {
@@ -56,6 +66,7 @@ class DMT {
     this.endGame = endGame;
     this.curArtist = 'NONE';
     this.curWord = 'NONE';
+    this.secondsPerTurn = 30;
   }
 
   start() {
@@ -79,18 +90,27 @@ class DMT {
   startTurn(artistInd) {
     this.curArtist = artistInd;
     this.curWord = words[Math.floor(Math.random()*words.length)+0];
-    let game = {
+    this.gameState = {
       afoot: true,
       players: this.players,
       word: this.curWord,
-      artist: this.currentArtist()
+      artist: this.currentArtist(),
+      timeLeft: this.secondsPerTurn
     };
-    io.sockets.in(this.room).emit('update game', game);
-    this.turnTimer = setTimeout(() => this.endTurn(), 65000);
+    io.sockets.in(this.room).emit('update game', this.gameState);
+    this.turnTime = 0;
+    this.turnTimer = setInterval(() => this.tickTurn(), 1000);
   }
 
-  timeLeft() {
-    return Math.ceil((this.turnTimer._idleStart + this.turnTimer._idleTimeout - Date.now()) / 1000);
+  tickTurn() {
+    this.turnTime++;
+    if (this.turnTime < this.secondsPerTurn) {
+      this.gameState['timeLeft']--;
+      io.sockets.in(this.room).emit('update game', this.gameState);
+    }
+    else {
+      this.endTurn();
+    }
   }
 
   currentArtist() {
@@ -119,23 +139,23 @@ io.on('connection', (socket) => {
   socket.on('chat msg', (msg) => {
     console.log(`${socket.user} sent ${msg.text} to thread: ${socket.curRoom}`);
     dmtManager.testWinner(socket.curRoom,msg);
-    io.sockets.in(socket.curRoom).emit('update', msg);
+    io.sockets.in(socket.curRoom).emit('update chat', msg);
   });
 
   socket.on('new stroke', (stroke) => {
-    socket.broadcast.emit('update canvas', stroke.canvas);
+    socket.broadcast.to(socket.curRoom).emit('update canvas', stroke.canvas);
   });
 
   socket.on('undo stroke', (position) => {
-    socket.broadcast.emit('undo');
+    socket.broadcast.to(socket.curRoom).emit('undo');
   });
 
   socket.on('clear all', (position) => {
-    socket.broadcast.emit('clear');
+    socket.broadcast.to(socket.curRoom).emit('clear');
   });
 
   socket.on('redo stroke', () => {
-    socket.broadcast.emit('redo');
+    socket.broadcast.to(socket.curRoom).emit('redo');
   });
 
   socket.on('start game', () => {
@@ -149,11 +169,11 @@ io.on('connection', (socket) => {
     socket.rooms = [mainRoom];
     socket.curRoom = mainRoom;
     socket.join(mainRoom);
-    socket.broadcast.to(socket.id).emit('room change', socket.rooms);
-    clients.push({
-      id: socket.room, 
-      user:username,
-    });
+    socket.emit('update game', dmtManager.getGame(mainRoom));
+    users[username] = {
+      socket: socket,
+      room: mainRoom
+    };
   });
 });
 

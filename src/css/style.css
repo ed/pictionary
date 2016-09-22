@@ -40,6 +40,7 @@ html, body {
     .canvasContainer {
         width:100%;
         height:100%;
+        text-align: center;
     }
 
     canvas {
@@ -78,30 +79,50 @@ html, body {
 
         .option:hover {
             color: #FF8669;
-            font-size: 50px;
         }
-
 
         #startGame {
             line-height: 60px;
             color:#F79F66;
             position:absolute;
             font-size: 200%;
-            top:50%;
+            top:40%;
             right:50%;
+            opacity: .5;
         }
 
         #startGame:hover {
-            color:#F79F66;
+            opacity: 1;
         }
 
 .timer {
+    -webkit-user-select: none;
+    display:flex;
+    margin: 0 auto 0 auto;
     position: absolute;
+    width:20%;
     left:50%;
     top:50px;
     font-size: 250%;
+    pointer-events: none;
 }
 
+.word {
+    pointer-events: none;
+    display: inline-block;
+    -webkit-user-select: none;
+    margin: 0 auto 0 auto;
+    position: absolute; 
+    left: 50%;
+    bottom:50px;
+    font-size: 250%;
+}
+
+.word>span {
+    pointer-events: none;
+    position: relative; 
+    left: -50%;
+}
 
 .brushOptions {
     position: absolute;

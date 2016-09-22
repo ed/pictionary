@@ -14,7 +14,7 @@ class MessageSection extends Component {
 
   componentDidMount() {
     this._scrollToBottom();
-    this.props.socket.on('update', msg => 
+    this.props.socket.on('update chat', msg => 
       this.addMessage(msg)
     );
   }
