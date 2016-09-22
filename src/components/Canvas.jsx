@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActionHistory, Mark } from 'utils/CanvasUtils';
+import { ActionHistory, Mark, ClearCanvas } from 'utils/CanvasUtils';
 import { CompactPicker } from 'react-color';
 
 
@@ -95,7 +95,7 @@ export class Canvas extends Component {
       this.drawStroke(e);
       this.setState({ drawing: false });
       this.curMark.scalePoints(this.state.canvasWidth, this.state.canvasHeight);
-      this.actionHistory.pushAction(this.curMark.reDraw.bind(this.curMark));
+      this.actionHistory.pushAction(this.curMark);
       this.props.socket.emit('new stroke', this.curMark);
     }
     e.preventDefault();
@@ -111,7 +111,7 @@ export class Canvas extends Component {
 
   clear() {
     this.clearCanvas();
-    this.actionHistory.pushAction(() => this.clearCanvas());
+    this.actionHistory.pushAction(new ClearCanvas(() => this.clearCanvas()));
     this.props.socket.emit('clear all');
   }
 
