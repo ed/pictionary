@@ -62,33 +62,31 @@ class DMTManager {
 class DMT {
   constructor(players, room, endGame) {
     this.room = room;
-    this.players = players;
+    this.players = this.shufflePlayers(players);
     this.endGame = endGame;
-    this.curArtist = 'NONE';
+    this.curArtist = 0;
     this.curWord = 'NONE';
     this.secondsPerTurn = 30;
   }
 
   start() {
-    this.firstArtist = Math.floor(Math.random()*this.players.length);
-    this.startTurn(this.firstArtist);
+    this.startTurn();
   }
 
   endTurn(winner) {
     clearTimeout(this.turnTimer);
     io.sockets.in(this.room).emit('winner', winner);
-    let numArtists = this.players.length;
-    let artist = (this.curArtist + 1)%numArtists;
-    if (artist === this.firstArtist) {
+
+    this.curArtist++;
+    if (this.curArtist >= this.players.length) {
       this.endGame();
     }
     else {
-      this.startTurn(artist);
+      this.startTurn();
     }  
   }
 
-  startTurn(artistInd) {
-    this.curArtist = artistInd;
+  startTurn() {
     this.curWord = words[Math.floor(Math.random()*words.length)+0];
     this.gameState = {
       afoot: true,
@@ -115,6 +113,16 @@ class DMT {
 
   currentArtist() {
     return this.players[this.curArtist];
+  }
+
+  shufflePlayers(players) {
+    for (var i = players.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = players[i];
+        players[i] = players[j];
+        players[j] = temp;
+    }
+    return players;
   }
 }
 
@@ -143,7 +151,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('new stroke', (stroke) => {
-    socket.broadcast.to(socket.curRoom).emit('update canvas', stroke.canvas);
+    socket.broadcast.to(socket.curRoom).emit('update canvas', stroke);
   });
 
   socket.on('undo stroke', (position) => {

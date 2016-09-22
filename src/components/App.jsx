@@ -19,7 +19,6 @@ export default class App extends Component {
 
   componentDidMount() {
     socket.on('update game', (game) => {
-      console.log(`game status updated to ${game}`);
       this.setState({
        gameInProgress: game.afoot,
        artist: game.artist,

@@ -86,11 +86,7 @@ export class Canvas extends Component {
       this.drawStroke(e);
       this.setState({ drawing: false });
       this.actionHistory.pushAction(this.curMark.reDraw.bind(this.curMark));
-      const stroke = {
-        threadID: 1,
-        canvas: this.curMark
-      }
-      this.props.socket.emit('new stroke', stroke);
+      this.props.socket.emit('new stroke', this.curMark);
     }
     e.preventDefault();
   }
@@ -106,12 +102,12 @@ export class Canvas extends Component {
   clear() {
     this.clearCanvas();
     this.actionHistory.pushAction(() => this.clearCanvas());
-    this.props.socket.emit('clear all')
+    this.props.socket.emit('clear all');
   }
 
   undo() {
     this.actionHistory.undoAction();
-    this.props.socket.emit('undo stroke')
+    this.props.socket.emit('undo stroke');
   }
 
   save() {
@@ -131,7 +127,8 @@ export class Canvas extends Component {
   }
 
   render() {
-    const canIDraw = this.props.user===this.props.artist;
+    const isSpectating = (this.props.players.indexOf(this.props.user) <= -1);
+    const canIDraw = (this.props.user === this.props.artist);
     return (
       <div className="canvasContainer">
         <canvas 
@@ -144,6 +141,7 @@ export class Canvas extends Component {
         height={this.state.canvasHeight}
         ref={(canvas) => this.canvas = canvas}
         />
+        {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
         <div className="timer"> {this.props.timeLeft} </div>
         {canIDraw ? <div className="word"> <span>{this.props.word}</span> </div> : null}
         {canIDraw ? <ArtistOptions 

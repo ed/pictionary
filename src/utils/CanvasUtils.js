@@ -41,7 +41,7 @@ export class Mark {
     this.color = color;
     this.size = size;
     this.startPosition = startPosition;
-    this.points = points ? points : []
+    this.points = points
   }
 
   startStroke(){

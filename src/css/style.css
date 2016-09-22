@@ -28,6 +28,7 @@ html, body {
 
 
 .whiteboard {
+    -webkit-user-select: none;
     overflow: hidden;
     display:inline-block;
     width: calc(80% - 240px);
@@ -96,7 +97,6 @@ html, body {
         }
 
 .timer {
-    -webkit-user-select: none;
     display:flex;
     margin: 0 auto 0 auto;
     position: absolute;
@@ -110,7 +110,6 @@ html, body {
 .word {
     pointer-events: none;
     display: inline-block;
-    -webkit-user-select: none;
     margin: 0 auto 0 auto;
     position: absolute; 
     left: 50%;
@@ -122,6 +121,16 @@ html, body {
     pointer-events: none;
     position: relative; 
     left: -50%;
+}
+
+.spectatorMessage {
+    display:flex;
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    width: 400px;
 }
 
 .brushOptions {
