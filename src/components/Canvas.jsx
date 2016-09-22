@@ -29,7 +29,7 @@ export class Canvas extends Component {
       s.shift()
       this.curMark = new Mark(this.ctx, ...s);
       this.curMark.reDraw.bind(this.curMark);
-      this.curMark.reDraw();
+      this.curMark.reDraw(this.state.canvasWidth,this.state.canvasHeight);
       this.actionHistory.pushAction(this.curMark.reDraw.bind(this.curMark));
     })
     this.props.socket.on('undo', _ => { this.actionHistory.undoAction() })
@@ -94,10 +94,9 @@ export class Canvas extends Component {
     if (this.state.drawing) {
       this.drawStroke(e);
       this.setState({ drawing: false });
+      this.curMark.scalePoints(this.state.canvasWidth, this.state.canvasHeight);
       this.actionHistory.pushAction(this.curMark.reDraw.bind(this.curMark));
       this.props.socket.emit('new stroke', this.curMark);
-      this.curMark.scalePoints(this.state.canvasWidth, this.state.canvasHeight);
-      console.log(this.curMark.points)
     }
     e.preventDefault();
   }
