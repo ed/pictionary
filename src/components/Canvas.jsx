@@ -32,7 +32,6 @@ export class Canvas extends Component {
   }
 
   buildRemoteCanvas(canvasData) {
-    console.log(canvasData)
     this.clearCanvas();
     for (let i = 0; i < canvasData.length; i++) {
       if(canvasData[i].action == 'stroke') {

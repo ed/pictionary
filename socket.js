@@ -81,7 +81,7 @@ class DMT {
 
   endTurn(winner) {
     clearTimeout(this.turnTimer);
-    io.sockets.in(this.room).emit('winner', winner);
+    io.sockets.in(this.room).emit('round over', winner);
 
     this.curArtist++;
     if (this.curArtist >= this.players.length) {
@@ -102,13 +102,11 @@ class DMT {
       timeLeft: this.secondsPerTurn
     };
     io.sockets.in(this.room).emit('update game', this.gameState);
-    this.turnTime = 0;
     this.turnTimer = setInterval(() => this.tickTurn(), 1000);
   }
 
   tickTurn() {
-    this.turnTime++;
-    if (this.turnTime < this.secondsPerTurn) {
+    if (this.gameState['timeLeft'] > 0) {
       this.gameState['timeLeft']--;
       io.sockets.in(this.room).emit('update game', this.gameState);
     }
@@ -168,7 +166,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('start game', () => {
-    console.log(socket.curRoom);
+    console.log(`game started in room ${socket.curRoom}`);
     let players = usersByRoom(socket.curRoom);
     dmtManager.newGame(socket.curRoom,players);
   });

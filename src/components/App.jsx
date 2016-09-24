@@ -29,9 +29,10 @@ export default class App extends Component {
        timeLeft: game.timeLeft,
        canvasData: game.canvasData
       });
+      console.log(this.state)
     });
 
-    socket.on('winner', (winner) => {
+    socket.on('round over', (winner) => {
       if (winner == null) {
         alert(`no one guessed the word :(((`);
       }
@@ -47,6 +48,7 @@ export default class App extends Component {
   }
 
   render() {
+    console.log(this.state.gameInProgress)
     return(
       <div className="social-area">
       {this.state.roomDataReceived ?
