@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import MessageUtils from 'utils/MessageUtils';
+import { connect } from 'react-redux';
 
 class MessageComposer extends Component {
 
@@ -10,11 +11,19 @@ class MessageComposer extends Component {
         let isPlaying = (this.props.players.indexOf(this.props.user) > -1);
         let isArtist = (this.props.artist === this.props.user);
         let canChat = noGameGoing || (isPlaying && !isArtist);
+        let placeholder = '';
+        if (noGameGoing) {
+            placeholder = 'Message room';
+        }
+        else if (canChat) {
+            placeholder = 'Guess the word';
+        }
         this.state = {
             text: '', 
             typing: false,
             focused: false,
-            canChat
+            canChat,
+            placeholder
         };
         this._onChange = this._onChange.bind(this);
         this._onKeyDown = this._onKeyDown.bind(this);
@@ -25,7 +34,14 @@ class MessageComposer extends Component {
         let isPlaying = (nextProps.players.indexOf(nextProps.user) > -1);
         let isArtist = (nextProps.artist === nextProps.user);
         let canChat = noGameGoing || (isPlaying && !isArtist);
-        this.setState({canChat});
+        let placeholder = '';
+        if (noGameGoing) {
+            placeholder = 'Message room';
+        }
+        else if (canChat) {
+            placeholder = 'Guess the word';
+        }
+        this.setState({canChat, placeholder});
     }
 
     render() {
@@ -34,6 +50,7 @@ class MessageComposer extends Component {
             borderColor = '#bdbdbd';
         }
         return (
+
             <div id="msg-send">
                 <textarea
                 style={{border: `2px solid ${borderColor}`, background: `${this.state.canChat ? 'inherit' : '#ffe9c1'}`}}
@@ -45,6 +62,7 @@ class MessageComposer extends Component {
                 onBlur={() => this.setState({focused: false})}
                 onChange={this._onChange}
                 onKeyDown={this._onKeyDown}
+                placeholder={this.state.placeholder}
                 />
             </div>
         );
@@ -74,4 +92,13 @@ class MessageComposer extends Component {
     }
 };
 
-export default MessageComposer;
+const mapStateToProps = (state) => {
+    return { 
+        socket: state.socket,
+        ...state.game
+    }
+};
+
+export default connect(
+    mapStateToProps,
+)(MessageComposer)

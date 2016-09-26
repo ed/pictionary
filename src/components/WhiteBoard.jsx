@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import { Canvas, SizeOptions, ColorOptions, CanvasButton } from './Canvas'
+import Canvas, { CanvasButton } from './Canvas'
+import { connect } from 'react-redux';
 
 export class WhiteBoard extends Component {
   constructor(props){
@@ -20,4 +21,13 @@ export class WhiteBoard extends Component {
   }
 }
 
-export default WhiteBoard;
+const mapStateToProps = (state) => {
+    return { 
+        gameInProgress: state.game.gameInProgress,
+        socket: state.socket
+    }
+};
+
+export default connect(
+    mapStateToProps,
+)(WhiteBoard)

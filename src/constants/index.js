@@ -1,0 +1,6 @@
+export const CHANGE_FORM = 'CHANGE_FORM'
+export const CHANGE_AUTH = 'CHANGE_AUTH'
+export const SENDING_REQUEST = 'SENDING_REQUEST'
+export const RESET_ERROR_MESSAGE = 'RESET_ERROR_MESSAGE'
+export const UPDATE_GAME = 'UPDATE_GAME'
+export const SET_SOCKET = 'SET_SOCKET'

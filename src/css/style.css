@@ -26,6 +26,16 @@ html, body {
     padding: 0;
 }
 
+#loginPopout {
+    background:#000;
+    opacity:0.5;
+    position:fixed; /* important to use fixed, not absolute */
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:9999;
+}
 
 .whiteboard {
     -webkit-user-select: none;

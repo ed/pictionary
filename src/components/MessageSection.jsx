@@ -26,7 +26,7 @@ class MessageSection extends Component {
             <div className="messageListHeader"></div> 
             {this.displayMessages()}
           </div>
-          <MessageComposer {...this.props}/>
+          <MessageComposer user={this.props.user}/>
         </div>
     );
   }

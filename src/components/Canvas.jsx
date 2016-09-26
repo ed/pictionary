@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { ActionHistory, Mark, ClearCanvas } from 'utils/CanvasUtils';
 import { CompactPicker } from 'react-color';
+import { connect } from 'react-redux';
 
 
-export class Canvas extends Component {
+class Canvas extends Component {
 
   constructor(props) {
     super(props);
@@ -271,5 +272,16 @@ export class ColorCircle extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+    return { 
+        ...state.game,
+        socket: state.socket,
+    }
+};
+
+export default connect(
+    mapStateToProps,
+)(Canvas)
 
 

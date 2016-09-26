@@ -5,9 +5,10 @@ var io = require('socket.io')(server);
 
 let mainRoom = 'draw stuff';
 let users = {};
+let rooms = [mainRoom, 'room two'];
 const words = ['white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps'];
 const emptyGame = {
-  afoot: false,
+  gameInProgress: false,
   players: [],
   word : '',
   artist: 'doesntmatter',
@@ -95,7 +96,7 @@ class DMT {
   startTurn() {
     this.curWord = words[Math.floor(Math.random()*words.length)+0];
     this.gameState = {
-      afoot: true,
+      gameInProgress: true,
       players: this.players,
       word: this.curWord,
       artist: this.currentArtist(),
@@ -175,11 +176,12 @@ io.on('connection', (socket) => {
     socket.user = username;
     socket.curRoom = mainRoom;
     socket.join(mainRoom);
-    socket.emit('update game', dmtManager.getGame(mainRoom));
+    let game = dmtManager.getGame(mainRoom);
     users[username] = {
       socket: socket,
       room: mainRoom
     };
+    socket.emit('update game', game);
   });
 });
 

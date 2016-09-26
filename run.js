@@ -14,7 +14,12 @@ if (process.env.NODE_ENV !== 'production') {
     hot: true,
     colors: true,
     inline: true,
-    proxy: {'/socket.io': {
+    proxy: {
+      '/socket.io': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
+      '/register': {
         target: 'http://localhost:3000',
         secure: false
       }
