@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import { Router, Route, IndexRoute, Link, IndexLink, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
-import { updateGame, setSocket} from '../actions'
-
-import 'css/style.css';
+import { updateGame, setSocket, setUserInfo } from '../actions'
 import MessageSection from './MessageSection';
 import Sidebar from './Sidebar';
 import WhiteBoard from './WhiteBoard';
@@ -19,10 +17,12 @@ class GameView extends Component {
       loggingIn: false,
     }
     this.props.dispatch(setSocket(socket))
+    this.props.dispatch(setUserInfo(this.props.route.person))
   }
 
   componentDidMount() {
     socket.on('update game', (game) => {
+      console.log(game)
       this.props.dispatch(updateGame(game))
       this.setState({
        roomDataReceived:true,
@@ -47,13 +47,12 @@ class GameView extends Component {
   render() {
     console.log(this.props.data)
     return(
-      <div className="social-area">
+      <div className="container">
       {this.state.loggingIn ? <Login /> : null}
       {this.state.roomDataReceived ?
-        <div className="social-area">
-        <Sidebar />
-        <WhiteBoard user={this.props.route.person} />
-        <MessageSection user={this.props.route.person} socket={socket}/>
+        <div className="container">
+          <WhiteBoard />
+          <MessageSection socket={socket}/>
         </div>
       : 
       <div className="spinner">

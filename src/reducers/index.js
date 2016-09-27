@@ -58,7 +58,17 @@ function socket(state=null, action) {
     }
 }
 
+function user(state=null, action) {
+    switch (action.type) {
+        case types.SET_USER_INFO:
+            return action.username
+        default:
+            return state;
+    }
+}
+
 const root = combineReducers({
+    user,
     socket,
     error,
     auth,

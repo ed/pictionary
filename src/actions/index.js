@@ -48,6 +48,13 @@ export const setSocket = (socket) => {
     }
 }
 
+export const setUserInfo = (username) => {
+    return {
+        type: types.SET_USER_INFO,
+        username: username
+    }
+}
+
 export const emptyFields = (a) => {
     return Object.keys(a).map(k => a[k] !== '').includes(false)
 }

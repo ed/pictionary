@@ -12,7 +12,7 @@ export class WhiteBoard extends Component {
     return (
       <div className="whiteboard">
         { this.props.gameInProgress ? 
-          <Canvas ref={(canvas) => this.canvas = canvas} {...this.props} /> 
+          <Canvas ref={(canvas) => this.canvas = canvas} /> 
           : 
           <CanvasButton id='startGame' iconName='play' onClick={() => this.props.socket.emit('start game')} />  
         }

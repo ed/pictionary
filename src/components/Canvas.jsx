@@ -276,6 +276,7 @@ export class ColorCircle extends Component {
 const mapStateToProps = (state) => {
     return { 
         ...state.game,
+        user: state.user,
         socket: state.socket,
     }
 };

@@ -7,41 +7,13 @@ class MessageComposer extends Component {
 
     constructor(props) {
         super(props);
-        let noGameGoing = !this.props.gameInProgress;
-        let isPlaying = (this.props.players.indexOf(this.props.user) > -1);
-        let isArtist = (this.props.artist === this.props.user);
-        let canChat = noGameGoing || (isPlaying && !isArtist);
-        let placeholder = '';
-        if (noGameGoing) {
-            placeholder = 'Message room';
-        }
-        else if (canChat) {
-            placeholder = 'Guess the word';
-        }
         this.state = {
             text: '', 
             typing: false,
             focused: false,
-            canChat,
-            placeholder
         };
         this._onChange = this._onChange.bind(this);
         this._onKeyDown = this._onKeyDown.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        let noGameGoing = !nextProps.gameInProgress;
-        let isPlaying = (nextProps.players.indexOf(nextProps.user) > -1);
-        let isArtist = (nextProps.artist === nextProps.user);
-        let canChat = noGameGoing || (isPlaying && !isArtist);
-        let placeholder = '';
-        if (noGameGoing) {
-            placeholder = 'Message room';
-        }
-        else if (canChat) {
-            placeholder = 'Guess the word';
-        }
-        this.setState({canChat, placeholder});
     }
 
     render() {
@@ -50,10 +22,9 @@ class MessageComposer extends Component {
             borderColor = '#bdbdbd';
         }
         return (
-
             <div id="msg-send">
                 <textarea
-                style={{border: `2px solid ${borderColor}`, background: `${this.state.canChat ? 'inherit' : '#ffe9c1'}`}}
+                style={{border: `2px solid ${borderColor}`, background: `${this.props.canChat ? 'inherit' : '#ffe9c1'}`}}
                 className="message-composer"
                 ref={(messageComposer) => this.messageComposer = messageComposer}
                 name="message"
@@ -62,7 +33,7 @@ class MessageComposer extends Component {
                 onBlur={() => this.setState({focused: false})}
                 onChange={this._onChange}
                 onKeyDown={this._onKeyDown}
-                placeholder={this.state.placeholder}
+                placeholder={this.props.placeholder}
                 />
             </div>
         );
@@ -84,7 +55,7 @@ class MessageComposer extends Component {
         if (e.keyCode === 13) {
             e.preventDefault();
             let text = this.state.text.trim();
-            if (text && this.state.canChat) {
+            if (text && this.props.canChat) {
                 MessageUtils.createMessage(text, this.props.user, this.props.socket);
                 this.setState({text: ''});
             }         
@@ -93,9 +64,22 @@ class MessageComposer extends Component {
 };
 
 const mapStateToProps = (state) => {
-    return { 
+    let noGameGoing = !state.game.gameInProgress;
+    let isPlaying = (state.game.players.indexOf(state.user) > -1);
+    let isArtist = (state.game.artist === state.user);
+    let canChat = noGameGoing || (isPlaying && !isArtist);
+    let placeholder = '';
+    if (noGameGoing) {
+        placeholder = 'Message room';
+    }
+    else if (canChat) {
+        placeholder = 'Guess the word';
+    }
+    return {
+        user: state.user,
         socket: state.socket,
-        ...state.game
+        canChat,
+        placeholder
     }
 };
 

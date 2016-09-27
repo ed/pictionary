@@ -26,7 +26,7 @@ class MessageSection extends Component {
             <div className="messageListHeader"></div> 
             {this.displayMessages()}
           </div>
-          <MessageComposer user={this.props.user}/>
+          <MessageComposer />
         </div>
     );
   }
@@ -68,8 +68,6 @@ class MessageSection extends Component {
   }
 
 };
-
-
 
 
 export default MessageSection;

@@ -149,8 +149,8 @@ let usersByRoom = (room) => {
 
 io.on('connection', (socket) => { 
 
-  socket.on('subscribe', (id) => {
-    console.log('created room: ', id);
+  socket.on('join room', (id) => {
+    console.log(socket.username + ' joined room: ' + id);
     socket.join(id);
     socket.curRoom = id;
   });

@@ -174,7 +174,7 @@ html, body {
     top: calc(50% - 10px);
 }
 
-.social-area {
+.container {
     height:100%;
     width:100%;
 }
