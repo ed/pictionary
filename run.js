@@ -1,4 +1,6 @@
-const server = require('./server');
+const server = require('./src/backend/server');
+require('./src/backend/roomManager');
+
 
 const port = (process.env.PORT || 3000);
 

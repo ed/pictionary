@@ -1,11 +1,6 @@
 'use strict';
-const server = require('./server');
+var io = require('./socket');
 
-var io = require('socket.io')(server);
-
-let mainRoom = 'draw stuff';
-let users = {};
-let rooms = [mainRoom, 'room two'];
 const words = ['white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps'];
 const emptyGame = {
   gameInProgress: false,
@@ -137,52 +132,4 @@ class DMT {
   }
 }
 
-let dmtManager = new DMTManager();
-
-let usersByRoom = (room) => {
-  let sockets = io.sockets.adapter.rooms[room].sockets;
-  return Object.keys(sockets).map((socketId) => {
-    var clientSocket = io.sockets.connected[socketId];
-    return clientSocket.user;
-  });
-}
-
-io.on('connection', (socket) => { 
-
-  socket.on('join room', (id) => {
-    console.log(socket.username + ' joined room: ' + id);
-    socket.join(id);
-    socket.curRoom = id;
-  });
-
-  socket.on('chat msg', (msg) => {
-    console.log(`${socket.user} sent ${msg.text} to thread: ${socket.curRoom}`);
-    dmtManager.testWinner(socket.curRoom,msg);
-    io.sockets.in(socket.curRoom).emit('update chat', msg);
-  });
-
-  socket.on('client update canvas', (canvasData) => {
-    dmtManager.updateGame(socket.curRoom,{canvasData});
-    socket.broadcast.to(socket.curRoom).emit('update canvas', canvasData);
-  });
-
-  socket.on('start game', () => {
-    console.log(`game started in room ${socket.curRoom}`);
-    let players = usersByRoom(socket.curRoom);
-    dmtManager.newGame(socket.curRoom,players);
-  });
-
-  socket.on('add user', (username) => {
-    socket.user = username;
-    socket.curRoom = mainRoom;
-    socket.join(mainRoom);
-    let game = dmtManager.getGame(mainRoom);
-    users[username] = {
-      socket: socket,
-      room: mainRoom
-    };
-    socket.emit('update game', game);
-  });
-});
-
-module.exports = io;
+module.exports = ()  => new DMTManager();

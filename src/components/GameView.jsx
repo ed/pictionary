@@ -7,8 +7,6 @@ import Sidebar from './Sidebar';
 import WhiteBoard from './WhiteBoard';
 import Login from './Login';
 
-const socket = io.connect();
-
 class GameView extends Component {
   constructor(props) {
     super(props)
@@ -16,43 +14,42 @@ class GameView extends Component {
       roomDataReceived: false,
       loggingIn: false,
     }
-    this.props.dispatch(setSocket(socket))
-    this.props.dispatch(setUserInfo(this.props.route.person))
+    console.log(this.props.params.roomName)
   }
 
   componentDidMount() {
-    socket.on('update game', (game) => {
-      console.log(game)
-      this.props.dispatch(updateGame(game))
-      this.setState({
-       roomDataReceived:true,
-      });
-    });
+    this.props.socket.on('update game', (game) => this.updateGame(game) );
+    this.props.socket.on('round over', (winner) => this.displayWinner(winner) );
+  }
 
-    socket.on('round over', (winner) => {
-      if (winner == null) {
-        alert(`no one guessed the word :(((`);
-      }
-      else if (winner == this.props.route.person) {
-        alert(`neat! you guessed the word!`);
-      }
-      else{
-        alert(`${winner} won the round!`);
-      }
+  updateGame(game) {
+    console.log(game)
+    this.props.dispatch(updateGame(game))
+    this.setState({
+     roomDataReceived:true,
     });
+  }
 
-    socket.emit('add user', this.props.route.person);
+  displayWinner(winner) {
+    if (winner == null) {
+      alert(`no one guessed the word :(((`);
+    }
+    else if (winner == this.props.user) {
+      alert(`neat! you guessed the word!`);
+    }
+    else{
+      alert(`${winner} won the round!`);
+    }
   }
 
   render() {
-    console.log(this.props.data)
     return(
       <div className="container">
       {this.state.loggingIn ? <Login /> : null}
       {this.state.roomDataReceived ?
         <div className="container">
           <WhiteBoard />
-          <MessageSection socket={socket}/>
+          <MessageSection socket={this.props.socket}/>
         </div>
       : 
       <div className="spinner">
@@ -65,9 +62,11 @@ class GameView extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return { 
-        data: state,
-    }
+  console.log(state);
+  return { 
+      socket: state.socket,
+      user: state.user
+  }
 };
 
 export default connect(

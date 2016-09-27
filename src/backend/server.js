@@ -24,5 +24,3 @@ app.post('/register', function(req, res) {
 var server = require('http').Server(app);
 
 module.exports = server;
-
-require('./socket');
