@@ -49,10 +49,18 @@ function game(state=initGame, action) {
     }
 }
 
-function rooms(state=[], action) {
+function rooms(state={rooms: [], isFetching: false}, action) {
     switch (action.type) {
         case types.SET_ROOMS:
-            return action.rooms
+            return {
+                isFetching: false,
+                rooms: action.rooms
+            }
+        case types.REQUEST_ROOMS:
+            return {
+                ...state,
+                isFetching: true
+            }
         default:
             return state;
     }

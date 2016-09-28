@@ -14,7 +14,6 @@ class GameView extends Component {
       roomDataReceived: false,
       loggingIn: false,
     }
-    console.log(this.props.params.roomName)
   }
 
   componentDidMount() {
@@ -26,8 +25,17 @@ class GameView extends Component {
     console.log(game)
     this.props.dispatch(updateGame(game))
     this.setState({
-     roomDataReceived:true,
+     roomDataReceived: true,
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.roomName !== nextProps.params.roomName){
+      this.setState({
+       roomDataReceived: false,
+      });
+      this.props.socket.emit('change room', nextProps.params.roomName);
+    }
   }
 
   displayWinner(winner) {

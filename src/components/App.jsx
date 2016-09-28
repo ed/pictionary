@@ -5,7 +5,7 @@ import root from '../reducers';
 import { Router, Route, IndexRoute, IndexRedirect, Link, browserHistory } from 'react-router';
 import { createStore, applyMiddleware, compose } from 'redux'
 import 'isomorphic-fetch'
-import { setRooms } from '../actions'
+import { fetchRooms } from '../actions'
 
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk';
@@ -24,32 +24,17 @@ headers.append('Content-Type', 'application/json');
 
 const roomExists = (nextState, replace) => {
   let { rooms } = store.getState();
-  console.log(rooms)
   let room = nextState.params.roomName;
-  if ( !(room in rooms) ) {
+  if ( !(room in rooms.rooms) ) {
     replace({
-      pathname: 'draw_stuff'
+      pathname: Object.keys(rooms.rooms)[0]
     });
   }
 }
 
 
 const getRooms = (nextState, replace, callback) => {
-  fetch('/roomData/roomList', { 
-        headers,
-        method: 'GET', 
-        mode: 'cors',
-        cache: 'default',
-    })
-    .then(response => response.json())
-    .then(rooms => { 
-      store.dispatch(setRooms(rooms))
-      callback();
-    })
-    .catch(error => {
-      // do some error handling here
-      callback(error);
-    })
+  store.dispatch(fetchRooms()).then(() => callback())
 }
 
 export default class App extends Component {
@@ -63,32 +48,35 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    fetch('/roomData/roomList', { 
-        headers,
-        method: 'GET', 
-        mode: 'cors',
-        cache: 'default',
-    })
-    .then(response => response.json())
-    .then(rooms => { 
-      store.dispatch(setRooms(rooms)).then( () => console.log('done'))
-    })
-    .catch(error => {
-      // do some error handling here
-      console.log(error)
-    })
+    store.dispatch(fetchRooms()).then(() => this.setState({
+      roomsReceived: true
+    }))
   }
 
   render() {
+    let indexPath = '';
+    if (this.state.roomsReceived) {
+      let { rooms } = store.getState();      
+      let roomList = Object.keys(rooms.rooms);
+      indexPath = roomList[0];
+    }
     return(
+      <div className="container">
+      {this.state.roomsReceived ?
       <Provider store={store}>
         <Router history={browserHistory}>
-          <Route path="/" component={GameContainer} onEnter={getRooms}>
-            <IndexRedirect to="draw_stuff" />
+          <Route path="/" component={GameContainer} >
+            <IndexRedirect to={indexPath} />
             <Route path=":roomName" component={GameView} onEnter={roomExists}/>
           </Route>
         </Router>
       </Provider>
+      : 
+      <div className="spinner">
+        <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+      </div>
+    }
+      </div>
     )
   }
 }

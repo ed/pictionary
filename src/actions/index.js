@@ -25,12 +25,12 @@ export const register = (username, password) => {
             cache: 'default',
             body 
         })
-            .then(response => {
-                dispatch({ type: 'REQUEST_SUCCESS' })
-            }, error => {
-                dispatch({ type: 'REQUEST_FAILURE', error: error.message})
-                throw error
-            })
+        .then(response => {
+            dispatch({ type: 'REQUEST_SUCCESS' })
+        }, error => {
+            dispatch({ type: 'REQUEST_FAILURE', error: error.message})
+            throw error
+        })
     }
 }
 
@@ -59,6 +59,28 @@ export const setRooms = (rooms) => {
     return {
         type: types.SET_ROOMS,
         rooms
+    }
+}
+
+export const fetchRooms = () => {
+    return (dispatch) => {
+        dispatch({ type: types.REQUEST_ROOMS });
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        return fetch('/roomData/roomList', { 
+                headers,
+                method: 'GET', 
+                mode: 'cors',
+                cache: 'default',
+        })
+        .then(response => response.json())
+        .then(rooms => { 
+          dispatch(setRooms(rooms))
+        })
+        .catch(error => {
+          // do some error handling here
+          console.log(error)
+        })
     }
 }
 

@@ -5,7 +5,7 @@ var DMTManager = require('./DMTManager');
 
 let mainRoom = 'draw_stuff';
 let users = {};
-let rooms = {};
+let rooms = {'room2': [], 'room3' : []};
 rooms[mainRoom] = [];
 
 let dmtManager = DMTManager();
@@ -27,13 +27,15 @@ const leaveAllRooms = (socket) => {
 io.on('connection', (socket) => { 
 
   socket.on('change room', (roomName) => {
-    console.log(socket.username + ' moved to room: ' + id);
+    console.log(socket.user + ' moved to room: ' + roomName);
     leaveAllRooms(socket);
     socket.join(roomName);
     socket.curRoom = roomName;
     if (roomName in rooms) {
     	rooms[roomName].push(socket.user);
     }
+    let game = dmtManager.getGame(mainRoom);
+    socket.emit('update game', game);
   });
 
   socket.on('chat msg', (msg) => {

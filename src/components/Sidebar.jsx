@@ -1,41 +1,41 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router'
+import { connect } from 'react-redux';
 
-let rooms = ['draw_stuff', 'room_two'];
-
-export default class SideBar extends Component {
+class SideBar extends Component {
   render() {
     return (
       <div id="sidebar">
         <a href='#'><div className="sidebarHeader"><span className="headerText">Pretty Pictures</span></div></a>
         <div className="sidebarElementArea">
-          <ChannelHeader/>
-          {rooms.map( (room) => <Channel key={room} title={room}/>)}
+          <ChannelHeader />
+          {Object.keys(this.props.rooms).map( (room) => <Channel key={room} title={room}/>)}
         </div>
       </div>
     );
   }
 }
 
-
-class Channel extends Component {
-  render() {
-    return (
-      <Link className="sidebarElement" to={this.props.title} activeClassName="active" onClick={this.props.onClick}> 
-          <span><i>#</i> {this.props.title}</span>
-          <br></br>
-      </Link>
-    );
+const mapStateToProps = (state) => {
+  return {
+    rooms: state.rooms.rooms
   }
 }
 
-class ChannelHeader extends Component {
-  render() {
-    return (
-     <div className="channelHeader">
-       <a href='#'> <div className="channelHeaderText"> ROOMS </div> </a> 
-       <a href='#'> <div className="addChannel"> <i className="fa fa-plus-square-o fa-lg"></i> </div> </a>
-     </div>
-    );
-  }
-}
+export default connect(
+  mapStateToProps,
+)(SideBar)
+
+const Channel = ({ title, onClick }) => (
+  <Link className="sidebarElement" to={title} activeClassName="active" onClick={onClick}> 
+      <span><i>#</i> {title}</span>
+      <br></br>
+  </Link>
+);
+
+const ChannelHeader = ({ addChannel }) => (
+  <div className="channelHeader">
+    <a href='#'> <div className="channelHeaderText"> ROOMS </div> </a> 
+    <div className="addChannel" onClick={addChannel}> <i className="fa fa-plus-square-o fa-lg"></i> </div>
+  </div>
+);
