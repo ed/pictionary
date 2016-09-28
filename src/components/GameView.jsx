@@ -18,14 +18,19 @@ class GameView extends Component {
 
   componentDidMount() {
     this.props.socket.on('update game', (game) => this.updateGame(game) );
+    this.props.socket.on('update room', (roomData) => this.updateRoom(roomData))
     this.props.socket.on('round over', (winner) => this.displayWinner(winner) );
   }
 
-  updateGame(game) {
-    this.props.dispatch(updateGame(game))
+  updateRoom(roomData) {
+    this.props.dispatch(updateGame(roomData.game));
     this.setState({
      roomDataReceived: true,
     });
+  }
+
+  updateGame(game) {
+    this.props.dispatch(updateGame(game));
   }
 
   componentWillReceiveProps(nextProps) {

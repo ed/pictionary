@@ -35,7 +35,10 @@ io.on('connection', (socket) => {
     	rooms[roomName].push(socket.user);
     }
     let game = dmtManager.getGame(socket.curRoom);
-    socket.emit('update game', game);
+    let roomData = {
+    	game
+    }
+    socket.emit('update room', roomData);
   });
 
   socket.on('chat msg', (msg) => {
@@ -64,7 +67,10 @@ io.on('connection', (socket) => {
       socket: socket,
       room: mainRoom
     };
-    socket.emit('update game', game);
+    let roomData = {
+    	game
+    }
+    socket.emit('update room', roomData);
   });
   
 });
