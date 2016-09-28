@@ -22,7 +22,11 @@ if (process.env.NODE_ENV !== 'production') {
         secure: false
       },
       '/register': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3002',
+        secure: false
+      },
+      '/roomData/**': {
+        target: 'http://localhost:3002',
         secure: false
       }
     },

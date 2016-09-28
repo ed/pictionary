@@ -49,6 +49,15 @@ function game(state=initGame, action) {
     }
 }
 
+function rooms(state=[], action) {
+    switch (action.type) {
+        case types.SET_ROOMS:
+            return action.rooms
+        default:
+            return state;
+    }
+}
+
 function socket(state=null, action) {
     switch (action.type) {
         case types.SET_SOCKET:
@@ -68,6 +77,7 @@ function user(state=null, action) {
 }
 
 const root = combineReducers({
+    rooms,
     user,
     socket,
     error,

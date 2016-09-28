@@ -3,7 +3,7 @@
 var io = require('./socket');
 var DMTManager = require('./DMTManager');
 
-let mainRoom = 'draw stuff';
+let mainRoom = 'draw_stuff';
 let users = {};
 let rooms = {};
 rooms[mainRoom] = [];
@@ -31,6 +31,9 @@ io.on('connection', (socket) => {
     leaveAllRooms(socket);
     socket.join(roomName);
     socket.curRoom = roomName;
+    if (roomName in rooms) {
+    	rooms[roomName].push(socket.user);
+    }
   });
 
   socket.on('chat msg', (msg) => {
@@ -59,8 +62,47 @@ io.on('connection', (socket) => {
       socket: socket,
       room: mainRoom
     };
-    rooms[mainRoom].push(username)
-    console.log(rooms)
     socket.emit('update game', game);
   });
+  
 });
+
+const app = require('express')();
+const path = require('path');
+var bodyParser = require('body-parser');
+app.use( bodyParser.json() ); 
+app.post('/register', (req, res) => {
+	console.log(req.body);
+  res.send('hello world');
+});
+app.get('/roomData/roomList', (req, res) => {
+	console.log(`rooms: ${rooms}`);
+  res.send(rooms);
+});
+app.get('/roomData/room/:roomName', (req, res) => {
+	console.log(`rooms: ${JSON.stringify(rooms)}`);
+	let room = req.params.roomName;
+	console.log(room)
+	if (room in rooms) {
+		res.send(rooms[room]);
+	}
+	else {
+		res.send(null);
+	}
+  
+});
+app.post('/roomData/makeRoom', (req, res) => {
+	console.log(`rooms: ${rooms}`);
+	let roomName = req.room;
+	let user = req.user;
+
+  if (roomName in rooms) {
+  	rooms[roomName].push(user);
+  }
+  else {
+  	rooms[roomName] = [user];
+  }
+});
+
+var server = require('http').Server(app);
+server.listen(3002);

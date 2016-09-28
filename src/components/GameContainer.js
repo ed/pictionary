@@ -18,7 +18,7 @@ class Container extends Component {
   render() {
     return (
       <div className="container">
-        <Sidebar />
+        <Sidebar location={this.props.location}/>
         {this.props.children}
       </div>
     )

@@ -1,4 +1,7 @@
 import React, {Component} from 'react'
+import { Link } from 'react-router'
+
+let rooms = ['draw_stuff', 'room_two'];
 
 export default class SideBar extends Component {
   render() {
@@ -7,8 +10,7 @@ export default class SideBar extends Component {
         <a href='#'><div className="sidebarHeader"><span className="headerText">Pretty Pictures</span></div></a>
         <div className="sidebarElementArea">
           <ChannelHeader/>
-          <SidebarElement title="draw stuff" active="true"/>
-          <SidebarElement title="thats it :("/>
+          {rooms.map( (room) => <Channel key={room} title={room}/>)}
         </div>
       </div>
     );
@@ -16,15 +18,13 @@ export default class SideBar extends Component {
 }
 
 
-class SidebarElement extends Component {
+class Channel extends Component {
   render() {
     return (
-      <a href="#"> 
-        <div className={`sidebarElement${this.props.active ? ' active' : ''}`} onClick={this.props.onClick}>
+      <Link className="sidebarElement" to={this.props.title} activeClassName="active" onClick={this.props.onClick}> 
           <span><i>#</i> {this.props.title}</span>
           <br></br>
-        </div>
-      </a>
+      </Link>
     );
   }
 }

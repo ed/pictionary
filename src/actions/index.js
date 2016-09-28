@@ -51,7 +51,14 @@ export const setSocket = (socket) => {
 export const setUserInfo = (username) => {
     return {
         type: types.SET_USER_INFO,
-        username: username
+        username
+    }
+}
+
+export const setRooms = (rooms) => {
+    return {
+        type: types.SET_ROOMS,
+        rooms
     }
 }
 

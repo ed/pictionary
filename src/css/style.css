@@ -270,10 +270,10 @@ html, body {
         color:#DEDEDE;
         background:#2f2c2f;
         font-weight: 400;
-          -webkit-touch-callout: none; /* iOS Safari */
-         -webkit-user-select: none;   /* Chrome/Safari/Opera */
-         -moz-user-select: none;      /* Firefox */
-         -ms-user-select: none;       /* Internet Explorer/Edge */
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none;   /* Chrome/Safari/Opera */
+        -moz-user-select: none;      /* Firefox */
+        -ms-user-select: none;       /* Internet Explorer/Edge */
         user-select: none;
     }
 
@@ -332,6 +332,7 @@ html, body {
             border-bottom-right-radius: 3px;
             padding-bottom: 4px;
             padding-top: 2px;
+            display:block;
             width:100%;
             opacity: .7;
         }
