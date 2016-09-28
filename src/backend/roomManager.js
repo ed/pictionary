@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
     if (roomName in rooms) {
     	rooms[roomName].push(socket.user);
     }
-    let game = dmtManager.getGame(mainRoom);
+    let game = dmtManager.getGame(socket.curRoom);
     socket.emit('update game', game);
   });
 

@@ -16,7 +16,6 @@ class Canvas extends Component {
       brushSize: 8, 
     };
     this.remakeCanvasRemote = () => null;
-    this.canIDraw = this.props.user === this.props.artist;
   }
 
   componentDidMount() {
@@ -24,11 +23,6 @@ class Canvas extends Component {
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.actionHistory = new ActionHistory(this.clearCanvas);
     this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData));
-    let canIDraw = this.props.user === this.props.artist;
-    if (!canIDraw && this.props.canvasData) {
-      this.buildRemoteCanvas(this.props.canvasData);
-    }
-
     this.setCanvasSize();
   }
 
@@ -48,24 +42,7 @@ class Canvas extends Component {
   
   componentWillMount() {
     window.addEventListener('resize', () => this.setCanvasSize());
-    let canIDraw = this.props.user === this.props.artist;
-    if (canIDraw) {
-      alert(`your word is ${this.props.word}`)
-    } 
   }
-
-  componentWillReceiveProps(nextProps) {
-    this.canIDraw = nextProps.user === nextProps.artist;
-    let couldIDraw = this.props.user === this.props.artist;
-    if (this.props.artist !== nextProps.artist) {
-      this.clearCanvas();
-      this.actionHistory.clearHistory();
-    }
-    if (this.canIDraw && !couldIDraw) {
-      alert(`your turn! your word is ${nextProps.word}`)
-    }
-  }
-
 
   remakeCanvas() {
     if (this.canIDraw){
@@ -152,8 +129,7 @@ class Canvas extends Component {
   }
 
   render() {
-    const isSpectating = (this.props.players.indexOf(this.props.user) <= -1);
-    const canIDraw = (this.props.user === this.props.artist);
+    const { canIDraw, isSpectating } = this.props;
     return (
       <div className="canvasContainer">
         <canvas 
@@ -179,8 +155,27 @@ class Canvas extends Component {
         : null }
       </div>
       )
-  }
+    }
 }
+
+
+const mapStateToProps = (state) => {
+    let canIDraw = (state.user === state.game.artist);
+    let isSpectating = (state.game.players.indexOf(state.user) <= -1);
+    return {
+        word: state.game.word,
+        artist: state.game.artist,
+        timeLeft: state.game.timeLeft, 
+        canIDraw,
+        isSpectating,
+        socket: state.socket,
+    }
+};
+
+export default connect(
+    mapStateToProps,
+)(Canvas)
+
 
 class ArtistOptions extends Component {
   render () {
@@ -272,17 +267,5 @@ export class ColorCircle extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => {
-    return { 
-        ...state.game,
-        user: state.user,
-        socket: state.socket,
-    }
-};
-
-export default connect(
-    mapStateToProps,
-)(Canvas)
 
 

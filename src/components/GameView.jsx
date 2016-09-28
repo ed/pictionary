@@ -22,7 +22,6 @@ class GameView extends Component {
   }
 
   updateGame(game) {
-    console.log(game)
     this.props.dispatch(updateGame(game))
     this.setState({
      roomDataReceived: true,
@@ -32,7 +31,7 @@ class GameView extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.params.roomName !== nextProps.params.roomName){
       this.setState({
-       roomDataReceived: false,
+        roomDataReceived: false,
       });
       this.props.socket.emit('change room', nextProps.params.roomName);
     }
