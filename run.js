@@ -1,10 +1,10 @@
-const server = require('./src/backend/server');
-require('./src/backend/roomManager');
+const server = require('./src/backend/server')();
 
 
 const port = (process.env.PORT || 3000);
 
 server.listen(port);
+
 console.log(`Listening at http://localhost:${port}`);
 
 if (process.env.NODE_ENV !== 'production') {
@@ -22,11 +22,11 @@ if (process.env.NODE_ENV !== 'production') {
         secure: false
       },
       '/register': {
-        target: 'http://localhost:3002',
+        target: 'http://localhost:3000',
         secure: false
       },
       '/roomData/**': {
-        target: 'http://localhost:3002',
+        target: 'http://localhost:3000',
         secure: false
       }
     },

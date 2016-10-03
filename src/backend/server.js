@@ -11,12 +11,16 @@ const path = require('path');
 var bodyParser = require('body-parser');
 app.use( bodyParser.json() ); 
 
-const indexPath = path.join(__dirname, '/index.html')
-const publicPath = express.static(path.join(__dirname, '/bin'))
+module.exports = () => {
+	const indexPath = path.join(__dirname, '..' , '..' ,'index.html')
+	const publicPath = express.static(path.join(__dirname, '..' , '..' , '/bin'))
 
-app.use('/bin', publicPath)
-app.get('/', (_, res) => { res.sendFile(indexPath) });
+	app.use('/bin', publicPath)
+	app.get('/', (_, res) => { res.sendFile(indexPath) });
 
-var server = require('http').Server(app);
+	var server = require('http').Server(app);
+	var io = require('./socket')(server);
 
-module.exports = server;
+	var roomManager = require('./roomManager')(app, io);
+	return server;
+}

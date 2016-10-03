@@ -1,5 +1,5 @@
 'use strict';
-var io = require('./socket');
+let io;
 
 const words = ['white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps'];
 const emptyGame = {
@@ -11,8 +11,9 @@ const emptyGame = {
 };
 
 class DMTManager {
-  constructor() {
+  constructor(socketio) {
     this.activeGames = {};
+    io = socketio;
   }
 
   newGame(room, users) {
@@ -132,4 +133,4 @@ class DMT {
   }
 }
 
-module.exports = ()  => new DMTManager();
+module.exports = (io)  => new DMTManager(io);
