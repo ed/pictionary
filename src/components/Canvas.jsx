@@ -24,6 +24,9 @@ class Canvas extends Component {
     this.actionHistory = new ActionHistory(this.clearCanvas);
     this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData));
     this.setCanvasSize();
+    if (this.props.canvasData) {
+      this.buildRemoteCanvas(this.props.canvasData);
+    }
   }
 
   buildRemoteCanvas(canvasData) {
@@ -162,12 +165,14 @@ class Canvas extends Component {
 const mapStateToProps = (state) => {
     let canIDraw = (state.user === state.game.artist);
     let isSpectating = (state.game.players.indexOf(state.user) <= -1);
+    console.log(state.game.canvasData)
     return {
         word: state.game.word,
         artist: state.game.artist,
         timeLeft: state.game.timeLeft, 
         canIDraw,
         isSpectating,
+        canvasData: state.game.canvasData,
         socket: state.socket,
     }
 };

@@ -18,7 +18,7 @@ class GameView extends Component {
 
   componentDidMount() {
     this.props.socket.on('update game', (game) => this.updateGame(game) );
-    this.props.socket.on('update room', (roomData) => this.updateRoom(roomData))
+    this.props.socket.on('update room', (roomData) => this.updateRoom(roomData) )
     this.props.socket.on('round over', (winner) => this.displayWinner(winner) );
   }
 

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 const socket = io.connect();
 
-const username = 'african_child' + String(Math.random());
+const username = 'AC' + String(Math.floor(Math.random() * 100));
 
 class Container extends Component {
   constructor(props) {

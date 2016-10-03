@@ -17,6 +17,7 @@ const initGame = {
     artist: 'somestringthatcantpossiblybeguessed',
     players: [],
     word: '',
+    canvasData: null
 }
 
 function error(state=null, action) {
