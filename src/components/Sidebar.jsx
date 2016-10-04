@@ -3,21 +3,25 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import CreateRoom from './CreateRoom'
 import Popover from './Popover'
+import BrowseRooms from './BrowseRooms'
 
 
 class SideBar extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      open: false
+      createRoomOpen: false,
+      browseRoomsOpen: false
     }
-    this.openModal = this.openModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
   }
 
-  openModal() { this.setState({open: true}); }
+  openBrowseRooms() { this.setState({browseRoomsOpen: true}); }
 
-  closeModal() { this.setState({open: false}); }
+  closeBrowseRooms() { this.setState({browseRoomsOpen: false}); }
+
+  openCreateRooms() { this.setState({createRoomOpen: true}); }
+
+  closeCreateRooms() { this.setState({createRoomOpen: false}); }
 
   render() {
     const { gameInProgress, players, artist, rooms } = this.props;
@@ -26,7 +30,7 @@ class SideBar extends Component {
       <div id="sidebar">
         <div className="sidebarHeader">
         <div className="headerText">Pretty Pictures</div>
-        <div className="addChannel" onClick={this.openModal}> <i className="fa fa-plus-square-o fa-lg"></i> </div>
+        <div className="addChannel" onClick={() => this.openCreateRooms()}> <i className="fa fa-plus-square-o fa-lg"></i> </div>
         </div>
         <div className="sidebarElementArea">
           {gameInProgress ?
@@ -42,10 +46,14 @@ class SideBar extends Component {
         }
         </div>
       <div className="channelInterfaceContainer">
-        <i className="ion-navicon-round centerIcon" onClick={this.openModal}></i>
+        <i className="ion-navicon-round centerIcon" onClick={() => this.openBrowseRooms()}></i>
       </div>
-      <Popover close={this.closeModal} isOpen={this.state.open}>
-        <CreateRoom close={this.closeModal}/> 
+      <Popover close={() => this.closeCreateRooms()} isOpen={this.state.createRoomOpen}>
+        <CreateRoom close={() => this.closeCreateRooms()}/> 
+      </Popover>
+
+      <Popover close={() => this.closeBrowseRooms()} isOpen={this.state.browseRoomsOpen}>
+        <BrowseRooms close={() => this.closeBrowseRooms()} rooms={rooms}/> 
       </Popover>
       </div>
     );
@@ -66,11 +74,11 @@ export default connect(
 )(SideBar)
 
 const Player = ({ name, onClick, isActive }) => (
-  <Link className={`sidebarElement${ isActive ? " active" : ""}`} to={name} activeClassName="active" onClick={onClick}> 
+  <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}> 
       <span> {name} </span>
       <br/>
       <span> 3 PTS</span>
-  </Link>
+  </div>
 );
 
 const PlayerHeader = ({ addChannel }) => (

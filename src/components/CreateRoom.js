@@ -12,8 +12,10 @@ class CreateRoom extends Component {
   }
 
   createRoom() {
-    this.props.dispatch(newRoom(this.state.roomName));
-    this.props.close();
+    this.props.dispatch(newRoom(this.state.roomName.trim())).then( () => {
+      this.context.router.push(`/${this.state.roomName.trim()}`);
+      this.props.close();
+    }); 
   }
 
   _onChange(e) {
@@ -24,7 +26,8 @@ class CreateRoom extends Component {
       if (e.keyCode === 13) {
           if (this.state.roomName.trim().length > 0){
             this.createRoom(); 
-          }             
+          }
+          e.preventDefault()             
       }
       if (e.keyCode === 27) this.props.close();
   }
@@ -56,6 +59,10 @@ class CreateRoom extends Component {
         </div>
     );
   }
+}
+
+CreateRoom.contextTypes = {
+    router: React.PropTypes.object
 }
 
 export default connect()(CreateRoom)
