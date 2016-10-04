@@ -9,6 +9,7 @@ export class WhiteBoard extends Component {
   }
 
   render() {
+    console.log(this.props.gameInProgress)
     return (
       <div className="whiteboard">
         { this.props.gameInProgress ? 

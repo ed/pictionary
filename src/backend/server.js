@@ -6,21 +6,20 @@
 
 const port = (process.env.PORT || 3000);
 const express = require('express');
-const app = express();
+const bodyParser = require('body-parser');
 const path = require('path');
-var bodyParser = require('body-parser');
-app.use( bodyParser.json() ); 
+const indexPath = path.join(__dirname, '..' , '..' ,'index.html')
+const publicPath = express.static(path.join(__dirname, '..' , '..' , '/bin'))
+const app = express();
 
-module.exports = () => {
-	const indexPath = path.join(__dirname, '..' , '..' ,'index.html')
-	const publicPath = express.static(path.join(__dirname, '..' , '..' , '/bin'))
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
+app.use('/bin', publicPath)
+app.get('/', (_, res) => { res.sendFile(indexPath) });
 
-	app.use('/bin', publicPath)
-	app.get('/', (_, res) => { res.sendFile(indexPath) });
 
-	var server = require('http').Server(app);
-	var io = require('./socket')(server);
+var server = require('http').Server(app);
+var io = require('./socket')(server);
 
-	var roomManager = require('./roomManager')(app, io);
-	return server;
-}
+var roomManager = require('./roomManager')(app, io);
+module.exports = server;

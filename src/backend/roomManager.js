@@ -3,6 +3,7 @@
 var DMTManager = require('./DMTManager');
 
 let mainRoom = 'draw_stuff';
+let colors = ['#FF0000','#800000','#FFFF00','#808000','#008080','#F08080','#DAF7A6','#581845'];
 let users = {};
 let rooms = {'room2': [], 'room3' : []};
 rooms[mainRoom] = [];
@@ -38,12 +39,14 @@ module.exports = (app, io) => {
       let roomData = {
         game
       }
+      console.log(game)
       socket.emit('update room', roomData);
     });
 
     socket.on('chat msg', (msg) => {
       console.log(`${socket.user} sent ${msg.text} to thread: ${socket.curRoom}`);
       dmtManager.testWinner(socket.curRoom,msg);
+      msg['color'] = socket.color;
       io.sockets.in(socket.curRoom).emit('update chat', msg);
     });
 
@@ -61,6 +64,7 @@ module.exports = (app, io) => {
     socket.on('add user', (username) => {
       socket.user = username;
       socket.curRoom = mainRoom;
+      socket.color = colors[Math.floor(Math.random()*colors.length)];
       socket.join(mainRoom);
       let game = dmtManager.getGame(mainRoom);
       users[username] = {
@@ -74,14 +78,34 @@ module.exports = (app, io) => {
     });
     
   });
+
+
   app.post('/register', (req, res) => {
     console.log(req.body);
     res.send('hello world');
   });
+
   app.get('/roomData/roomList', (req, res) => {
     console.log(`rooms: ${rooms}`);
     res.send(rooms);
   });
+
+  app.post('/roomData/newRoom', (req, res) => {
+    let roomName = req.body.room;
+
+    if (roomName in rooms) {
+      res.send({
+      	error: '??'
+      })
+    }
+    else {
+      rooms[roomName] = [];
+      res.send({
+      	rooms
+      })
+    }
+  });
+
   app.get('/roomData/room/:roomName', (req, res) => {
     console.log(`rooms: ${JSON.stringify(rooms)}`);
     let room = req.params.roomName;
@@ -91,19 +115,6 @@ module.exports = (app, io) => {
     }
     else {
       res.send(null);
-    }
-    
-  });
-  app.post('/roomData/makeRoom', (req, res) => {
-    console.log(`rooms: ${rooms}`);
-    let roomName = req.room;
-    let user = req.user;
-
-    if (roomName in rooms) {
-      rooms[roomName].push(user);
-    }
-    else {
-      rooms[roomName] = [user];
     }
   });
 }

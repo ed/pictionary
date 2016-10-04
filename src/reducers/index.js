@@ -1,7 +1,6 @@
 import * as types from '../constants'
 import { combineReducers } from 'redux'
 
-
 const assign = Object.assign
 
 

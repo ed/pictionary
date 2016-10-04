@@ -1,6 +1,9 @@
 import * as types from '../constants'
 import 'isomorphic-fetch'
 
+let headers = new Headers();
+headers.append('Content-Type', 'application/json');
+
 export const register = (username, password) => {
     return (dispatch) => {
         dispatch({ type: 'SENDING_REQUEST' });
@@ -10,8 +13,6 @@ export const register = (username, password) => {
             dispatch({ type: 'REQUEST_FAILURE', error: error.message})
             throw error;
         }
-        let head = new Headers();
-        head.append('Content-Type', 'application/json');
         let body = JSON.stringify(
                 {
                     'username': username,
@@ -20,7 +21,7 @@ export const register = (username, password) => {
         console.log(body)
         fetch('/register', { 
             method: 'POST', 
-            headers: head,
+            headers,
             mode: 'cors',
             cache: 'default',
             body 
@@ -65,8 +66,6 @@ export const setRooms = (rooms) => {
 export const fetchRooms = () => {
     return (dispatch) => {
         dispatch({ type: types.REQUEST_ROOMS });
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
         return fetch('/roomData/roomList', { 
                 headers,
                 method: 'GET', 
@@ -76,6 +75,34 @@ export const fetchRooms = () => {
         .then(response => response.json())
         .then(rooms => { 
           dispatch(setRooms(rooms))
+        })
+        .catch(error => {
+          // do some error handling here
+          console.log(error)
+        })
+    }
+}
+
+export const newRoom = (room) => {
+    return (dispatch) => {
+        console.log(room)
+        return fetch('/roomData/newRoom', { 
+                headers,
+                method: 'POST', 
+                mode: 'cors',
+                cache: 'default',
+                body: JSON.stringify({
+                    room,
+                })
+        })
+        .then(response => response.json())
+        .then(json => { 
+            if( !json.error ) {
+                dispatch(setRooms(json.rooms))
+            }
+            else {
+                console.log(json.error)
+            }
         })
         .catch(error => {
           // do some error handling here

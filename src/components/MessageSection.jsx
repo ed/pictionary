@@ -31,14 +31,16 @@ class MessageSection extends Component {
     );
   }
 
+  componentWillUnmount() {
+    this.props.socket.off('update chat');
+  }
+
   displayMessages() {
     let messageDivs = [];
     for (let i = 0; i < this.state.messages.length; i++){
       let message = this.state.messages[i];
-      let displayHeader = (i == 0 || this.state.messages[i-1].author != message.author);
       messageDivs.push(
         <Message
-          displayHeader={displayHeader}
           key={message.id}
           message={message}
         />

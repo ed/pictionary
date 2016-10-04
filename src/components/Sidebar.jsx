@@ -1,31 +1,63 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
+import CreateRoom from './CreateRoom'
+import Popover from './Popover'
 
-const SideBar = ({ gameInProgress, rooms, players }) => (
-  <div id="sidebar">
-    <a href='#'><div className="sidebarHeader"><span className="headerText">Pretty Pictures</span></div></a>
-    <div className="sidebarElementArea">
-      {gameInProgress ?
-        <div className="container">
-        <PlayerHeader />
-        {players.map( (player) => <Player key={player} name={player}/>)}
-        </div>
-        :
-      <div className="container">
-      <ChannelHeader />
-      {Object.keys(rooms).map( (room) => <Channel key={room} title={room}/>)}
-      </div>
+
+class SideBar extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      open: false
     }
-    </div>
-  </div>
-);
+    this.openModal = this.openModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+  }
+
+  openModal() { this.setState({open: true}); }
+
+  closeModal() { this.setState({open: false}); }
+
+  render() {
+    const { gameInProgress, players, artist, rooms } = this.props;
+    console.log(rooms)
+    return (
+      <div id="sidebar">
+        <div className="sidebarHeader">
+        <div className="headerText">Pretty Pictures</div>
+        <div className="addChannel" onClick={this.openModal}> <i className="fa fa-plus-square-o fa-lg"></i> </div>
+        </div>
+        <div className="sidebarElementArea">
+          {gameInProgress ?
+            <div className="container">
+            <PlayerHeader />
+            {players.map( (player) => <Player key={player} name={player} isActive={player===artist}/>)}
+            </div>
+            :
+          <div className="container">
+          <ChannelHeader />
+          {Object.keys(rooms).map( (room) => <Channel key={room} title={room}/>)}
+          </div>
+        }
+        </div>
+      <div className="channelInterfaceContainer">
+        <i className="ion-navicon-round centerIcon" onClick={this.openModal}></i>
+      </div>
+      <Popover close={this.closeModal} isOpen={this.state.open}>
+        <CreateRoom close={this.closeModal}/> 
+      </Popover>
+      </div>
+    );
+  }
+}
 
 const mapStateToProps = (state) => {
   return {
     gameInProgress: state.game.gameInProgress,
     rooms: state.rooms.rooms,
-    players: state.game.players
+    players: state.game.players,
+    artist: state.game.artist
   }
 }
 
@@ -33,10 +65,11 @@ export default connect(
   mapStateToProps,
 )(SideBar)
 
-const Player = ({ name, onClick }) => (
-  <Link className="sidebarElement" to={name} activeClassName="active" onClick={onClick}> 
+const Player = ({ name, onClick, isActive }) => (
+  <Link className={`sidebarElement${ isActive ? " active" : ""}`} to={name} activeClassName="active" onClick={onClick}> 
       <span> {name} </span>
-      <br></br>
+      <br/>
+      <span> 3 PTS</span>
   </Link>
 );
 

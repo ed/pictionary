@@ -20,6 +20,29 @@ html, body {
     overflow-x: hidden;
 }
 
+.myButton {
+    background-color:#44c767;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border-radius:3px;
+    border:1px solid #18ab29;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    font-size:20px;
+    padding:12px 20px;
+    text-decoration:none;
+    font-weight: bold;
+    position: absolute;
+    right: 0px;
+}
+.myButton:hover {
+    -moz-box-shadow: inset 0 -1px  #009900;
+    -webkit-box-shadow: inset 0 -1px  #009900;
+    box-shadow: inset 0 -1px  #009900;
+}
+
+
 #app{
     height: 100%;
     margin: 0;
@@ -36,6 +59,52 @@ html, body {
     height:100%;
     z-index:9999;
 }
+
+.popoverContainer {
+    position: absolute;
+    width: 35%;
+    height: 50%;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: left;
+    margin: auto;
+}
+
+.centerIcon {
+    display: inline-block;
+    width: 100%;
+    font-size: 200%;
+}
+
+.closeModal {
+    -webkit-user-select: none;
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #e4e4e4;
+}
+
+    .closeModal:hover {
+        background: #e4e4e4;
+        color:#262626;
+    }
+
+    .closeModal:focus {
+        outline: 0;
+        background: #D39B46;
+        color: white;
+        opacity: .6;
+    }
+
+    .closeModal>i {
+        font-size: 300%;
+    }
 
 .whiteboard {
     -webkit-user-select: none;
@@ -229,7 +298,6 @@ html, body {
 
                         .authorName {
                             font-weight: 800;
-                            padding-bottom: 7px;
                         }
 
                         .messageTime {
@@ -263,6 +331,14 @@ html, body {
                 margin-bottom: auto;
             }
 
+            .message-composer:focus {
+                border-color: #7578d1;
+            }
+
+            .message-composer:hover {
+                border-color: #7578d1;
+            }
+
     #sidebar {
         float:left;
         height: 100%;
@@ -275,7 +351,16 @@ html, body {
         -moz-user-select: none;      /* Firefox */
         -ms-user-select: none;       /* Internet Explorer/Edge */
         user-select: none;
+        position: relative;
     }
+
+        .channelInterfaceContainer {
+            position: absolute;
+            bottom:0;  /* position the top  edge of the element at the middle of the parent */
+            left: 50%; /* position the left edge of the element at the middle of the parent */
+            cursor: pointer;
+            transform: translateX(-50%);
+        }
 
         .sidebarHeader {
             margin-bottom: 20px;
@@ -286,8 +371,9 @@ html, body {
             width: 100%;
         }
             .headerText {
-                position: absolute;
-                padding: 15px;
+                display: inline-block;
+                width: 75%;
+                margin: 15px;
             }
 
         .sidebarHeader:hover {
@@ -321,6 +407,7 @@ html, body {
                 opacity: .4;
                 color:#DEDEDE;
                 display: inline-block;
+                cursor: pointer;
             }
 
                 .addChannel:hover {
@@ -328,13 +415,11 @@ html, body {
                 }
 
         .sidebarElement {
-            border-top-right-radius: 3px;
-            border-bottom-right-radius: 3px;
             padding-bottom: 4px;
             padding-top: 2px;
             display:block;
             width:100%;
-            opacity: .7;
+            color:white;
         }
 
             .sidebarElement:hover {
