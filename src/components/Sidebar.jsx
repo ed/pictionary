@@ -24,7 +24,7 @@ class SideBar extends Component {
   closeCreateRooms() { this.setState({createRoomOpen: false}); }
 
   render() {
-    const { gameInProgress, players, artist, rooms } = this.props;
+    const { clients, gameInProgress, players, artist, rooms } = this.props;
     console.log(rooms)
     return (
       <div id="sidebar">
@@ -39,10 +39,10 @@ class SideBar extends Component {
             {players.map( (player) => <Player key={player} name={player} isActive={player===artist}/>)}
             </div>
             :
-          <div className="container">
-          <ChannelHeader />
-          {Object.keys(rooms).map( (room) => <Channel key={room} title={room}/>)}
-          </div>
+            <div className="container">
+            <PlayerHeader />
+            {clients.map( (player) => <Player key={player} name={player} isActive={player===artist}/>)}
+            </div>
         }
         </div>
       <div className="channelInterfaceContainer">
@@ -62,6 +62,7 @@ class SideBar extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    clients: state.room.clients,
     gameInProgress: state.room.game.gameInProgress,
     rooms: state.rooms.rooms,
     players: state.room.game.players,
