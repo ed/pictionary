@@ -24,7 +24,7 @@ export class WhiteBoard extends Component {
 
 const mapStateToProps = (state) => {
     return { 
-        gameInProgress: state.game.gameInProgress,
+        gameInProgress: state.room.game.gameInProgress,
         socket: state.socket
     }
 };

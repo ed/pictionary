@@ -42,6 +42,13 @@ export const updateGame = (newGameState) => {
     }
 }
 
+export const updateRoom = (newRoomState) => {
+    return {
+        type: types.UPDATE_ROOM,
+        newRoomState
+    }
+}
+
 export const setSocket = (socket) => {
     return {
         type: types.SET_SOCKET,

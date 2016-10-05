@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Router, Route, IndexRoute, Link, IndexLink, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
-import { setRooms, updateGame, setSocket, setUserInfo } from '../actions'
+import { updateRoom, setRooms, updateGame, setSocket, setUserInfo } from '../actions'
 import MessageSection from './MessageSection';
 import Sidebar from './Sidebar';
 import WhiteBoard from './WhiteBoard';
@@ -29,7 +29,7 @@ class GameView extends Component {
   }
 
   updateRoom(roomData) {
-    this.props.dispatch(updateGame(roomData.curRoom.game));
+    this.props.dispatch(updateRoom(roomData.curRoom));
     this.props.dispatch(setRooms(roomData.rooms));
     this.setState({
      roomDataReceived: true,

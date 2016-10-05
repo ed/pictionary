@@ -40,10 +40,15 @@ function auth(state=initAuth, action) {
     }
 }
 
-function game(state=initGame, action) {
+function room(state=initGame, action) {
     switch (action.type) {
         case types.UPDATE_GAME:
-            return action.newGameState
+            return {
+                ...state,
+                game: action.newGameState
+            }
+        case types.UPDATE_ROOM:
+            return action.newRoomState
         default:
             return state;
     }
@@ -90,7 +95,7 @@ const root = combineReducers({
     socket,
     error,
     auth,
-    game,
+    room,
 })
 
 export default root
