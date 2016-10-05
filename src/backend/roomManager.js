@@ -33,7 +33,7 @@ module.exports = (app, io) => {
       curRoom
     }
     console.log(roomData)
-    socket.emit('update room', roomData);
+    io.sockets.in(socket.curRoom).emit('update room', roomData);
   }
   
   io.on('connection', (socket) => { 
@@ -47,10 +47,11 @@ module.exports = (app, io) => {
     });
 
     socket.on('chat msg', (msg) => {
-      console.log(`${socket.user} sent ${msg.text} to thread: ${socket.curRoom}`);
-      dmtManager.testWinner(socket.curRoom,msg);
-      msg['color'] = socket.color;
-      io.sockets.in(socket.curRoom).emit('update chat', msg);
+      console.log(`${socket.user} sent ${msg.text} to thread: ${socket.curRoom}`);    
+      if ( !dmtManager.testWinner(socket.curRoom,msg) ) {
+        msg['color'] = socket.color;
+        io.sockets.in(socket.curRoom).emit('update chat', msg);
+      }
     });
 
     socket.on('client update canvas', (canvasData) => {

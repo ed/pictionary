@@ -1,6 +1,8 @@
 'use strict';
 let io;
 
+const createMessage = require('../utils/messageUtils').createMessage;
+
 const words = ['white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps'];
 const emptyGame = {
   gameInProgress: false,
@@ -60,8 +62,8 @@ class DMTManager {
       artist: 'doesntmatter',
       timeLeft: -1
     };
-    if (this.rooms[room]['game'] != null) {
-      game = this.rooms[room]['game'].gameState
+    if (this.rooms[room].game != null) {
+      game = this.rooms[room].game.gameState
     }
     return {
       clients: usersByRoom(room),
@@ -70,11 +72,11 @@ class DMTManager {
   }
 
   newGame(room, users) {
-    if ( room in this.rooms && this.rooms[room]['gameInProgress'] == false ) {
+    if ( room in this.rooms && this.rooms[room].gameInProgress == false ) {
       console.log(`game started in room ${room}`);
       let dmtGame = new DMT(users, room, () => this.endGame(room));
-      this.rooms[room]['game'] = dmtGame;
-      this.rooms[room]['gameInProgress'] = true;
+      this.rooms[room].game = dmtGame;
+      this.rooms[room].gameInProgress = true;
       dmtGame.start();
     }
     else {
@@ -84,46 +86,50 @@ class DMTManager {
 
   endGame(room) {
     console.log(`end game in room ${room}`)
-    if ( room in this.rooms && this.rooms[room]['gameInProgress'] ){
+    if ( room in this.rooms && this.rooms[room].gameInProgress ){
       io.sockets.in(room).emit('update game', emptyGame);
-      clearInterval(this.rooms[room]['game'].turnTimer);
-      this.rooms[room]['gameInProgress'] = false;
+      clearInterval(this.rooms[room].game.turnTimer);
+      this.rooms[room].gameInProgress = false;
     }
   } 
 
   testWinner(room, msg) {
-    if ( room in this.rooms && this.rooms[room]['gameInProgress'] ){
-      let game = this.rooms[room]['game'];
-      if (msg.author != game.currentArtist() && msg.text.trim().toLowerCase() == game.curWord) {
-        console.log(`${msg.author} wins!`);
-        game.endTurn(msg.author);
-      }
+    if ( room in this.rooms && this.rooms[room].gameInProgress ){
+      return this.rooms[room].game.testWord(msg.author, msg.text.trim().toLowerCase());
+    }
+    else {
+      return false;
     }
   }
 
   getGame(room) {
     console.log(`getting game in room ${room}`)
-    if ( room in this.rooms && this.rooms[room]['gameInProgress'] ) {
-      return this.rooms[room]['game'].gameState;
+    if ( room in this.rooms && this.rooms[room].gameInProgress ) {
+      return this.rooms[room].game.gameState;
     }
     return emptyGame;
   }
 
   updateGame(room, stateChange) {
     if ( room in this.rooms ) {
-      this.rooms[room]['game'].setState(stateChange);
+      this.rooms[room].game.setState(stateChange);
     } 
   }  
 }
 
 class DMT {
   constructor(players, room, endGame) {
+    this.pointsForGuesser = [3,2,1];
+    this.pointerForArtist = 3;
+    this.correctGuessers = 0;
     this.room = room;
     this.players = this.shufflePlayers(players);
     this.endGame = endGame;
     this.curArtist = 0;
     this.curWord = 'NONE';
-    this.secondsPerTurn = 30;
+    this.secondsPerTurn = 20;
+    this.numRounds = 1;
+    this.curRound = 1;
     this.gameState = {
       gameInProgress: false,
       players: [],
@@ -137,13 +143,37 @@ class DMT {
     this.startTurn();
   }
 
-  endTurn(winner) {
+  testWord(player, guess) {
+    if (player != this.currentArtist() && guess == this.curWord) {
+      let guesserPoints = this.pointsForGuesser[this.correctGuessers++];
+      console.log(`${player} guessed the word for ${guesserPoints}`);
+      let author = 'GAME';
+      let text = `${player} guessed the word for ${guesserPoints}`
+      let msg = createMessage(text, author);
+      io.sockets.in(this.room).emit('update chat', msg);
+      return true;
+    }
+    return false;
+  }
+
+  endRound() {
+    if (this.curRound < this.numRounds) {
+      this.curRound++;
+      this.curArtist = 0;
+      this.startTurn();
+    }
+    else {
+      this.endGame();
+    }
+  }
+
+  endTurn() {
     clearTimeout(this.turnTimer);
-    io.sockets.in(this.room).emit('round over', winner);
 
     this.curArtist++;
+    io.sockets.in(this.room).emit('turn over');
     if (this.curArtist >= this.players.length) {
-      this.endGame();
+      this.endRound();
     }
     else {
       this.startTurn();

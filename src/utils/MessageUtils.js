@@ -1,4 +1,4 @@
-import uuid from 'node-uuid';
+var uuid = require('uuid');
 
 var moment = require('moment');
 moment().format();
@@ -12,14 +12,12 @@ module.exports = {
             timestamp: message.timestamp
         };
     },
-    createMessage: function(text, author, socket) {
-        var message = {
+    createMessage: function(text, author) {
+        return {
             id: 'm_'+uuid.v4(),
             author,
             text: text,
             timestamp: moment(Date.now()).format("h:mm a")
         };
-      // redis store here
-      socket.emit('chat msg', message);
     }
 };

@@ -56,7 +56,8 @@ class MessageComposer extends Component {
             e.preventDefault();
             let text = this.state.text.trim();
             if (text && this.props.canChat) {
-                MessageUtils.createMessage(text, this.props.user, this.props.socket);
+                let msg = MessageUtils.createMessage(text, this.props.user);
+                this.props.socket.emit('chat msg', msg);
                 this.setState({text: ''});
             }         
         }

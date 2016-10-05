@@ -19,13 +19,13 @@ class GameView extends Component {
   componentDidMount() {
     this.props.socket.on('update game', (game) => this.updateGame(game) );
     this.props.socket.on('update room', (roomData) => this.updateRoom(roomData) )
-    this.props.socket.on('round over', (winner) => this.displayWinner(winner) );
+    this.props.socket.on('turn over', () =>  alert('turn over'));
   }
 
   componentWillUnmount() {
     this.props.socket.off('update game');
     this.props.socket.off('update room')
-    this.props.socket.off('round over');
+    this.props.socket.off('turn over');
   }
 
   updateRoom(roomData) {
@@ -46,18 +46,6 @@ class GameView extends Component {
         roomDataReceived: false,
       });
       this.props.socket.emit('change room', nextProps.params.roomName);
-    }
-  }
-
-  displayWinner(winner) {
-    if (winner == null) {
-      alert(`no one guessed the word :(((`);
-    }
-    else if (winner == this.props.user) {
-      alert(`neat! you guessed the word!`);
-    }
-    else{
-      alert(`${winner} won the round!`);
     }
   }
 
