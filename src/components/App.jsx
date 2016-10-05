@@ -56,7 +56,8 @@ export default class App extends Component {
   render() {
     let indexPath = '';
     if (this.state.roomsReceived) {
-      let { rooms } = store.getState();      
+      let { rooms } = store.getState();   
+      console.log(rooms)   
       let roomList = Object.keys(rooms.rooms);
       indexPath = roomList[0];
     }

@@ -1,19 +1,37 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router'
+import { connect } from 'react-redux';
+import { fetchRooms } from '../actions'
 
-export default class BrowseRooms extends Component {
+class BrowseRooms extends Component {
 	constructor(props) {
 	  super(props);
 	
-	  this.state = {};
+	  this.state = {
+	  	isFetching: true
+	  };
 	}
+
+	componentDidMount() {
+    this.props.dispatch(fetchRooms()).then(() => this.setState({
+      isFetching: false
+    }))
+  }
 
 	render() {
 		return (
 			<div className="container">
-			<ul >
-				{Object.keys(this.props.rooms).map( (room) => <li  key={room}><Room name={room} onClick={this.props.close} /> </li>)}
-			</ul>
+			  {this.state.isFetching ?
+			  <div className="spinner">
+			    <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+			  </div>
+			  : 
+			  <div className="container">
+			  <ul >
+			  	{Object.keys(this.props.rooms).map( (room) => <li  key={room}><Room name={room} onClick={this.props.close} /> </li>)}
+			  </ul>
+			  </div>
+			}
 			</div>
 		);
 	}
@@ -21,8 +39,10 @@ export default class BrowseRooms extends Component {
 
 const Room = ({ name, onClick }) => (
 	<div className="room">
-		<Link onClick={close} to={name}>
+		<Link onClick={onClick} to={name}>
 			{name}
 		</Link>
 	</div>
 )
+
+export default connect()(BrowseRooms)

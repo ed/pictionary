@@ -12,9 +12,9 @@ class CreateRoom extends Component {
   }
 
   createRoom() {
+    this.props.close();
     this.props.dispatch(newRoom(this.state.roomName.trim())).then( () => {
       this.context.router.push(`/${this.state.roomName.trim()}`);
-      this.props.close();
     }); 
   }
 

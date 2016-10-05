@@ -9,7 +9,7 @@ let rooms = {'room2': [], 'room3' : []};
 rooms[mainRoom] = [];
 
 module.exports = (app, io) => {
-	let dmtManager = DMTManager(io);
+	let dmtManager = DMTManager(io, rooms);
 
   const usersByRoom = (room) => {
     let sockets = io.sockets.adapter.rooms[room].sockets;
@@ -24,6 +24,17 @@ module.exports = (app, io) => {
       socket.leave(room)
     }
   }
+
+  const updateRooms = (socket) => {
+    let curRoom = dmtManager.getRoom(socket.curRoom);
+    let rooms = dmtManager.getRooms();
+    let roomData = {
+      rooms,
+      curRoom
+    }
+    console.log(roomData)
+    socket.emit('update room', roomData);
+  }
   
   io.on('connection', (socket) => { 
 
@@ -32,15 +43,7 @@ module.exports = (app, io) => {
       leaveAllRooms(socket);
       socket.join(roomName);
       socket.curRoom = roomName;
-      if (roomName in rooms) {
-        rooms[roomName].push(socket.user);
-      }
-      let game = dmtManager.getGame(socket.curRoom);
-      let roomData = {
-        game
-      }
-      console.log(game)
-      socket.emit('update room', roomData);
+      updateRooms(socket);
     });
 
     socket.on('chat msg', (msg) => {
@@ -56,7 +59,6 @@ module.exports = (app, io) => {
     });
 
     socket.on('start game', () => {
-      console.log(`game started in room ${socket.curRoom}`);
       let players = usersByRoom(socket.curRoom);
       dmtManager.newGame(socket.curRoom,players);
     });
@@ -66,15 +68,7 @@ module.exports = (app, io) => {
       socket.curRoom = mainRoom;
       socket.color = colors[Math.floor(Math.random()*colors.length)];
       socket.join(mainRoom);
-      let game = dmtManager.getGame(mainRoom);
-      users[username] = {
-        socket: socket,
-        room: mainRoom
-      };
-      let roomData = {
-        game
-      }
-      socket.emit('update room', roomData);
+      updateRooms(socket);
     });
     
   });
@@ -86,8 +80,10 @@ module.exports = (app, io) => {
   });
 
   app.get('/roomData/roomList', (req, res) => {
-    console.log(`rooms: ${rooms}`);
-    res.send(rooms);
+    console.log('getting room LIST')
+    let roomList = dmtManager.getRooms();
+    console.log(roomList)
+    res.send(roomList);
   });
 
   app.post('/roomData/newRoom', (req, res) => {
@@ -99,7 +95,8 @@ module.exports = (app, io) => {
       })
     }
     else {
-      rooms[roomName] = [];
+      dmtManager.addRoom(roomName);
+      let rooms = dmtManager.getRooms();
       res.send({
       	rooms
       })

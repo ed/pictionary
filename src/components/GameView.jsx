@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Router, Route, IndexRoute, Link, IndexLink, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
-import { updateGame, setSocket, setUserInfo } from '../actions'
+import { setRooms, updateGame, setSocket, setUserInfo } from '../actions'
 import MessageSection from './MessageSection';
 import Sidebar from './Sidebar';
 import WhiteBoard from './WhiteBoard';
@@ -22,8 +22,15 @@ class GameView extends Component {
     this.props.socket.on('round over', (winner) => this.displayWinner(winner) );
   }
 
+  componentWillUnmount() {
+    this.props.socket.off('update game');
+    this.props.socket.off('update room')
+    this.props.socket.off('round over');
+  }
+
   updateRoom(roomData) {
-    this.props.dispatch(updateGame(roomData.game));
+    this.props.dispatch(updateGame(roomData.curRoom.game));
+    this.props.dispatch(setRooms(roomData.rooms));
     this.setState({
      roomDataReceived: true,
     });
@@ -60,6 +67,7 @@ class GameView extends Component {
       {this.state.loggingIn ? <Login /> : null}
       {this.state.roomDataReceived ?
         <div className="container">
+          <Sidebar />
           <WhiteBoard />
           <MessageSection socket={this.props.socket}/>
         </div>
