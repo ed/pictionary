@@ -1,7 +1,7 @@
 'use strict';
 let io;
 
-const createMessage = require('../utils/messageUtils').createMessage;
+const createMessage = require('../utils/MessageUtils').createMessage;
 
 const words = ['white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps'];
 const emptyGame = {
@@ -30,7 +30,8 @@ const usersByRoom = (room) => {
 }
 
 class DMTManager {
-  constructor(socketio, rooms={}) {
+  constructor(socketio, rooms) {
+    rooms = rooms || {};
     this.rooms = {};
     for ( let room in rooms ) {
       this.addRoom(room)

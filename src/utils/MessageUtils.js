@@ -1,4 +1,4 @@
-var uuid = require('uuid');
+var uuid = require('node-uuid');
 
 var moment = require('moment');
 moment().format();
