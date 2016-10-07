@@ -62,11 +62,11 @@ class SideBar extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    clients: state.room.clients,
-    gameInProgress: state.room.game.gameInProgress,
-    rooms: state.rooms.rooms,
-    players: state.room.game.players,
-    artist: state.room.game.artist
+    clients: state.root.room.clients,
+    gameInProgress: state.root.room.game.gameInProgress,
+    rooms: state.root.rooms.rooms,
+    players: state.root.room.game.players,
+    artist: state.root.room.game.artist
   }
 }
 

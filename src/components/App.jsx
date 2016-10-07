@@ -9,7 +9,6 @@ import { fetchRooms } from '../actions'
 
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk';
-import 'css/style.css';
 
 import GameContainer from './GameContainer'
 

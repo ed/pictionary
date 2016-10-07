@@ -17,6 +17,7 @@ class GameView extends Component {
   }
 
   componentDidMount() {
+
     this.props.socket.on('update game', (game) => this.updateGame(game) );
     this.props.socket.on('update room', (roomData) => this.updateRoom(roomData) )
     this.props.socket.on('turn over', () =>  alert('turn over'));
@@ -72,8 +73,8 @@ class GameView extends Component {
 const mapStateToProps = (state) => {
   console.log(state);
   return { 
-      socket: state.socket,
-      user: state.user
+      socket: state.root.socket,
+      user: state.root.user
   }
 };
 

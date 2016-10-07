@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import MessageUtils from 'utils/MessageUtils';
+import MessageUtils from '../utils/MessageUtils';
 import { connect } from 'react-redux';
 
 class MessageComposer extends Component {
@@ -65,9 +65,9 @@ class MessageComposer extends Component {
 };
 
 const mapStateToProps = (state) => {
-    let noGameGoing = !state.room.game.gameInProgress;
-    let isPlaying = (state.room.game.players.indexOf(state.user) > -1);
-    let isArtist = (state.room.game.artist === state.user);
+    let noGameGoing = !state.root.room.game.gameInProgress;
+    let isPlaying = (state.root.room.game.players.indexOf(state.root.user) > -1);
+    let isArtist = (state.root.room.game.artist === state.root.user);
     let canChat = noGameGoing || (isPlaying && !isArtist);
     let placeholder = '';
     if (noGameGoing) {
@@ -77,8 +77,8 @@ const mapStateToProps = (state) => {
         placeholder = 'Guess the word';
     }
     return {
-        user: state.user,
-        socket: state.socket,
+        user: state.root.user,
+        socket: state.root.socket,
         canChat,
         placeholder
     }

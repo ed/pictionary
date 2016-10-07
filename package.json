@@ -4,13 +4,14 @@
   "description": "draw in react",
   "scripts": {
     "build": "webpack --config ./webpack.prod.config.js --progress --colors",
-    "start": "node run.js",
+    "start": "./node_modules/.bin/babel-node run.js",
     "eslint": "./node_modules/.bin/eslint",
     "lint": "npm run eslint",
     "test": "./node_modules/.bin/mocha"
   },
   "author": "",
   "devDependencies": {
+    "babel-cli": "^6.16.0",
     "babel-core": "^6.13.2",
     "babel-loader": "^6.2.5",
     "babel-plugin-react-transform": "^2.0.2",
@@ -48,8 +49,10 @@
     "react-modal": "^1.4.0",
     "react-redux": "^4.4.5",
     "react-router": "^2.8.1",
+    "react-router-redux": "^4.0.6",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
-    "socket.io": "^1.4.8"
+    "socket.io": "^1.4.8",
+    "socket.io-client": "^1.4.8"
   }
 }

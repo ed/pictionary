@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActionHistory, Mark, ClearCanvas } from 'utils/CanvasUtils';
+import { ActionHistory, Mark, ClearCanvas } from '../utils/CanvasUtils';
 import { CompactPicker } from 'react-color';
 import { connect } from 'react-redux';
 
@@ -163,17 +163,17 @@ class Canvas extends Component {
 
 
 const mapStateToProps = (state) => {
-    let canIDraw = (state.user === state.room.game.artist);
-    let isSpectating = (state.room.game.players.indexOf(state.user) <= -1);
-    console.log(state.room.game.canvasData)
+    let canIDraw = (state.root.user === state.root.room.game.artist);
+    let isSpectating = (state.root.room.game.players.indexOf(state.root.user) <= -1);
+    console.log(state.root.room.game.canvasData)
     return {
-        word: state.room.game.word,
-        artist: state.room.game.artist,
-        timeLeft: state.room.game.timeLeft, 
+        word: state.root.room.game.word,
+        artist: state.root.room.game.artist,
+        timeLeft: state.root.room.game.timeLeft, 
         canIDraw,
         isSpectating,
-        canvasData: state.room.game.canvasData,
-        socket: state.socket,
+        canvasData: state.root.room.game.canvasData,
+        socket: state.root.socket,
     }
 };
 

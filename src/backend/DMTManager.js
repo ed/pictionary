@@ -48,9 +48,9 @@ class DMTManager {
   }
 
   getRooms() {
-    let rooms = this.rooms;
-    return Object.keys(rooms).reduce((previous, curRoom) => {
-        previous[curRoom] = this.getGame(curRoom);
+    console.log('1:' + JSON.stringify(this.rooms))
+    return Object.keys(this.rooms).reduce((previous, curRoom) => {
+        previous[curRoom] = this.getRoom(curRoom);
         return previous;
     }, {}); 
   }
@@ -63,6 +63,8 @@ class DMTManager {
       artist: 'doesntmatter',
       timeLeft: -1
     };
+    console.log('2:' + JSON.stringify(this.rooms))
+    console.log(room)
     if (this.rooms[room].game != null) {
       game = this.rooms[room].game.gameState
     }

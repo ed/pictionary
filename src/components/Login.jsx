@@ -4,8 +4,6 @@ import { Link } from 'react-router';
 import { register } from '../actions';
 import { connect } from 'react-redux';
 
-const socket = io.connect();
-
 class Login extends Component {
   constructor(props) {
     super(props);
