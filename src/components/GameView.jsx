@@ -20,7 +20,9 @@ class GameView extends Component {
     this.props.socket.on('update game', (game) => this.updateGame(game) );
     this.props.socket.on('update room', (roomData) => this.updateRoom(roomData) )
     this.props.socket.on('turn over', () =>  alert('turn over'));
-    this.props.dispatch(fetchRoomData(this.props.params.roomName));
+    this.props.dispatch(fetchRoomData(this.props.params.roomName)).then(() => this.setState({
+      roomDataReceived:true
+    }));
   }
 
   componentWillUnmount() {
