@@ -37,6 +37,6 @@ const roomExists = (nextState, replace, cb) => {
 module.exports = (
   <Route path="/" component={GameContainer} >
     <IndexRedirect to='draw_stuff' />
-    <Route path=":roomName" component={GameView} onEnter={roomExists}/>
+    <Route path=":roomName" component={GameView} />
   </Route>
 )

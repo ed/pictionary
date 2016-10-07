@@ -1,5 +1,6 @@
 import * as types from '../constants'
 import 'isomorphic-fetch'
+import { push } from 'react-router-redux';
 
 let headers = new Headers();
 headers.append('Content-Type', 'application/json');
@@ -82,6 +83,31 @@ export const fetchRooms = () => {
         .then(response => response.json())
         .then(rooms => { 
           dispatch(setRooms(rooms))
+        })
+        .catch(error => {
+          // do some error handling here
+          console.log(error)
+        })
+    }
+}
+
+export const fetchRoomData = (room) => {
+    return (dispatch) => {
+        return fetch(`/roomData/room/${room}`, { 
+                headers,
+                method: 'GET', 
+                mode: 'cors',
+                cache: 'default',
+        })
+        .then(response => response.json())
+        .then(roomData => {
+            console.log(roomData)
+            if (roomData.error) {
+                dispatch(push('/'));
+            }
+            else {
+                dispatch(updateRoom(roomData.room));
+            }
         })
         .catch(error => {
           // do some error handling here

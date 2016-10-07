@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Router, Route, IndexRoute, Link, IndexLink, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
-import { updateRoom, setRooms, updateGame, setSocket, setUserInfo } from '../actions'
+import { updateRoom, setRooms, updateGame, setSocket, setUserInfo, fetchRoomData } from '../actions'
 import MessageSection from './MessageSection';
 import Sidebar from './Sidebar';
 import WhiteBoard from './WhiteBoard';
@@ -17,10 +17,10 @@ class GameView extends Component {
   }
 
   componentDidMount() {
-
     this.props.socket.on('update game', (game) => this.updateGame(game) );
     this.props.socket.on('update room', (roomData) => this.updateRoom(roomData) )
     this.props.socket.on('turn over', () =>  alert('turn over'));
+    this.props.dispatch(fetchRoomData(this.props.params.roomName));
   }
 
   componentWillUnmount() {

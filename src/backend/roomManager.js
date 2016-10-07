@@ -109,10 +109,14 @@ module.exports = (app, io) => {
     let room = req.params.roomName;
     console.log(room)
     if (room in rooms) {
-      res.send(rooms[room]);
+      res.send({
+        room: rooms[room]
+      });
     }
     else {
-      res.send(null);
+      res.send({
+        error: true
+      });
     }
   });
 }
