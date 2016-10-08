@@ -66,9 +66,9 @@ class MessageComposer extends Component {
 
 const mapStateToProps = (state) => {
     let noGameGoing = !state.root.room.game.gameInProgress;
-    let isPlaying = (state.root.room.game.players.indexOf(state.root.user) > -1);
+    let isPlaying = (state.root.user in state.root.room.game.players);
     let isArtist = (state.root.room.game.artist === state.root.user);
-    let canChat = noGameGoing || (isPlaying && !isArtist);
+    let canChat = noGameGoing || (isPlaying && state.root.room.game.players[state.root.user].pointsThisTurn == 0 && !isArtist);
     let placeholder = '';
     if (noGameGoing) {
         placeholder = 'Message room';

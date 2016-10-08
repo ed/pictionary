@@ -132,6 +132,7 @@ export const newRoom = (room) => {
         .then(json => { 
             if( !json.error ) {
                 dispatch(setRooms(json.rooms))
+                dispatch(push(`/${room}`));
             }
             else {
                 console.log(json.error)

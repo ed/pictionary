@@ -19,35 +19,41 @@ module.exports = (app, io) => {
     });
   }
 
-  const leaveAllRooms = (socket) => {
-    for (let room in socket.rooms) {
-      socket.leave(room)
+  const leaveRooms = (socket, rooms) => {
+    for (let room in rooms) {
+      socket.leave(room);
+      updateRoom(room);
     }
   }
 
-  const updateRooms = (socket) => {
-    let curRoom = dmtManager.getRoom(socket.curRoom);
+  const updateRoom = (roomName) => {
+    let curRoom = dmtManager.getRoom(roomName);
     let rooms = dmtManager.getRooms();
     let roomData = {
       rooms,
       curRoom
     }
     console.log(roomData)
-    io.sockets.in(socket.curRoom).emit('update room', roomData);
+    io.sockets.in(roomName).emit('update room', roomData);
   }
   
   io.on('connection', (socket) => { 
 
-    socket.on('change room', (roomName) => {
-      console.log(socket.user + ' moved to room: ' + roomName);
-      leaveAllRooms(socket);
-      socket.join(roomName);
-      socket.curRoom = roomName;
-      updateRooms(socket);
+    socket.on('join room', (roomName) => {
+      if (roomName in dmtManager.getRooms()) {
+        console.log(socket.user + ' joined room: ' + roomName);
+        leaveRooms(socket,{...socket.rooms});
+        socket.join(roomName);
+        socket.curRoom = roomName;
+        console.log(socket.rooms)
+        updateRoom(socket.curRoom);
+      } 
     });
 
     socket.on('chat msg', (msg) => {
-      console.log(`${socket.user} sent ${msg.text} to thread: ${socket.curRoom}`);    
+      console.log(`${socket.user} sent ${msg.text} to thread: ${socket.curRoom}`);
+      console.log(socket.rooms)
+      console.log(usersByRoom(socket.curRoom))    
       if ( !dmtManager.testWinner(socket.curRoom,msg) ) {
         msg['color'] = socket.color;
         io.sockets.in(socket.curRoom).emit('update chat', msg);
@@ -66,10 +72,7 @@ module.exports = (app, io) => {
 
     socket.on('add user', (username) => {
       socket.user = username;
-      socket.curRoom = mainRoom;
       socket.color = colors[Math.floor(Math.random()*colors.length)];
-      socket.join(mainRoom);
-      updateRooms(socket);
     });
     
   });
@@ -105,12 +108,11 @@ module.exports = (app, io) => {
   });
 
   app.get('/roomData/room/:roomName', (req, res) => {
-    console.log(`rooms: ${JSON.stringify(rooms)}`);
     let room = req.params.roomName;
-    console.log(room)
-    if (room in rooms) {
+    let roomData = dmtManager.getRoom(room);
+    if (roomData != null) {
       res.send({
-        room: rooms[room]
+        room: roomData
       });
     }
     else {

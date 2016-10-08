@@ -19,6 +19,11 @@ const initGame = {
     canvasData: null
 }
 
+const initRoom = {
+    clients: [],
+    game: initGame
+}
+
 function error(state=null, action) {
     const {type, error} = action
     if (type === types.RESET_ERROR_MESSAGE) {
@@ -40,7 +45,7 @@ function auth(state=initAuth, action) {
     }
 }
 
-function room(state=initGame, action) {
+function room(state=initRoom, action) {
     switch (action.type) {
         case types.UPDATE_GAME:
             return {

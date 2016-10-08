@@ -164,8 +164,7 @@ class Canvas extends Component {
 
 const mapStateToProps = (state) => {
     let canIDraw = (state.root.user === state.root.room.game.artist);
-    let isSpectating = (state.root.room.game.players.indexOf(state.root.user) <= -1);
-    console.log(state.root.room.game.canvasData)
+    let isSpectating = !(state.root.user in state.root.room.game.players);
     return {
         word: state.root.room.game.word,
         artist: state.root.room.game.artist,

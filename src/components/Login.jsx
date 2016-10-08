@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import App from './App';
 import { Link } from 'react-router';
 import { register } from '../actions';
 import { connect } from 'react-redux';

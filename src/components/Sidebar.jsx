@@ -36,12 +36,12 @@ class SideBar extends Component {
           {gameInProgress ?
             <div className="container">
             <PlayerHeader />
-            {players.map( (player) => <Player key={player} name={player} isActive={player===artist}/>)}
+            {Object.keys(players).map( (player) => <Player key={player} name={player} points={players[player].points} isActive={player===artist}/>)}
             </div>
             :
             <div className="container">
             <PlayerHeader />
-            {clients.map( (player) => <Player key={player} name={player} isActive={player===artist}/>)}
+            {clients.map( (player) => <Client key={player} name={player} isActive={player===artist}/>)}
             </div>
         }
         </div>
@@ -74,11 +74,17 @@ export default connect(
   mapStateToProps,
 )(SideBar)
 
-const Player = ({ name, onClick, isActive }) => (
+const Player = ({ name, points, onClick, isActive }) => (
   <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}> 
       <span> {name} </span>
       <br/>
-      <span> 3 PTS</span>
+      <span> {points} PTS</span>
+  </div>
+);
+
+const Client = ({ name, onClick, isActive }) => (
+  <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}> 
+      <span> {name} </span>
   </div>
 );
 

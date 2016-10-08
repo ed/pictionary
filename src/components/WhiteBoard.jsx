@@ -13,7 +13,7 @@ export class WhiteBoard extends Component {
     return (
       <div className="whiteboard">
         { this.props.gameInProgress ? 
-          <Canvas ref={(canvas) => this.canvas = canvas} /> 
+          <Canvas key={this.props.artist} /> 
           : 
           <CanvasButton id='startGame' iconName='play' onClick={() => this.props.socket.emit('start game')} />  
         }
@@ -24,6 +24,7 @@ export class WhiteBoard extends Component {
 
 const mapStateToProps = (state) => {
     return { 
+        artist: state.root.room.game.artist,
         gameInProgress: state.root.room.game.gameInProgress,
         socket: state.root.socket
     }

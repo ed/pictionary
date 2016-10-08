@@ -55,6 +55,10 @@ class DMTManager {
   }
 
   getRoom(room) {
+    if ( !(room in this.rooms) ) {
+      return null;
+    }
+
     let game = {
       gameInProgress: false,
       players: [],
@@ -71,10 +75,11 @@ class DMTManager {
     }
   }
 
-  newGame(room, users) {
+  newGame(room) {
     if ( room in this.rooms && this.rooms[room].gameInProgress == false ) {
       console.log(`game started in room ${room}`);
-      let dmtGame = new DMT(users, room, () => this.endGame(room));
+      let players = usersByRoom(room);
+      let dmtGame = new DMT(players, room, () => this.endGame(room));
       this.rooms[room].game = dmtGame;
       this.rooms[room].gameInProgress = true;
       dmtGame.start();
@@ -120,14 +125,22 @@ class DMTManager {
 class DMT {
   constructor(players, room, endGame) {
     this.pointsForGuesser = [3,2,1];
-    this.pointerForArtist = 3;
+    this.pointsForArtist = 2;
     this.correctGuessers = 0;
     this.room = room;
-    this.players = this.shufflePlayers(players);
+    this.players = players.reduce((previous, curPlayer) => {
+      previous[curPlayer] = {
+        points: 0,
+        pointsThisTurn: 0,
+      }
+      return previous;
+    },{})
+    this.playerOrder = this.shufflePlayers(players);
     this.endGame = endGame;
     this.curArtist = 0;
     this.curWord = 'NONE';
     this.secondsPerTurn = 20;
+    this.numPlayers = players.length;
     this.numRounds = 1;
     this.curRound = 1;
     this.gameState = {
@@ -145,15 +158,26 @@ class DMT {
 
   testWord(player, guess) {
     if (player != this.currentArtist() && guess == this.curWord) {
-      let guesserPoints = this.pointsForGuesser[this.correctGuessers++];
-      console.log(`${player} guessed the word for ${guesserPoints}`);
+      this.allocatePoints(player);
       let author = 'GAME';
-      let text = `${player} guessed the word for ${guesserPoints}`
+      let text = `${player} guessed the word`
       let msg = createMessage(text, author);
+      msg.color = 'red';
       io.sockets.in(this.room).emit('update chat', msg);
+      this.gameState.players = this.players;
+      io.sockets.in(this.room).emit('update game', this.gameState);
       return true;
     }
     return false;
+  }
+
+  allocatePoints(player) {
+    let guesserPoints = this.correctGuessers < this.pointsForGuesser.length ? this.pointsForGuesser[this.correctGuessers++] : this.pointsForGuesser[this.pointsForGuesser.length-1];
+    if (this.players[player].pointsThisTurn == 0) {
+      this.players[player].points += guesserPoints;
+      this.players[player].pointsThisTurn += guesserPoints;
+      this.players[this.currentArtist()].points += this.pointsForArtist;
+    }
   }
 
   endRound() {
@@ -172,7 +196,7 @@ class DMT {
 
     this.curArtist++;
     io.sockets.in(this.room).emit('turn over');
-    if (this.curArtist >= this.players.length) {
+    if (this.curArtist >= this.numPlayers) {
       this.endRound();
     }
     else {
@@ -182,6 +206,9 @@ class DMT {
 
   startTurn() {
     this.curWord = words[Math.floor(Math.random()*words.length)+0];
+    for (let player in this.players) {
+      this.players[player].pointsThisTurn = 0;
+    }
     this.gameState = {
       gameInProgress: true,
       players: this.players,
@@ -204,7 +231,7 @@ class DMT {
   }
 
   currentArtist() {
-    return this.players[this.curArtist];
+    return this.playerOrder[this.curArtist];
   }
 
   shufflePlayers(players) {
