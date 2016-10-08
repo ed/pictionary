@@ -27,6 +27,16 @@ class Canvas extends Component {
     if (this.props.canvasData) {
       this.buildRemoteCanvas(this.props.canvasData);
     }
+
+    key('ctrl + z', () => this.undo());
+    key('ctrl + y', () => this.redo());
+    key('ctrl + c', () => this.clear());
+  }
+
+  componentWillUnmount() {
+    key.unbind('ctrl + z');
+    key.unbind('ctrl + y');
+    key.unbind('ctrl + c');
   }
 
   buildRemoteCanvas(canvasData) {
