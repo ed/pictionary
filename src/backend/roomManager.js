@@ -40,6 +40,7 @@ module.exports = (app, io) => {
   io.on('connection', (socket) => { 
 
     socket.on('join room', (roomName) => {
+      console.log(socket.user + ' tried joining: ' + roomName);
       if (roomName in dmtManager.getRooms()) {
         console.log(socket.user + ' joined room: ' + roomName);
         leaveRooms(socket,{...socket.rooms});
