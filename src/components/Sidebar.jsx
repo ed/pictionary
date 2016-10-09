@@ -19,7 +19,10 @@ class SideBar extends Component {
 
   closeBrowseRooms() { this.setState({browseRoomsOpen: false}); }
 
-  openCreateRooms() { this.setState({createRoomOpen: true}); }
+  openCreateRooms(e) { 
+    this.setState({createRoomOpen: true});
+    e.preventDefault(); 
+  }
 
   closeCreateRooms() { this.setState({createRoomOpen: false}); }
 
@@ -28,10 +31,13 @@ class SideBar extends Component {
     console.log(rooms)
     return (
       <div id="sidebar">
-        <div className="sidebarHeader">
-        <div className="headerText">Pretty Pictures</div>
-        <div className="addChannel" onClick={() => this.openCreateRooms()}> <i className="fa fa-plus-square-o fa-lg"></i> </div>
-        </div>
+        <Link to="/">
+          <div className="sidebarHeader">
+          <div className="headerText">Pretty Pictures</div>
+          <div className="addChannel" onClick={(e) => this.openCreateRooms(e)}> <i className="fa fa-plus-square-o fa-lg"></i> </div>
+          <div className="headerUsername">{this.props.user}</div>
+          </div>
+        </Link>
         <div className="sidebarElementArea">
           {gameInProgress ?
             <div className="container">
@@ -62,6 +68,7 @@ class SideBar extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    user: state.root.user,
     clients: state.root.room.clients,
     gameInProgress: state.root.room.game.gameInProgress,
     rooms: state.root.rooms.rooms,

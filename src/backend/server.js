@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.use('/bin', publicPath)
 
 var server = require('http').Server(app);
-var io = require('./socket')(server);
+var io = require('socket.io')(server);
 
 var roomManager = require('./roomManager')(app, io);
 

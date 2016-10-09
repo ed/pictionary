@@ -7,6 +7,7 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux'
 import routes from '../routes'
 import './css/style.css'
+import './css/switch.css'
 
 const preloadedState = window.__PRELOADED_STATE__
 const store = configureStore(browserHistory, preloadedState);

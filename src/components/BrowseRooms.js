@@ -8,7 +8,9 @@ class BrowseRooms extends Component {
 	  super(props);
 	
 	  this.state = {
-	  	isFetching: true
+	  	isFetching: true,
+	  	roomName: '',
+	  	hoveredRoom: 'NONE'
 	  };
 	}
 
@@ -18,7 +20,61 @@ class BrowseRooms extends Component {
     }))
   }
 
+  _onChange(e) {
+      this.setState({roomName: e.target.value});
+  }
+
+  _onKeyDown(e) {
+      if (e.keyCode === 13) {
+          if (this.state.roomName.trim().length > 0){
+            this.createRoom(); 
+          }
+          e.preventDefault()             
+      }
+      if (e.keyCode === 27) this.props.close();
+  }
+
+  hoverRoom(room) {
+  	this.setState({
+  		hoveredRoom: room
+  	})
+  }
+
+  unHoverRoom() {
+  	this.setState({
+  		hoveredRoom: 'NONE'
+  	})
+  }
+
+  filterRooms() {
+  	let prevRoom;
+  	let rooms = Object.keys(this.props.rooms).filter((room) => room.startsWith(this.state.roomName));
+  	return rooms.map( (room) => {
+  		let displayBorderTop = true;
+  		if ( prevRoom === this.state.hoveredRoom || room === this.state.hoveredRoom ) displayBorderTop = false;
+  		prevRoom = room;
+  		return <Room key={room} isHovered={room === this.state.hoveredRoom} displayBorderTop={displayBorderTop} onMouseOver={() => this.hoverRoom(room)} onMouseOut={() => this.unHoverRoom()} name={room} room={this.props.rooms[room]} onClick={this.props.close} />
+  	});
+  }
+
 	render() {
+		const textBoxStyle = {
+      fontSize:'120%',
+      color:'#464646',
+      paddingBottom: '6px', 
+      paddingTop:'15px',
+      marginLeft: 0,
+      marginRight: 0, 
+      paddingRight: 0,
+      marginTop: '10px', 
+      marginBottom: '20px', 
+      borderWidth: '1px', 
+      height: '54px',
+      width: '100%',
+      boxSizing: 'border-box',
+      flex: '0 0 auto'
+    }
+		let rooms=this.filterRooms();
 		return (
 			<div className="container">
 			  {this.state.isFetching ?
@@ -26,10 +82,12 @@ class BrowseRooms extends Component {
 			    <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
 			  </div>
 			  : 
-			  <div className="container">
-			  <ul >
-			  	{Object.keys(this.props.rooms).map( (room) => <li  key={room}><Room name={room} onClick={this.props.close} /> </li>)}
-			  </ul>
+			  <div className="container" style={{position: 'relative',display: 'flex',flexDirection: 'column'}}>
+				  <h1 style={{marginBottom: '10px', fontWeight:'bold', marginBottom: '25px'}}>Join a room</h1>
+				  <textarea placeholder='Find a room' spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
+				  <div className="rooms">
+				  { rooms.length > 0 ? rooms : <span>No rooms match <span style={{fontWeight:'bold'}}>{this.state.roomName}</span></span>}
+				  </div>
 			  </div>
 			}
 			</div>
@@ -37,12 +95,33 @@ class BrowseRooms extends Component {
 	}
 }
 
-const Room = ({ name, onClick }) => (
-	<div className="room">
-		<Link onClick={onClick} to={name}>
-			{name}
+const Room = ({ name, room, onClick, onMouseOut, onMouseOver, displayBorderTop, isHovered }) => (
+		<Link 
+		onMouseOver={onMouseOver} 
+		onMouseOut={onMouseOut} 
+		onClick={onClick} 
+		to={name} 
+		className="room" 
+		style={{
+		 borderTop: displayBorderTop? '1px solid #DEDEDE' : isHovered? '' : '1px solid white', paddingLeft: '10px', 
+		 color:'grey', 
+		 paddingTop: '8px', 
+		 paddingBottom: '8px', 
+		 textDecoration: 'none' 
+		}}>
+			<span style={{color:'#464646', fontSize:'90%', fontWeight:'bold'}}> {name} </span>
+			<div style={{float:'right', marginRight: '10px', marginTop: 'auto', marginBottom: 'auto'}}>
+			<i className="fa fa-users" aria-hidden="true"></i>
+			<span style={{marginLeft:'7px'}}> {room.clients.length} </span>
+			</div>
 		</Link>
-	</div>
 )
 
-export default connect()(BrowseRooms)
+const mapStateToProps = (state) => {
+  return { 
+      rooms: state.root.rooms.rooms
+  }
+};
+export default connect(
+	mapStateToProps,
+)(BrowseRooms)

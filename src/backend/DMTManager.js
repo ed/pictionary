@@ -188,6 +188,13 @@ class DMT {
     }
     else {
       this.endGame();
+      this.gameState = {
+        gameInProgress: false,
+        players: [],
+        word : '',
+        artist: 'doesntmatter',
+        timeLeft: -1
+      };
     }
   }
 

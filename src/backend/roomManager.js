@@ -92,7 +92,8 @@ module.exports = (app, io) => {
   });
 
   app.post('/roomData/newRoom', (req, res) => {
-    let roomName = req.body.room;
+    let roomName = req.body.roomName;
+    let rooms = dmtManager.getRooms();
 
     if (roomName in rooms) {
       res.send({
@@ -101,7 +102,8 @@ module.exports = (app, io) => {
     }
     else {
       dmtManager.addRoom(roomName);
-      let rooms = dmtManager.getRooms();
+      rooms = dmtManager.getRooms();
+
       res.send({
       	rooms
       })

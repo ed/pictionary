@@ -5,16 +5,24 @@ html {
 
 a>span {
     text-decoration: none;
+    color:inherit;
 }
 
-a, a>span :hover {
+a { text-decoration: none; color: #33A1DE;}
+a:visited { text-decoration: none; color: #33A1DE; }
+a:hover { text-decoration: underline; }
+a:focus { text-decoration: none; }
+a:active { text-decoration: none; color: inherit;}
+
+#sidebar>a {
+    color:inherit;
     text-decoration: none;
 }
 
 html, body {
     height: 100%;
     margin: 0;
-    color: #545454;
+    color:#464646;
     font-family: 'Lato', sans-serif;
     padding: 0;
     overflow-x: hidden;
@@ -77,6 +85,36 @@ html, body {
     width: 100%;
     font-size: 200%;
 }
+
+.rooms {
+    flex: 1;
+    overflow: auto;
+}
+
+    .room {
+        margin-top: -1px;
+        border-left: 1px solid rgba(255, 255, 255, 0);
+        border-right: 1px solid rgba(255, 255, 255, 0);
+        color:#464646;
+        width:100%;
+        height: 60px;
+        display:block;
+        position: relative;
+        box-sizing: border-box;
+        z-index: 1;
+    }
+
+
+    .room:hover {
+        position:relative;
+        background: red;
+        border-radius: 3px;
+        border: 1px solid rgba(30, 144, 255, .2);
+        background: rgba(30, 144, 255, .1);
+        text-decoration: none;
+        z-index:2;
+    }
+
 
 .closeModal {
     -webkit-user-select: none;
@@ -332,11 +370,11 @@ html, body {
             }
 
             .message-composer:focus {
-                border-color: #7578d1;
+                border-color: #1E90FF;
             }
 
             .message-composer:hover {
-                border-color: #7578d1;
+                border-color: #1E90FF;
             }
 
     #sidebar {
@@ -364,19 +402,27 @@ html, body {
 
         .sidebarHeader {
             margin-bottom: 20px;
-            font-size: 130%;
-            font-weight: 900;
-            color:white;
             height: 70px;
             width: 100%;
         }
             .headerText {
+                color:white;
+                font-size: 110%;
+                font-weight: 900;
                 display: inline-block;
                 width: 75%;
-                margin: 15px;
+                margin-top: 15px;
+                margin-left: 15px;
+            }
+
+            .headerUsername {
+                font-size: 90%;
+                margin-top: 5px;
+                margin-left: 15px;
             }
 
         .sidebarHeader:hover {
+            color: white;
             background:#252525;
         }
 
@@ -424,11 +470,15 @@ html, body {
 
             .sidebarElement:hover {
                 background:#5C6380;
+                border-right: 2px solid #5C6380;
+            }
+
+            .sidebarElement.active:hover {
+                background:#5C6380;
             }
 
             .sidebarElement.active {
-                background: #D39B46;
-                opacity: 1;
+                border: 1px solid #D39B46;
             }
 
         .sidebarElement>span>i {
@@ -440,6 +490,16 @@ html, body {
             color:#DEDEDE;
             user-select: none;
         }
+
+    .channelInterfaceContainer {
+        width: 100%;
+        text-align: center;
+    }
+
+    .channelInterfaceContainer:hover {
+        color: white;
+        background:#252525;
+    }
 
 /* Pretty Scrollbar */
 ::-webkit-scrollbar {

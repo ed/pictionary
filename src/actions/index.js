@@ -104,9 +104,16 @@ export const fetchRoomData = (room) => {
             console.log(roomData)
             if (roomData.error) {
                 dispatch(push('/'));
+                return {
+                    error: true
+                }
             }
             else {
                 dispatch(updateRoom(roomData.room));
+                return {
+                    error: false,
+                    room: roomData.room
+                }
             }
         })
         .catch(error => {
@@ -116,23 +123,24 @@ export const fetchRoomData = (room) => {
     }
 }
 
-export const newRoom = (room) => {
+export const newRoom = (roomData) => {
     return (dispatch) => {
-        console.log(room)
+        console.log(roomData)
         return fetch('/roomData/newRoom', { 
                 headers,
                 method: 'POST', 
                 mode: 'cors',
                 cache: 'default',
                 body: JSON.stringify({
-                    room,
+                    roomName: roomData.name,
+                    visibility: roomData.visibility
                 })
         })
         .then(response => response.json())
         .then(json => { 
             if( !json.error ) {
                 dispatch(setRooms(json.rooms))
-                dispatch(push(`/${room}`));
+                dispatch(push(`/${roomData.name}`));
             }
             else {
                 console.log(json.error)

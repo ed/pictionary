@@ -281,5 +281,3 @@ export class ColorCircle extends Component {
     );
   }
 }
-
-
