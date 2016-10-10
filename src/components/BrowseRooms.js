@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux';
 import { fetchRooms } from '../actions'
+import WhiteBoard from './WhiteBoard'
+import CanvasViewOnly from './CanvasViewOnly'
 
 class BrowseRooms extends Component {
 	constructor(props) {
@@ -106,22 +108,27 @@ const Room = ({ name, room, onClick, onMouseOut, onMouseOver, displayBorderTop, 
 		 borderTop: displayBorderTop? '1px solid #DEDEDE' : isHovered? '' : '1px solid white', paddingLeft: '10px', 
 		 color:'grey', 
 		 paddingTop: '8px', 
-		 paddingBottom: '8px', 
+		 paddingBottom: '8px',  
 		 textDecoration: 'none' 
 		}}>
-			<span style={{color:'#464646', fontSize:'90%', fontWeight:'bold'}}> {name} </span>
-			<div style={{float:'right', marginRight: '10px', marginTop: 'auto', marginBottom: 'auto'}}>
-			<i className="fa fa-users" aria-hidden="true"></i>
-			<span style={{marginLeft:'7px'}}> {room.clients.length} </span>
+			<span style={{color:'#5d5d5d', fontSize:'90%', fontWeight:'bold'}}> {name} </span>
+			<div style={{position: 'absolute',top:'30px', left:'10px', width:'100px', height: '80px', border: '1px solid #c5c5c5'}} >
+			{room.game.gameInProgress ? <CanvasViewOnly canvasData={room.game.canvasData} /> : <i style={{top: 'calc(50% - 7px)', left: 'calc(50% - 5px)', position: 'absolute', color: '#FF8669'}}className={`fa fa-play`} aria-hidden="true"></i> }
+			</div>
+			<div style={{color:'#c5c5c5', float:'right', marginRight: '10px', fontSize: '90%'}}>
+			<i className="ion-ios-person-outline" aria-hidden="true"></i>
+			<span style={{marginLeft:'2px'}}> {room.clients.length} </span>
 			</div>
 		</Link>
 )
 
 const mapStateToProps = (state) => {
   return { 
+  		canvasData: state.root.room.game.canvasData,
       rooms: state.root.rooms.rooms
   }
 };
+
 export default connect(
 	mapStateToProps,
 )(BrowseRooms)

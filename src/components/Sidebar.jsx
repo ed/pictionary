@@ -28,7 +28,6 @@ class SideBar extends Component {
 
   render() {
     const { clients, gameInProgress, players, artist, rooms } = this.props;
-    console.log(rooms)
     return (
       <div id="sidebar">
         <Link to="/">

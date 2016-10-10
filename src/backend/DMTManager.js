@@ -76,15 +76,15 @@ class DMTManager {
   }
 
   newGame(room) {
-    if ( room in this.rooms && this.rooms[room].gameInProgress == false ) {
+    let players = usersByRoom(room);
+    if ( room in this.rooms && this.rooms[room].gameInProgress == false && players.length > 1) {
       console.log(`game started in room ${room}`);
-      let players = usersByRoom(room);
       let dmtGame = new DMT(players, room, () => this.endGame(room));
       this.rooms[room].game = dmtGame;
       this.rooms[room].gameInProgress = true;
       dmtGame.start();
     }
-    else {
+    else if (players.length < 2){
       console.log(`game already started in room ${room}`)
     }
   }

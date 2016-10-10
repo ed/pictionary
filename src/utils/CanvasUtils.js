@@ -58,7 +58,7 @@ export class Mark {
     this.size = size;
     this.startPosition = startPosition;
     this.points = points;
-    this.action = (w,h) => this.reDraw(w,h);
+    this.action = (w,h,s) => this.reDraw(w,h,s);
   }
 
   startStroke(){
@@ -83,14 +83,14 @@ export class Mark {
     this.ctx.stroke();
   }
 
-  reDraw(width, height) {
+  reDraw(width, height, size=this.points[0].size) {
     this.ctx.beginPath();
     this.ctx.moveTo(this.points[0].pos.x*width, this.points[0].pos.y*height);
     this.ctx.strokeStyle = this.points[0].color;
-    this.ctx.lineWidth = this.points[0].size;
+    this.ctx.lineWidth = size;
     for (var j = 0; j < this.points.length; j++) {
       this.ctx.strokeStyle = this.points[j].color;
-      this.ctx.lineWidth = this.points[j].size;
+      this.ctx.lineWidth = size;
       this.ctx.lineTo(this.points[j].pos.x*width, this.points[j].pos.y*height);
     }
     this.ctx.stroke();

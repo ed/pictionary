@@ -79,7 +79,6 @@ class GameView extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return { 
       socket: state.root.socket,
       user: state.root.user
