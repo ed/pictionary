@@ -210,15 +210,11 @@ class ArtistOptions extends Component {
   }
 }
 
-export class CanvasButton extends Component {
-  render() {
-    return (
-      <div className={`option ${this.props.id}`} onClick={this.props.onClick}>
-        <i id={this.props.id} className={`fa fa-${this.props.iconName}`} aria-hidden="true"></i>
-      </div>
-      );
-  }
-}
+export const CanvasButton = ({ children, id, onClick, iconName }) => (
+    <div className={`option ${id}`} onClick={onClick}>
+      <i id={id} className={`fa fa-${iconName}`} aria-hidden="true"></i>
+    </div>
+);
 
 
 export class ColorCircle extends Component {

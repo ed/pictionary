@@ -200,7 +200,7 @@ html, body {
 
         #startGame {
             line-height: 60px;
-            color:#F79F66;
+            color: #e0e0e0;
             position:absolute;
             font-size: 200%;
             top:40%;
@@ -208,8 +208,14 @@ html, body {
             opacity: .5;
         }
 
-        #startGame:hover {
+        .active #startGame  {
+            cursor: pointer;
+            color:#F79F66;
+        }
+
+        .active #startGame:hover {
             opacity: 1;
+            color: #FF8669;
         }
 
 .timer {

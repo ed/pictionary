@@ -99,8 +99,8 @@ class BrowseRooms extends Component {
 
 const Room = ({ name, room, onClick, onMouseOut, onMouseOver, displayBorderTop, isHovered }) => (
 		<Link 
-		onMouseOver={onMouseOver} 
-		onMouseOut={onMouseOut} 
+		onMouseEnter={onMouseOver} 
+		onMouseLeave={onMouseOut} 
 		onClick={onClick} 
 		to={name} 
 		className="room" 
@@ -113,11 +113,21 @@ const Room = ({ name, room, onClick, onMouseOut, onMouseOver, displayBorderTop, 
 		}}>
 			<span style={{color:'#5d5d5d', fontSize:'90%', fontWeight:'bold'}}> {name} </span>
 			<div style={{position: 'absolute',top:'30px', left:'10px', width:'100px', height: '80px', border: '1px solid #c5c5c5'}} >
-			{room.game.gameInProgress ? <CanvasViewOnly canvasData={room.game.canvasData} /> : <i style={{top: 'calc(50% - 7px)', left: 'calc(50% - 5px)', position: 'absolute', color: '#FF8669'}}className={`fa fa-play`} aria-hidden="true"></i> }
+			{room.game.gameInProgress ? 
+				<CanvasViewOnly canvasData={room.game.canvasData} /> 
+				: 
+				<i style={{top: 'calc(50% - 7px)', left: 'calc(50% - 5px)', position: 'absolute', color: '#FF8669'}}className={`fa fa-play`} aria-hidden="true"></i> 
+			}
 			</div>
-			<div style={{color:'#c5c5c5', float:'right', marginRight: '10px', fontSize: '90%'}}>
-			<i className="ion-ios-person-outline" aria-hidden="true"></i>
-			<span style={{marginLeft:'2px'}}> {room.clients.length} </span>
+			<div style={{marginTop:'40px',color:'#c5c5c5', float:'right', marginRight: '10px', fontSize: '90%'}}>
+			{isHovered ?
+				<i style={{color: '#1E90FF', fontSize: '200%'}}className="ion-ios-arrow-thin-right" aria-hidden="true"></i>
+				:
+				<div className="container">
+				<i className="ion-ios-person-outline" aria-hidden="true"></i>
+				<span style={{marginLeft:'2px'}}> {room.clients.length} </span>
+				</div>
+			}
 			</div>
 		</Link>
 )

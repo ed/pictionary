@@ -1,6 +1,7 @@
 'use strict';
 
 var DMTManager = require('./DMTManager');
+const uuid = require('node-uuid');
 
 let mainRoom = 'draw_stuff';
 let colors = ['#FF0000','#800000','#FFFF00','#808000','#008080','#F08080','#DAF7A6','#581845'];
@@ -34,7 +35,6 @@ module.exports = (app, io) => {
       curRoom
     }
     console.log(roomData)
-    io.sockets.in(roomName).emit('update room', roomData);
   }
   
   io.on('connection', (socket) => { 
@@ -53,8 +53,6 @@ module.exports = (app, io) => {
 
     socket.on('chat msg', (msg) => {
       console.log(`${socket.user} sent ${msg.text} to thread: ${socket.curRoom}`);
-      console.log(socket.rooms)
-      console.log(usersByRoom(socket.curRoom))    
       if ( !dmtManager.testWinner(socket.curRoom,msg) ) {
         msg['color'] = socket.color;
         io.sockets.in(socket.curRoom).emit('update chat', msg);
@@ -86,26 +84,38 @@ module.exports = (app, io) => {
 
   app.get('/roomData/roomList', (req, res) => {
     console.log('getting room LIST')
-    let roomList = dmtManager.getRooms();
-    console.log(roomList)
+    let roomList = dmtManager.getPublicRooms();
     res.send(roomList);
   });
 
   app.post('/roomData/newRoom', (req, res) => {
-    let roomName = req.body.roomName;
+    let { roomName, visibility } = req.body;
     let rooms = dmtManager.getRooms();
+    console.log(JSON.stringify(req.body))
 
-    if (roomName in rooms) {
-      res.send({
-      	error: '??'
-      })
+    if (visibility == 'public') {
+      if (roomName in rooms) {
+        res.send({
+          error: '??'
+        })
+      }
+      else {
+        dmtManager.addRoom(roomName);
+        rooms = dmtManager.getPublicRooms();
+
+        res.send({
+          rooms,
+          roomName
+        })
+      }
     }
     else {
-      dmtManager.addRoom(roomName);
-      rooms = dmtManager.getRooms();
-
+      roomName = uuid.v4();
+      dmtManager.addRoom(roomName, visibility);
+      rooms = dmtManager.getPublicRooms();
       res.send({
-      	rooms
+        rooms,
+        roomName
       })
     }
   });

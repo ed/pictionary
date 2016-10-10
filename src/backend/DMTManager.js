@@ -39,17 +39,27 @@ class DMTManager {
     io = socketio;
   }
 
-  addRoom(roomName) {
+  addRoom(roomName, visibility='public') {
     this.rooms[roomName] = {
       game: null,
       gameInProgress: false,
       clients: [],
+      visibility
     };
   }
 
   getRooms() {
     return Object.keys(this.rooms).reduce((previous, curRoom) => {
         previous[curRoom] = this.getRoom(curRoom);
+        return previous;
+    }, {}); 
+  }
+
+  getPublicRooms() {
+    return Object.keys(this.rooms).reduce((previous, curRoom) => {
+        if (this.rooms[curRoom].visibility == 'public') {
+          previous[curRoom] = this.getRoom(curRoom);
+        }
         return previous;
     }, {}); 
   }

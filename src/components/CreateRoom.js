@@ -9,29 +9,51 @@ class CreateRoom extends Component {
   
     this.state = {
       roomName: '',
-      private: false
+      private: false,
+      roomError: ''
     };
   }
 
   createRoom() {
-    let roomData = {
-      name: this.state.roomName.trim(),
-      visibility: this.state.private ? 'private' : 'public'
-    }
+    if (this.state.roomError.length == 0){
+      let roomData = {
+        name: this.state.roomName,
+        visibility: this.state.private ? 'private' : 'public'
+      }
 
-    this.props.dispatch(newRoom(roomData))
+      this.props.dispatch(newRoom(roomData))
+    }
   }
 
   _onChange(e) {
-      this.setState({roomName: e.target.value});
+    let roomName = e.target.value;
+    this.setState({ roomName });
+    if (!this.state.private) {
+      if (roomName.length < 1) {
+        this.setState({ roomError: 'Please enter a room name.'})
+      }
+      else if (roomName.search(/\./) > -1) {
+        this.setState({ roomError: 'Names cannot contain periods'})
+      }
+      else if (roomName.search(' ') > -1) {
+        this.setState({ roomError: 'Names cannot contain spaces'})
+      }
+      else if (roomName.toLowerCase() != roomName) {
+        this.setState({ roomError: 'Names must be lowercase'})
+      }
+      else if (roomName in this.props.rooms) {
+        this.setState({ roomError: `\"${roomName}\" is already taken by a public room`})
+      }
+      else {
+        this.setState({ roomError: ''})
+      }
+    }
   }
 
   _onKeyDown(e) {
       if (e.keyCode === 13) {
-          if (this.state.roomName.trim().length > 0){
-            this.createRoom(); 
-          }
-          e.preventDefault()             
+          this.createRoom();
+          e.preventDefault();             
       }
       if (e.keyCode === 27) this.props.close();
   }
@@ -52,11 +74,13 @@ class CreateRoom extends Component {
       marginRight: 0, 
       paddingRight: 0,
       marginTop: '10px', 
-      marginBottom: '10px', 
       borderWidth: '1px', 
       height: '44px',
       width: '100%',
       boxSizing: 'border-box'
+    }
+    if (this.state.roomError.length > 1) {
+      textBoxStyle.borderColor = 'orange';
     }
     return (
         <div className="container">
@@ -67,8 +91,10 @@ class CreateRoom extends Component {
           <span className="switch-label" data-on="Private" data-off="Public"></span> 
           <span className="switch-handle"></span> 
         </label>
-        <span style={{paddingBottom: '10px', fontWeight:'bold', color:'#464646'}}> Name </span>
+        <span style={{paddingBottom: '10px', fontWeight:'bold', color:'#464646'}}> Name </span> 
+        <i style={{paddingBottom: '10px', fontSize:'80%', fontWeight:'bold', color:'orange'}}>   {this.state.roomError} </i>
         <textarea className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
+        <div style={{marginBottom: '12px', fontSize:'70%', color:'#c1c1c1'}}> Names must be lowercase, with no spaces or periods. </div>
         <br/>
         <button className="myButton" onClick={() => this.createRoom()}>Create Room</button>
         <div > or <Link to="browse">join a public room </Link></div>
@@ -81,4 +107,12 @@ CreateRoom.contextTypes = {
     router: React.PropTypes.object
 }
 
-export default connect()(CreateRoom)
+const mapStateToProps = (state) => {
+  return {
+    rooms: state.root.rooms.rooms
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(CreateRoom)

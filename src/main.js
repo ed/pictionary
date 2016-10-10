@@ -1,13 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
-import root from 'reducers'
-import configureStore from 'store'
+import root from 'reducers';
+import configureStore from 'store';
 import { Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
-import { Provider } from 'react-redux'
-import routes from '../routes'
-import './css/style.css'
-import './css/switch.css'
+import { Provider } from 'react-redux';
+import routes from '../routes';
+import './css/style.css';
+import './css/switch.css';
 
 const preloadedState = window.__PRELOADED_STATE__
 const store = configureStore(browserHistory, preloadedState);

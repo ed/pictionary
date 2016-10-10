@@ -19,7 +19,6 @@ export const register = (username, password) => {
                     'username': username,
                     'password': password
                 });
-        console.log(body)
         fetch('/register', { 
             method: 'POST', 
             headers,
@@ -101,7 +100,6 @@ export const fetchRoomData = (room) => {
         })
         .then(response => response.json())
         .then(roomData => {
-            console.log(roomData)
             if (roomData.error) {
                 dispatch(push('/'));
                 return {
@@ -140,7 +138,7 @@ export const newRoom = (roomData) => {
         .then(json => { 
             if( !json.error ) {
                 dispatch(setRooms(json.rooms))
-                dispatch(push(`/${roomData.name}`));
+                dispatch(push(`/${json.roomName}`));
             }
             else {
                 console.log(json.error)
