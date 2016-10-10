@@ -14,6 +14,8 @@ class Canvas extends Component {
       canvasHeight: 0,
       brushColor: "#C45100", 
       brushSize: 8, 
+      guessers: [],
+      turnOver: false
     };
     this.remakeCanvasRemote = () => null;
   }
@@ -23,6 +25,10 @@ class Canvas extends Component {
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.actionHistory = new ActionHistory(this.clearCanvas);
     this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData));
+    this.props.socket.on('turn over', guessers => this.setState({
+      turnOver: true,
+      guessers
+    }));
     this.setCanvasSize();
     if (this.props.canvasData) {
       this.buildRemoteCanvas(this.props.canvasData);
@@ -37,6 +43,8 @@ class Canvas extends Component {
     key.unbind('ctrl + z');
     key.unbind('ctrl + y');
     key.unbind('ctrl + c');
+    this.props.socket.off('turn over');
+    this.props.socket.off('update canvas');
   }
 
   buildRemoteCanvas(canvasData) {
@@ -156,7 +164,15 @@ class Canvas extends Component {
         ref={(canvas) => this.canvas = canvas}
         />
         {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
-        <div className="timer"> {this.props.timeLeft} </div>
+        <div className="canvasMessage">
+        {
+          !this.state.turnOver ?  <div className="timer"> {this.props.timeLeft} </div> 
+        : 
+          <div className="guesserDisplay"> the word was <span style={{fontWeight:'bold',color: 'orange'}}>{this.props.word}</span>. 
+          {this.state.guessers.length > 0 ? this.state.guessers.join(', ') : 'no one'} guessed the word 
+          </div> 
+        }
+        </div> 
         {canIDraw ? <div className="word"> <span>{this.props.word}</span> </div> : null}
         {canIDraw ? <ArtistOptions 
           color={this.state.brushColor} 
@@ -170,7 +186,6 @@ class Canvas extends Component {
       )
     }
 }
-
 
 const mapStateToProps = (state) => {
     let canIDraw = (state.root.user === state.root.room.game.artist);

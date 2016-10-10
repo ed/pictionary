@@ -187,6 +187,7 @@ class DMT {
       this.players[player].points += guesserPoints;
       this.players[player].pointsThisTurn += guesserPoints;
       this.players[this.currentArtist()].points += this.pointsForArtist;
+      this.players[this.currentArtist()].pointsThisTurn += this.pointsForArtist;
     }
   }
 
@@ -211,17 +212,21 @@ class DMT {
   endTurn() {
     clearTimeout(this.turnTimer);
 
-    this.curArtist++;
-    io.sockets.in(this.room).emit('turn over');
-    if (this.curArtist >= this.numPlayers) {
-      this.endRound();
-    }
-    else {
-      this.startTurn();
-    }  
+    let guessers = this.playerOrder.filter((player) => this.players[player].pointsThisTurn > 0 && player !== this.currentArtist())
+    io.sockets.in(this.room).emit('turn over', guessers);
+    setTimeout(() => {
+      this.curArtist++;
+      if (this.curArtist >= this.numPlayers) {
+        this.endRound();
+      }
+      else {
+        this.startTurn();
+      }  
+    },10000)
   }
 
   startTurn() {
+    this.correctGuessers = 0;
     this.curWord = words[Math.floor(Math.random()*words.length)+0];
     for (let player in this.players) {
       this.players[player].pointsThisTurn = 0;

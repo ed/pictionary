@@ -19,19 +19,14 @@ class GameView extends Component {
   componentDidMount() {
     this.props.socket.on('update game', (game) => this.updateGame(game) );
     this.props.socket.on('update room', (roomData) => this.updateRoom(roomData) );
-    this.props.socket.on('turn over', () =>  alert('turn over'));
-    this.props.socket.emit('join room', this.props.params.roomName);
-    this.fetchRoomData(this.props.params.roomName);
-    this.roomUpdate = setInterval(() => this.props.dispatch(fetchRoomData(this.props.params.roomName)), 1000)
+    this.fetchRoomData(this.props.params.roomName)
   }
 
   fetchRoomData(room) {
-    this.props.dispatch(fetchRoomData(this.props.params.roomName)).then((res) => {
+    this.props.dispatch(fetchRoomData(room)).then((res) => {
       console.log(res)
       if (!res.error) {
-        this.setState({
-          roomDataReceived: true
-        });
+        this.props.socket.emit('join room', room);
       }
     });
   }
@@ -40,7 +35,6 @@ class GameView extends Component {
     clearInterval(this.roomUpdate)
     this.props.socket.off('update game');
     this.props.socket.off('update room');
-    this.props.socket.off('turn over');
   }
 
   updateRoom(roomData) {
@@ -60,9 +54,7 @@ class GameView extends Component {
       this.setState({
         roomDataReceived: false,
       });
-      console.log('client change room')
       this.props.socket.emit('join room', nextProps.params.roomName);
-      this.fetchRoomData(nextProps.params.roomName)
     }
   }
 

@@ -34,7 +34,7 @@ module.exports = (app, io) => {
       rooms,
       curRoom
     }
-    console.log(roomData)
+    io.sockets.in(roomName).emit('update room', roomData)
   }
   
   io.on('connection', (socket) => { 

@@ -218,15 +218,20 @@ html, body {
             color: #FF8669;
         }
 
-.timer {
-    display:flex;
-    margin: 0 auto 0 auto;
-    position: absolute;
-    width:20%;
-    left:50%;
-    top:50px;
-    font-size: 250%;
+.canvasMessage {
     pointer-events: none;
+    width: 600px;
+    height: 100px;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top:0;
+}
+
+.timer {
+    font-size: 250%;
 }
 
 .word {
@@ -471,11 +476,12 @@ html, body {
             display:block;
             width:100%;
             color:white;
+            border: 2px solid #2f2c2f;
         }
 
             .sidebarElement:hover {
                 background:#5C6380;
-                border-right: 2px solid #5C6380;
+                border: 2px solid #5C6380;
             }
 
             .sidebarElement.active:hover {
@@ -483,7 +489,7 @@ html, body {
             }
 
             .sidebarElement.active {
-                border: 1px solid #D39B46;
+                border: 2px solid #D39B46;
             }
 
         .sidebarElement>span>i {
