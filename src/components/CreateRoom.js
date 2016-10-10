@@ -10,12 +10,12 @@ class CreateRoom extends Component {
     this.state = {
       roomName: '',
       private: false,
-      roomError: ''
+      roomNameError: ''
     };
   }
 
   createRoom() {
-    if (this.state.roomError.length == 0){
+    if (this.state.roomNameError.length == 0 || this.state.private){
       let roomData = {
         name: this.state.roomName,
         visibility: this.state.private ? 'private' : 'public'
@@ -30,22 +30,22 @@ class CreateRoom extends Component {
     this.setState({ roomName });
     if (!this.state.private) {
       if (roomName.length < 1) {
-        this.setState({ roomError: 'Please enter a room name.'})
+        this.setState({ roomNameError: 'Please enter a room name.'})
       }
       else if (roomName.search(/\./) > -1) {
-        this.setState({ roomError: 'Names cannot contain periods'})
+        this.setState({ roomNameError: 'Names cannot contain periods'})
       }
       else if (roomName.search(' ') > -1) {
-        this.setState({ roomError: 'Names cannot contain spaces'})
+        this.setState({ roomNameError: 'Names cannot contain spaces'})
       }
       else if (roomName.toLowerCase() != roomName) {
-        this.setState({ roomError: 'Names must be lowercase'})
+        this.setState({ roomNameError: 'Names must be lowercase'})
       }
       else if (roomName in this.props.rooms) {
-        this.setState({ roomError: `\"${roomName}\" is already taken by a public room`})
+        this.setState({ roomNameError: `\"${roomName}\" is already taken by a public room`})
       }
       else {
-        this.setState({ roomError: ''})
+        this.setState({ roomNameError: ''})
       }
     }
   }
@@ -79,7 +79,7 @@ class CreateRoom extends Component {
       width: '100%',
       boxSizing: 'border-box'
     }
-    if (this.state.roomError.length > 1) {
+    if (this.state.roomNameError.length > 1) {
       textBoxStyle.borderColor = 'orange';
     }
     return (
@@ -91,11 +91,14 @@ class CreateRoom extends Component {
           <span className="switch-label" data-on="Private" data-off="Public"></span> 
           <span className="switch-handle"></span> 
         </label>
-        <span style={{paddingBottom: '10px', fontWeight:'bold', color:'#464646'}}> Name </span> 
-        <i style={{paddingBottom: '10px', fontSize:'80%', fontWeight:'bold', color:'orange'}}>   {this.state.roomError} </i>
-        <textarea className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
-        <div style={{marginBottom: '12px', fontSize:'70%', color:'#c1c1c1'}}> Names must be lowercase, with no spaces or periods. </div>
-        <br/>
+        {this.state.private ? null :
+          <div >
+          <span style={{paddingBottom: '10px', fontWeight:'bold', color:'#464646'}}> Name </span> 
+          <i style={{paddingBottom: '10px', fontSize:'80%', fontWeight:'bold', color:'orange'}}>   {this.state.roomNameError} </i>
+          <textarea spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
+          <div style={{marginBottom: '12px', fontSize:'70%', color:'#c1c1c1'}}> Names must be lowercase, with no spaces or periods. </div>
+        </div>
+      }
         <button className="myButton" onClick={() => this.createRoom()}>Create Room</button>
         <div > or <Link to="browse">join a public room </Link></div>
         </div>

@@ -33,7 +33,7 @@ html, body {
     -moz-border-radius:3px;
     -webkit-border-radius:3px;
     border-radius:3px;
-    border:1px solid #18ab29;
+    border: none;
     display:inline-block;
     cursor:pointer;
     color:#ffffff;
