@@ -25,8 +25,7 @@ export const onSuccess = (user) => {
     dispatch({ type: 'REQUEST_SUCCESS' });
     dispatch({ type: 'SET_USER_INFO', user: user});
     dispatch(setSocket());
-    dispatch(fetchRooms());
-    dispatch(push('/'));
+    return dispatch(fetchRooms()).then(() => dispatch(push('/')))
   }
 }
 
@@ -119,7 +118,7 @@ export const register = (username, password) => {
     }
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    fetch('/signup', { 
+    return fetch('/signup', { 
       method: 'POST', 
       headers,
       mode: 'cors',
@@ -132,10 +131,10 @@ export const register = (username, password) => {
         })})
       .then(checkStatus)
       .then(() => {
-        dispatch(onSuccess(username));
+        return dispatch(onSuccess(username));
       }).catch(error => {
+        console.log(error)
         dispatch({ type: 'REQUEST_FAILURE', error: error.message})
-        throw error;
       });
   };
 };

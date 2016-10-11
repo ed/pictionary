@@ -36,6 +36,10 @@ let currentID = 0;
 app.post('/signup', (req, res) => {
   const { username, password } = req.body;
   utils.register(req, res, users, currentID++, username, password, (err, next) => {
+    if (err) {
+      res.statusMessage = "Current password does not match";
+      res.status(400).end()
+    }
     if (next) {
       res.writeHead(200, {
 		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30};HttpOnly;Secure`,

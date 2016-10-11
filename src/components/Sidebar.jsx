@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import CreateRoom from './CreateRoom'
 import Popover from './Popover'
 import BrowseRooms from './BrowseRooms'
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 
 class SideBar extends Component {
@@ -49,6 +50,11 @@ class SideBar extends Component {
             {clients.map( (player) => <Client key={player} name={player} isActive={player===artist}/>)}
             </div>
         }
+        <CopyToClipboard text={document.URL}>
+        <div className="copyLink" style={{width: '70px',  marginTop: '10px', fontSize: '80%',  paddingBottom: '4px', marginLeft: '12px', display: 'block'}}>
+        <i style={{fontSize: '85%',marginBottom: '2px'}}className="ion-plus-round" aria-hidden="true"></i>  <span style={{fontWeight: 'bold',}} >Copy Link </span>
+        </div>
+        </CopyToClipboard>
         </div>
       <div className="channelInterfaceContainer">
         <i className="ion-navicon-round centerIcon" onClick={() => this.openBrowseRooms()}></i>

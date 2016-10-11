@@ -18,15 +18,15 @@ module.exports = {
       next(error);
     } else {
       auth.verify(password, user.salt, user.password, (err, cb) => {
-	if (err) next(err);
-	auth.tokenize( (cb) => {
-	  const token = cb;
-	  auth.tokenHash(token, (cb) => {
-	    assign(user, { token: cb });
-	    next(null, token);
-	  });
-	});
-      });
+       if (err) next(err);
+       auth.tokenize( (cb) => {
+         const token = cb;
+         auth.tokenHash(token, (cb) => {
+           assign(user, { token: cb });
+           next(null, token);
+         });
+       });
+     });
     }
   },
 
@@ -37,20 +37,20 @@ module.exports = {
       next(error)
     } else {
       let obj = {
-	username: username,
-	id: id,
-	uid: uuid.v4(),
-      }
-      auth.hash(password, (err, cb) => {
-	assign(obj, { password: cb.key, salt: cb.salt});
-	auth.tokenize((cb) => {
-	  const token = cb;
-	  auth.tokenHash(token, (cb) => {
-	    assign(obj, { token: cb });
-	    next(null, {token:token, user:obj});
-	  });
-	});
-      });
-    }
-  }
+       username: username,
+       id: id,
+       uid: uuid.v4(),
+     }
+     auth.hash(password, (err, cb) => {
+       assign(obj, { password: cb.key, salt: cb.salt});
+       auth.tokenize((cb) => {
+         const token = cb;
+         auth.tokenHash(token, (cb) => {
+           assign(obj, { token: cb });
+           next(null, {token:token, user:obj});
+         });
+       });
+     });
+   }
+ }
 }

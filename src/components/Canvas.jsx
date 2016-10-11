@@ -150,7 +150,8 @@ class Canvas extends Component {
   }
 
   render() {
-    const { canIDraw, isSpectating } = this.props;
+    let { canIDraw, isSpectating } = this.props;
+    canIDraw = canIDraw && !this.state.turnOver;
     return (
       <div className="canvasContainer">
         <canvas 
@@ -168,8 +169,8 @@ class Canvas extends Component {
         {
           !this.state.turnOver ?  <div className="timer"> {this.props.timeLeft} </div> 
         : 
-          <div className="guesserDisplay"> the word was <span style={{fontWeight:'bold',color: 'orange'}}>{this.props.word}</span>. 
-          {this.state.guessers.length > 0 ? this.state.guessers.join(', ') : 'no one'} guessed the word 
+          <div className="guesserDisplay"> The word was <span style={{fontWeight:'bold',color: 'orange'}}>{this.props.word}</span>! <br/>
+          <span> {this.state.guessers.length > 0 ? <span style={{fontWeight:'bold'}}>{this.state.guessers.join(', ')}</span> : 'No one'} guessed the word </span>
           </div> 
         }
         </div> 

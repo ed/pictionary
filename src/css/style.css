@@ -29,13 +29,12 @@ html, body {
 }
 
 .myButton {
-    background-color:#44c767;
+    background-color:#dbdbdb;
     -moz-border-radius:3px;
     -webkit-border-radius:3px;
     border-radius:3px;
     border: none;
     display:inline-block;
-    cursor:pointer;
     color:#ffffff;
     font-size:20px;
     padding:12px 20px;
@@ -43,11 +42,23 @@ html, body {
     font-weight: bold;
     position: absolute;
     right: 0px;
+    pointer-events: none;
 }
-.myButton:hover {
-    -moz-box-shadow: inset 0 -1px  #009900;
-    -webkit-box-shadow: inset 0 -1px  #009900;
-    box-shadow: inset 0 -1px  #009900;
+.myButton.active {
+    pointer-events: auto;
+    cursor:pointer;
+    background-color:#44c767;
+}
+.myButton.active:hover {
+    -moz-box-shadow: inset 0 -2px 0 #009900;
+    -webkit-box-shadow: inset 0 -2px  #009900;
+    box-shadow: inset 0 -2px  #009900;
+}
+.myButton.active:focus {
+    outline: 0;
+    -moz-box-shadow: inset 0 2px  #009900;
+    -webkit-box-shadow: inset 0 2px  #009900;
+    box-shadow: inset 0 2px  #009900;
 }
 
 
@@ -438,6 +449,15 @@ html, body {
 
         .sidebarElementArea {
             padding-right: 10px;
+        }
+
+        .copyLink {
+            border-bottom: 1px dotted;
+            cursor: pointer;
+        }
+
+        .copyLink:hover {
+            border-bottom: 1px solid;
         }
 
         .channelHeader {

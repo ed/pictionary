@@ -38,13 +38,11 @@
 	content: attr(data-off);
 	right: 11px;
 	color: white;
-	text-shadow: 0 1px rgba(255, 255, 255, 0.5);
 }
 .switch-label:after {
 	content: attr(data-on);
 	left: 11px;
 	color: #FFFFFF;
-	text-shadow: 0 1px rgba(0, 0, 0, 0.2);
 	opacity: 0;
 }
 .switch-input:checked ~ .switch-label {
