@@ -38,7 +38,7 @@ app.post('/signup', (req, res) => {
   utils.register(req, res, users, currentID++, username, password, (err, next) => {
     if (next) {
       res.writeHead(200, {
-		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30}; HttpOnly;`,
+		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30};HttpOnly;Secure`,
 		'Content-Type': 'text/plain',});
       res.end();
       users.push(next.user);
@@ -55,7 +55,7 @@ app.post('/login', (req, res) => {
     else {
       if (next) {
 		res.writeHead(200, {
-		  'Set-Cookie': `a=${next};max-age=${1*60*60*24*30}; HttpOnly;`,
+		  'Set-Cookie': `a=${next};max-age=${1*60*60*24*30};HttpOnly;Secure`,
 		  'Content-Type': 'text/plain',
 		});
 		res.end();
@@ -72,7 +72,7 @@ app.post('/logout', (req, res) => {
   }
   catch(err){}
   res.writeHead(200, {
-    'Set-Cookie': `a='';max-age=${0}; HttpOnly;`,
+    'Set-Cookie': `a='';max-age=${0};HttpOnly;Secure`,
     'Content-Type': 'text/plain',
   });
   res.end();

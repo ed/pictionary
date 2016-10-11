@@ -6,7 +6,6 @@ import CreateRoom from './src/components/CreateRoom'
 import Login from './src/components/Login'
 import Register from './src/components/Register'
 import BrowseRooms from './src/components/BrowseRooms'
-import Home from './src/components/Home'
 
 
 const CreateRoomWrapper = () => (
