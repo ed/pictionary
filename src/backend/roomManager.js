@@ -43,10 +43,11 @@ module.exports = (app, io) => {
       console.log(socket.user + ' tried joining: ' + roomName);
       if (roomName in dmtManager.getRooms()) {
         console.log(socket.user + ' joined room: ' + roomName);
-        leaveRooms(socket,{...socket.rooms});
+        let rooms = {...socket.rooms};
+        delete rooms[roomName];
+        leaveRooms(socket,rooms);
         socket.join(roomName);
         socket.curRoom = roomName;
-        console.log(socket.rooms)
         updateRoom(socket.curRoom);
       } 
     });

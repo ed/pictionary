@@ -47,7 +47,7 @@ export const whoami = () => {
 	       dispatch({ type: 'REQUEST_SUCCESS' });
            dispatch({ type: 'SET_USER_INFO', user: json});
            dispatch(setSocket());
-           dispatch(fetchRooms());
+           return dispatch(fetchRooms());
       }).catch(error => {
 	       dispatch({ type: 'REQUEST_FAILURE', error: error.message})
 	       throw error;
