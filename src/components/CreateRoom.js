@@ -51,11 +51,11 @@ class CreateRoom extends Component {
   }
 
   _onKeyDown(e) {
-      if (e.keyCode === 13) {
-          this.createRoom();
-          e.preventDefault();             
-      }
-      if (e.keyCode === 27) this.props.close();
+    if (e.keyCode === 13) {
+      this.createRoom();
+      e.preventDefault();             
+    }
+    if (e.keyCode === 27) this.props.close();
   }
 
   switchPublicPrivate() {
@@ -87,18 +87,18 @@ class CreateRoom extends Component {
         <h1 style={{marginBottom: '10px', fontWeight:'bold'}}>Create a room</h1>
         <div style={{marginBottom: '12px', fontSize:'80%', color:'#c1c1c1'}}> Rooms can be public or private. Create a private room to play with friends or a public room to meet some new ones! </div>
         <label className="switch">
-          <input className="switch-input" type="checkbox" checked={this.state.private} onChange={() => this.switchPublicPrivate()} />
-          <span className="switch-label" data-on="Private" data-off="Public"></span> 
-          <span className="switch-handle"></span> 
+        <input className="switch-input" type="checkbox" checked={this.state.private} onChange={() => this.switchPublicPrivate()} />
+        <span className="switch-label" data-on="Private" data-off="Public"></span> 
+        <span className="switch-handle"></span> 
         </label>
         {this.state.private ? null :
-          <div >
-          <span style={{paddingBottom: '10px', fontWeight:'bold', color:'#464646'}}> Name </span> 
-          <i style={{paddingBottom: '10px', fontSize:'80%', fontWeight:'bold', color:'orange'}}>   {this.state.roomNameError} </i>
-          <textarea spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
-          <div style={{marginBottom: '12px', fontSize:'70%', color:'#c1c1c1'}}> Names must be lowercase, with no spaces or periods. </div>
-        </div>
-      }
+         <div >
+         <span style={{paddingBottom: '10px', fontWeight:'bold', color:'#464646'}}> Name </span> 
+         <i style={{paddingBottom: '10px', fontSize:'80%', fontWeight:'bold', color:'orange'}}>   {this.state.roomNameError} </i>
+         <textarea spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
+         <div style={{marginBottom: '12px', fontSize:'70%', color:'#c1c1c1'}}> Names must be lowercase, with no spaces or periods. </div>
+         </div>
+	}
         <button className="myButton" onClick={() => this.createRoom()}>Create Room</button>
         <div > or <Link to="browse">join a public room </Link></div>
         </div>
@@ -107,7 +107,7 @@ class CreateRoom extends Component {
 }
 
 CreateRoom.contextTypes = {
-    router: React.PropTypes.object
+  router: React.PropTypes.object
 }
 
 const mapStateToProps = (state) => {

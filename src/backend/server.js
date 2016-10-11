@@ -6,15 +6,16 @@ import {syncHistoryWithStore} from 'react-router-redux';
 import createHistory from 'react-router/lib/createMemoryHistory';
 import { Provider } from 'react-redux'
 import configureStore from '../store'
-  /*
-   *   Run 'npm run build' to run production envioronment
-   */
+/*
+ *   Run 'npm run build' to run production envioronment
+ */
 
+const assign = Object.assign
 const port = (process.env.PORT || 3000);
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const indexPath = path.join(__dirname, '..' , '..' ,'index.html')
+const utils = require('./utils')
 const publicPath = express.static(path.join(__dirname, '..' , '..' , 'bin'))
 const app = express();
 
@@ -27,28 +28,98 @@ var io = require('socket.io')(server);
 
 var roomManager = require('./roomManager')(app, io);
 
-app.use((req, res) => {
-  const memoryHistory = createHistory(req.originalUrl);
-  const store = configureStore(memoryHistory, {});
-  const history = syncHistoryWithStore(memoryHistory, store);
+
+let users = [];
+let currentID = 0;
 
 
-  match({ history, routes, location: req.url }, (err, redirect, props) => {
-    if (err) {
-      res.status(500).send(err.message)
-    } else if (redirect) {
-      res.redirect(redirect.pathname + redirect.search)
-    } else if (props) {
-      const finalState = store.getState()
-      const html = renderToString(
-        <Provider store={store}>
-          <RouterContext {...props}/>
-        </Provider>
-      )
-      res.send(renderPage(html, finalState))
-    } else {
-      res.status(404).send('Not Found')
+app.post('/signup', (req, res) => {
+  const { username, password } = req.body;
+  utils.register(req, res, users, currentID++, username, password, (err, next) => {
+    if (next) {
+      res.writeHead(200, {
+		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30}; HttpOnly;`,
+		'Content-Type': 'text/plain',});
+      res.end();
+      users.push(next.user);
     }
+  })
+})
+
+app.post('/login', (req, res) => {
+  const { username, password } = req.body
+  utils.login(req, res, username, password, users, (err, next) => {
+    if (err) {
+      res.status(400).send(err)
+    }
+    else {
+      if (next) {
+		res.writeHead(200, {
+		  'Set-Cookie': `a=${next};max-age=${1*60*60*24*30}; HttpOnly;`,
+		  'Content-Type': 'text/plain',
+		});
+		res.end();
+      }
+    }
+  })
+})
+
+app.post('/logout', (req, res) => {
+  try {
+    utils.cookieMonster(req.headers.cookie, users, (err, cb) => {
+      cb.user.token = ''
+    });
+  }
+  catch(err){}
+  res.writeHead(200, {
+    'Set-Cookie': `a='';max-age=${0}; HttpOnly;`,
+    'Content-Type': 'text/plain',
+  });
+  res.end();
+})
+
+app.get('/whoami', (req, res) => {
+  // dispatch sets username + status based on cookie
+  try {
+    utils.cookieMonster(req.headers.cookie, users, (err, cb) => {
+	  res.send(JSON.stringify(cb.user.username));
+    });
+  }
+  catch(err){}
+})
+
+app.use((req, res) => {
+  const preloadedState = {
+    root: {
+	  cookie: false
+    }
+  }
+  try {
+    utils.cookieMonster(req.headers.cookie, users, (err, cb) => {
+	  // do things here like delete cookie
+	  assign(preloadedState.root, {cookie: cb.match})
+    });
+  }
+  catch (err) {}
+  const memoryHistory = createHistory(req.originalUrl);
+  const store = configureStore(memoryHistory, preloadedState);
+  const history = syncHistoryWithStore(memoryHistory, store);
+  match({ history, routes, location: req.url }, (err, redirect, props) => {
+	if (err) {
+	  res.status(500).send(err.message)
+	} else if (redirect) {
+	  res.redirect(redirect.pathname + redirect.search)
+	} else if (props) {
+	  const finalState = store.getState()
+	  const html = renderToString(
+		<Provider store={store}>
+		  <RouterContext {...props}/>
+		</Provider>
+	  )
+	  res.send(renderPage(html, finalState))
+	} else {
+	  res.status(404).send('Not Found')
+	}
   })
 })
 

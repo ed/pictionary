@@ -30,10 +30,10 @@ module.exports = {
   ],
 
   resolve: {
-      extensions: ['', '.js', '.jsx'],
-      root: [
-        path.resolve('./src')
-      ]
+    extensions: ['', '.js', '.jsx'],
+    root: [
+      path.resolve('./src')
+    ]
   },
 
   module: {
