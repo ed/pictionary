@@ -1,45 +1,61 @@
 import React, {Component} from 'react';
-import { setSocket, setUserInfo, fetchRooms } from '../actions'
-import Sidebar from './Sidebar'
+import { whoami } from '../actions'
 import { connect } from 'react-redux';
-
-let socket;
-
-const username = 'AC' + String(Math.floor(Math.random() * 100));
+import Register from './Register'
 
 class Container extends Component {
   constructor(props) {
-    super(props)
-    this.state = {
-      roomsReceived: false
-    };
+    super(props);
+  
+   this.state = {
+      isFetching: true
+    }
   }
 
   componentDidMount() {
-    socket = io();
-    this.props.dispatch(setSocket(socket))
-    this.props.dispatch(setUserInfo(username))
-    socket.emit('add user', username);
-    this.props.dispatch(fetchRooms()).then(() => this.setState({
-      roomsReceived: true
-    }))
+    const { cookie, status, user } = this.props
+    if (cookie) {
+      this.props.dispatch(whoami()).then(() => {
+        this.setState({
+          isFetching: false
+        })
+      })
+    }
+    else {
+      this.setState({
+        isFetching: false
+      })
+    }
   }
 
   render() {
+    const { roomStatus, user, cookie } = this.props
+    const { isFetching } = this.state
+    console.log(user, roomStatus, cookie)
     return (
+      !this.state.isFetching ?
+      roomStatus ?
       <div className="container">
-      {this.state.roomsReceived ?
-        <div className="container">
-        {this.props.children}
-        </div>
-      : 
-        <div className="spinner">
-          <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-        </div>
-      }
+	      {this.props.children}
       </div>
+      :
+      <Register/>
+      :
+      null
     )
   }
+    
 }
 
-export default connect()(Container)
+const mapStateToProps = (state) => {
+  return {
+    user: state.root.user,
+    cookie: state.root.cookie,
+    status: state.root.auth.status,
+    roomStatus: state.root.rooms.isValid
+  }
+};
+
+export default connect(
+  mapStateToProps,
+)(Container)

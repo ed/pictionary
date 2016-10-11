@@ -7,6 +7,8 @@ server.listen(port);
 
 console.log(`Listening at http://localhost:${port}`);
 
+console.log(process.env.NODE_ENV)
+
 if (process.env.NODE_ENV !== 'production') {
   var config = require('./webpack.dev.config');
   var webpack = require('webpack');
@@ -21,7 +23,15 @@ if (process.env.NODE_ENV !== 'production') {
         target: 'http://localhost:3000',
         secure: false
       },
-      '/register': {
+      '/signup': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
+      '/login': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
+      '/whoami': {
         target: 'http://localhost:3000',
         secure: false
       },

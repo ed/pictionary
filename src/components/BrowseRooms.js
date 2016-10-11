@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { fetchRooms } from '../actions'
 import WhiteBoard from './WhiteBoard'
 import CanvasViewOnly from './CanvasViewOnly'
+import Spinner from './Spinner'
 
 class BrowseRooms extends Component {
 	constructor(props) {
@@ -80,9 +81,7 @@ class BrowseRooms extends Component {
 		return (
 			<div className="container">
 			  {this.state.isFetching ?
-			  <div className="spinner">
-			    <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-			  </div>
+			  <Spinner />
 			  : 
 			  <div className="container" style={{position: 'relative',display: 'flex',flexDirection: 'column'}}>
 				  <h1 style={{marginBottom: '10px', fontWeight:'bold', marginBottom: '25px'}}>Join a room</h1>

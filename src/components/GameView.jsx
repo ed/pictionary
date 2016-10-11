@@ -6,6 +6,7 @@ import MessageSection from './MessageSection';
 import Sidebar from './Sidebar';
 import WhiteBoard from './WhiteBoard';
 import Login from './Login';
+import Spinner from './Spinner';
 
 class GameView extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class GameView extends Component {
   }
 
   componentDidMount() {
+    this.props.socket.emit('add user', this.props.user)
     this.props.socket.on('update game', (game) => this.updateGame(game) );
     this.props.socket.on('update room', (roomData) => this.updateRoom(roomData) );
     this.fetchRoomData(this.props.params.roomName)
@@ -69,9 +71,7 @@ class GameView extends Component {
           <MessageSection socket={this.props.socket}/>
         </div>
       : 
-      <div className="spinner">
-        <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-      </div>
+      <Spinner />
       }
       </div>
     )
@@ -79,6 +79,7 @@ class GameView extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state)
   return { 
       socket: state.root.socket,
       user: state.root.user
