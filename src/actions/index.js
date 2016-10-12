@@ -81,8 +81,7 @@ export const login  = (username, password) => {
     dispatch({ type: 'SENDING_REQUEST' });
     if (emptyFields({username,password})) {
       // throw err
-      const error = new Error('please fill out both fields')
-      dispatch({ type: 'REQUEST_FAILURE', error: error.message})
+      dispatch({ type: 'REQUEST_FAILURE', error: 'please fill out both fields'})
       throw error;
     }
     fetch('/login', { 
@@ -112,8 +111,7 @@ export const register = (username, password) => {
     dispatch({ type: 'SENDING_REQUEST' });
     if (emptyFields({username,password})) {
       // throw err
-      const error = new Error('please fill out both fields')
-      dispatch({ type: 'REQUEST_FAILURE', error: error.message})
+      dispatch({ type: 'REQUEST_FAILURE', error: 'please fill out both fields'})
       throw error;
     }
     let myHeaders = new Headers();

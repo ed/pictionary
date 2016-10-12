@@ -37,8 +37,7 @@ app.post('/signup', (req, res) => {
   const { username, password } = req.body;
   utils.register(req, res, users, currentID++, username, password, (err, next) => {
     if (err) {
-      res.statusMessage = "Current password does not match";
-      res.status(400).end()
+      res.end('????')
     }
     if (next) {
       res.writeHead(200, {

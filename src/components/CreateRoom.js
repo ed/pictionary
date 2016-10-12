@@ -112,7 +112,7 @@ class CreateRoom extends Component {
          <textarea onBlur={() => this.setRoomError()} spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
          <div style={{marginBottom: '12px', fontSize:'70%', color:'#c1c1c1'}}> Names must be lowercase, with no spaces or periods. </div>
          </div>
-	}
+	       }
         <button className={`myButton${buttonActive ? ' active' : ''}`} onClick={() => this.createRoom()}>Create Room</button>
         <div > or <Link to="browse">join a public room </Link></div>
         </div>

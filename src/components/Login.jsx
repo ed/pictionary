@@ -12,7 +12,7 @@ class Login extends Component {
     return (
       <div className="form-form">
         <h1>login form </h1>
-        <Form onSubmit={::this.login} {...props}/>
+        <Form title="Log in" onSubmit={::this.login} {...props}/>
       </div>
     )
   }

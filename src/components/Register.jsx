@@ -7,11 +7,9 @@ import Form from './Form'
 class Register extends Component {
 
   render() {
-    const {...props} = this.props;
     return (
       <div className="form-form">
-        <h1> sign up </h1>
-        <Form onSubmit={::this.register} {...props}/>
+        <Form title="Sign Up" onSubmit={::this.register}/>
       </div>
     )
   }
@@ -20,10 +18,4 @@ class Register extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    data: state,
-  }
-}
-
-export default connect(mapStateToProps)(Register)
+export default connect()(Register)

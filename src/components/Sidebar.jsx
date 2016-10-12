@@ -51,8 +51,8 @@ class SideBar extends Component {
             </div>
         }
         <CopyToClipboard text={document.URL}>
-        <div className="copyLink" style={{width: '70px',  marginTop: '10px', fontSize: '80%',  paddingBottom: '4px', marginLeft: '12px', display: 'block'}}>
-        <i style={{fontSize: '85%',marginBottom: '2px'}}className="ion-plus-round" aria-hidden="true"></i>  <span style={{fontWeight: 'bold',}} >Copy Link </span>
+        <div className="copyLink" style={{width: '73px',  marginTop: '10px', fontSize: '80%',  paddingBottom: '4px', marginLeft: '15px', display: 'block'}}>
+        <i style={{fontSize: '85%',marginBottom: '2px', marginRight: '2px', marginLeft: '2px'}}className="ion-plus-round" aria-hidden="true"></i>  <span style={{fontWeight: 'bold',}} >  Copy link </span>
         </div>
         </CopyToClipboard>
         </div>
@@ -86,6 +86,7 @@ export default connect(
   mapStateToProps,
 )(SideBar)
 
+
 const Player = ({ name, player, onClick, isActive }) => (
   <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}> 
       {player.pointsThisTurn > 0 ? <div style={{float: 'right', marginRight: '15px'}}> +{player.pointsThisTurn} </div> : null }
@@ -95,11 +96,13 @@ const Player = ({ name, player, onClick, isActive }) => (
   </div>
 );
 
+
 const Client = ({ name, onClick, isActive }) => (
   <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}> 
       <span> {name} </span>
   </div>
 );
+
 
 const PlayerHeader = ({ addChannel }) => (
   <div className="channelHeader">
@@ -107,12 +110,14 @@ const PlayerHeader = ({ addChannel }) => (
   </div>
 );
 
+
 const Channel = ({ title, onClick }) => (
   <Link className="sidebarElement" to={title} activeClassName="active" onClick={onClick}> 
       <span><i>#</i> {title}</span>
       <br></br>
   </Link>
 );
+
 
 const ChannelHeader = ({ addChannel }) => (
   <div className="channelHeader">
