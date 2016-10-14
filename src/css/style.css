@@ -28,6 +28,17 @@ html, body {
     overflow-x: hidden;
 }
 
+.notification-bar {
+    z-index: 2;
+}
+
+.notification-bar-message {
+    line-height: 60px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+
 .myButton {
     background-color:#dbdbdb;
     -moz-border-radius:3px;

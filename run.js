@@ -38,6 +38,10 @@ if (process.env.NODE_ENV !== 'production') {
       '/roomData/**': {
         target: 'http://localhost:3000',
         secure: false
+      },
+      '/tempUserInfo': {
+        target: 'http://localhost:3000',
+        secure: false
       }
     },
     historyApiFallback: true

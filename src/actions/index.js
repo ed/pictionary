@@ -5,6 +5,40 @@ import { push } from 'react-router-redux';
 let headers = new Headers();
 headers.append('Content-Type', 'application/json');
 
+export const requestFailure = (message) => {
+    return (dispatch) => {
+        dispatch(addNotification(message));
+        return dispatch({
+            type: 'REQUEST_FAILURE', 
+            error: message
+        })
+    }
+}
+
+export const addNotification = (message) => {
+    return (dispatch) => {
+        return dispatch({
+            type: types.ADD_NOTIFICATION,
+            message,
+            removeNotification: (key) => dispatch(removeNotification(key))
+        })
+    }
+}
+
+export const removeNotification = (key) => {
+    return {
+        type: types.REMOVE_NOTIFICATION,
+        key
+    }
+}
+
+export const dismissNotification = (notification) => {
+    return {
+        type: types.DISMISS_NOTIFICATION,
+        notification
+    }
+}
+
 
 export const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
@@ -48,8 +82,7 @@ export const whoami = () => {
            dispatch(setSocket());
            return dispatch(fetchRooms());
       }).catch(error => {
-	       dispatch({ type: 'REQUEST_FAILURE', error: error.message})
-	       throw error;
+	       dispatch(requestFailure(error.message))
       });
   }
 }
@@ -70,8 +103,7 @@ export const logout = () => {
         dispatch({ type: 'BYE_FELICIA' });
         dispatch(push('/'));
       }).catch(error => {
-        dispatch({ type: 'REQUEST_FAILURE', error: error.message})
-        throw error;
+        dispatch(requestFailure(error.message))
       });
   }
 }
@@ -99,8 +131,7 @@ export const login  = (username, password) => {
       .then(() => {
         dispatch(onSuccess(username));
       }).catch(error => {
-        dispatch({ type: 'REQUEST_FAILURE', error: error.message})
-        throw error;
+        dispatch(requestFailure(error.message))
       });
   };
 };
@@ -111,8 +142,7 @@ export const register = (username, password) => {
     dispatch({ type: 'SENDING_REQUEST' });
     if (emptyFields({username,password})) {
       // throw err
-      dispatch({ type: 'REQUEST_FAILURE', error: 'please fill out both fields'})
-      throw error;
+      return dispatch(requestFailure('Please fill out both fields'))
     }
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -131,8 +161,8 @@ export const register = (username, password) => {
       .then(() => {
         return dispatch(onSuccess(username));
       }).catch(error => {
-        console.log(error)
-        dispatch({ type: 'REQUEST_FAILURE', error: error.message})
+        dispatch(setSocket());
+        dispatch(requestFailure(error.message))
       });
   };
 };
@@ -159,11 +189,23 @@ export const setSocket = () => {
   }
 }
 
-export const setUserInfo = (username) => {
-  return {
-    type: types.SET_USER_INFO,
-    username
+export const setTempUserInfo = () => {
+  return (dispatch) => {
+    return fetch('/tempUserInfo', { 
+      method: 'GET', 
+      headers,
+      mode: 'cors',
+      cache: 'default',
+    })
+    .then(checkStatus)
+    .then(response => response.json())
+    .then(json => {
+      dispatch(setSocket());
+      dispatch({ type: 'SET_USER_INFO', user: json.user})
+      return dispatch(fetchRooms())
+    });
   }
+  
 }
 
 export const setRooms = (rooms) => {

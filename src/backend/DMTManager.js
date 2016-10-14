@@ -69,13 +69,7 @@ class DMTManager {
       return null;
     }
 
-    let game = {
-      gameInProgress: false,
-      players: [],
-      word : '',
-      artist: 'doesntmatter',
-      timeLeft: -1
-    };
+    let game = {...emptyGame};
     if (this.rooms[room].game != null) {
       game = this.rooms[room].game.gameState
     }
@@ -122,7 +116,7 @@ class DMTManager {
     if ( room in this.rooms && this.rooms[room].gameInProgress ) {
       return this.rooms[room].game.gameState;
     }
-    return emptyGame;
+    return {...emptyGame};
   }
 
   updateGame(room, stateChange) {
@@ -153,13 +147,7 @@ class DMT {
     this.numPlayers = players.length;
     this.numRounds = 1;
     this.curRound = 1;
-    this.gameState = {
-      gameInProgress: false,
-      players: [],
-      word : '',
-      artist: 'doesntmatter',
-      timeLeft: -1
-    };
+    this.gameState = {...emptyGame};
   }
 
   start() {
@@ -199,13 +187,7 @@ class DMT {
     }
     else {
       this.endGame();
-      this.gameState = {
-        gameInProgress: false,
-        players: [],
-        word : '',
-        artist: 'doesntmatter',
-        timeLeft: -1
-      };
+      this.gameState = {...emptyGame};
     }
   }
 

@@ -37,12 +37,13 @@ app.post('/signup', (req, res) => {
   const { username, password } = req.body;
   utils.register(req, res, users, currentID++, username, password, (err, next) => {
     if (err) {
-      res.end('????')
+      res.status(400).send(err)
     }
     if (next) {
       res.writeHead(200, {
-		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30};HttpOnly;Secure`,
-		'Content-Type': 'text/plain',});
+    		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30};HttpOnly;Secure`,
+    		'Content-Type': 'text/plain',
+      });
       res.end();
       users.push(next.user);
     }
@@ -90,6 +91,14 @@ app.get('/whoami', (req, res) => {
   }
   catch(err){}
 })
+
+let userNum = 0;
+app.get('/tempUserInfo', (req, res) => {
+  // dispatch sets username + status based on cookie
+  res.send({user: `nerd${userNum++}`});
+  res.end()
+})
+
 
 app.use((req, res) => {
   const preloadedState = {

@@ -1,10 +1,12 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
+import { addNotification } from '../actions'
 import CreateRoom from './CreateRoom'
 import Popover from './Popover'
 import BrowseRooms from './BrowseRooms'
-import CopyToClipboard from 'react-copy-to-clipboard';
+import CopyToClipboard from 'react-copy-to-clipboard'
+import { Notification } from 'react-notification'
 
 
 class SideBar extends Component {
@@ -12,7 +14,7 @@ class SideBar extends Component {
     super(props);
     this.state = {
       createRoomOpen: false,
-      browseRoomsOpen: false
+      browseRoomsOpen: false,
     }
   }
 
@@ -50,8 +52,8 @@ class SideBar extends Component {
             {clients.map( (player) => <Client key={player} name={player} isActive={player===artist}/>)}
             </div>
         }
-        <CopyToClipboard text={document.URL}>
-        <div className="copyLink" style={{width: '73px',  marginTop: '10px', fontSize: '80%',  paddingBottom: '4px', marginLeft: '15px', display: 'block'}}>
+        <CopyToClipboard text={document.URL} >
+        <div className="copyLink" style={{width: '73px',  marginTop: '10px', fontSize: '80%',  paddingBottom: '4px', marginLeft: '15px', display: 'block'}} onClick={() => this.props.dispatch(addNotification('url copied to clipboard'))}>
         <i style={{fontSize: '85%',marginBottom: '2px', marginRight: '2px', marginLeft: '2px'}}className="ion-plus-round" aria-hidden="true"></i>  <span style={{fontWeight: 'bold',}} >  Copy link </span>
         </div>
         </CopyToClipboard>

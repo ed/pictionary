@@ -44,10 +44,11 @@ class Form extends Component {
     const { error, sendingRequest } = this.props;
     return (
       <div className="popoverContainer" style={{width: '400px', textAlign: 'center'}}>
-      <textarea ref={(userField) => this.userField = userField} onChange={(e) => this.updateUsername(e)} spellCheck={false} className="message-composer" style={textBoxStyle} placeholder="username"/>
-      <textarea onChange={(e) => this.updatePassword(e)} spellCheck={false} className="message-composer" style={textBoxStyle} placeholder="password"/>
+      
       <form className="form" onSubmit={this.go.bind(this)}>
-      <button className="myButton active" style={{width: '100%', marginTop: '10px'}} type="submit">{this.props.title}</button>
+      <input ref={(userField) => this.userField = userField} onChange={(e) => this.updateUsername(e)} spellCheck={false} className="message-composer" style={textBoxStyle} placeholder="username"/>
+      <input onChange={(e) => this.updatePassword(e)} spellCheck={false} className="message-composer" style={textBoxStyle} placeholder="password"/>
+      <button className="myButton active" style={{width: '100%', marginTop: '60px'}} type="submit">{this.props.title}</button>
       </form>
       { error ? <p style={{ color: '#F92D2A' }}> {error} </p> : null }
       { sendingRequest ? <Spinner /> : null }

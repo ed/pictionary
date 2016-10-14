@@ -2,32 +2,15 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import Canvas, { CanvasButton } from './Canvas'
 import { connect } from 'react-redux';
+import { addNotification } from '../actions'
 
 export class WhiteBoard extends Component {
-  constructor(props){
-    super(props);
-
-    this.state = {
-      gameStartError: ''
-    }
-  }
-
   startGame() {
     if (this.props.numClients > 1) {
       this.props.socket.emit('start game')
     }
     else {
-      this.setState({
-        gameStartError: 'Not enough players'
-      })
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.numClients > 1) {
-      this.setState({
-        gameStartError: ''
-      })
+      this.props.dispatch(addNotification('Not enough players'));
     }
   }
 
@@ -38,7 +21,7 @@ export class WhiteBoard extends Component {
           <Canvas key={this.props.artist} /> 
           :
           <div className="container">
-          <StartButton error={this.state.gameStartError} active={this.props.numClients > 1} onClick={() => this.startGame()} />
+          <StartButton active={true} onClick={() => this.startGame()} />
           </div>  
         }
       </div>
@@ -46,10 +29,9 @@ export class WhiteBoard extends Component {
   }
 }
 
-const StartButton = ({ onClick, error, active }) => (
+const StartButton = ({ onClick , active }) => (
     <div className={`startGame${active ? ' active' : ''}`} onClick={onClick}>
       <i id="startGame" className="fa fa-play" aria-hidden="true"></i>
-      {error}
     </div>
 );
 

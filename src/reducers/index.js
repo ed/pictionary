@@ -1,5 +1,7 @@
 import * as types from '../constants'
 import { combineReducers } from 'redux'
+import { OrderedSet } from 'immutable';
+import React from 'react'
 
 const assign = Object.assign
 
@@ -103,6 +105,28 @@ function user(state=null, action) {
   }
 }
 
+let notificationID = 0;
+function notifications(state=OrderedSet(), action) {
+  switch (action.type) {
+  case types.ADD_NOTIFICATION:
+    let key = Number(notificationID++)
+    return state.add({
+      message: action.message,
+      key,
+      action: <i className="ion-ios-close-empty" aria-hidden="true"></i>,
+      actionStyle: {color: 'white', width: '1px', fontSize: '200%'},
+      dismissAfter: 3400,
+      onClick: () => action.removeNotification(key),
+    })
+  case types.REMOVE_NOTIFICATION:
+    return state.filter(n => n.key !== action.key)
+  case types.DISMISS_NOTIFICATION:
+    return state.delete(action.notification)
+  default:
+    return state;
+  }
+}
+
 const root = combineReducers({
   rooms,
   user,
@@ -111,6 +135,7 @@ const root = combineReducers({
   error,
   auth,
   room,
+  notifications
 })
 
 export default root
