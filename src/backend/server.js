@@ -154,7 +154,7 @@ const renderPage = (html, preloadedState) => {
 	window.__port__ = ${port}
   window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)}
   </script>
-	<script src="../bin/bundle.js"></script>
+	<script src="/../bin/bundle.js"></script>
 	</body>
   </html>
   `

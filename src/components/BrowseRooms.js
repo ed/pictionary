@@ -101,7 +101,7 @@ const Room = ({ name, room, onClick, onMouseOut, onMouseOver, displayBorderTop, 
 		onMouseEnter={onMouseOver} 
 		onMouseLeave={onMouseOut} 
 		onClick={onClick} 
-		to={name} 
+		to={`/game/r/${name}`} 
 		className="room" 
 		style={{
 		 borderTop: displayBorderTop? '1px solid #DEDEDE' : isHovered? '' : '1px solid white', paddingLeft: '10px', 

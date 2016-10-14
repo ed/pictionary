@@ -284,7 +284,7 @@ export const newRoom = (roomData) => {
       .then(json => { 
 	if( !json.error ) {
 	  dispatch(setRooms(json.rooms))
-	  dispatch(push(`/${json.roomName}`));
+	  dispatch(push(`/game/r/${json.roomName}`));
 	}
 	else {
 	  console.log(json.error)

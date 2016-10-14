@@ -114,7 +114,7 @@ class CreateRoom extends Component {
          </div>
 	       }
         <button className={`myButton${buttonActive ? ' active' : ''}`} onClick={() => this.createRoom()}>Create Room</button>
-        <div > or <Link to="browse">join a public room </Link></div>
+        <div > or <Link onClick={() => this.setState({private: true})} to="/game/browse">join a public room </Link></div>
         </div>
     );
   }

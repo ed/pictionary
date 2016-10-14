@@ -8,8 +8,12 @@ import { Provider } from 'react-redux';
 import routes from '../routes';
 import './css/style.css';
 import './css/switch.css';
+import { OrderedSet } from 'immutable'
 
-const preloadedState = window.__PRELOADED_STATE__
+let preloadedState = window.__PRELOADED_STATE__
+if (preloadedState !== undefined) {
+	preloadedState.root.notifications = OrderedSet();
+}
 const store = configureStore(browserHistory, preloadedState);
 const history = syncHistoryWithStore(browserHistory, store);
 

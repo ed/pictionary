@@ -15,31 +15,37 @@ class SideBar extends Component {
     this.state = {
       createRoomOpen: false,
       browseRoomsOpen: false,
+      displayDropdown: false
     }
   }
 
-  openBrowseRooms() { this.setState({browseRoomsOpen: true}); }
+  toggleDropdown() { this.setState({ displayDropdown: !this.state.displayDropdown }); }
 
-  closeBrowseRooms() { this.setState({browseRoomsOpen: false}); }
+  closeDropdown() { this.setState({ displayDropdown: false }); }
+
+  openBrowseRooms() { this.setState({ browseRoomsOpen: true }); }
+
+  closeBrowseRooms() { this.setState({ browseRoomsOpen: false }); }
 
   openCreateRooms(e) { 
     this.setState({createRoomOpen: true});
-    e.preventDefault(); 
+    e.stopPropagation(); 
   }
 
-  closeCreateRooms() { this.setState({createRoomOpen: false}); }
+  closeCreateRooms() { this.setState({ createRoomOpen: false }); }
 
   render() {
     const { clients, gameInProgress, players, artist, rooms } = this.props;
     return (
       <div id="sidebar">
-        <Link to="/">
+        <div>
           <div className="sidebarHeader">
           <div className="headerText">Pretty Pictures</div>
           <div className="addChannel" onClick={(e) => this.openCreateRooms(e)}> <i className="fa fa-plus-square-o fa-lg"></i> </div>
           <div className="headerUsername">{this.props.user}</div>
           </div>
-        </Link>
+        </div>
+        {this.state.displayDropdown ? <Dropdown />: null }
         <div className="sidebarElementArea">
           {gameInProgress ?
             <div className="container">
@@ -87,6 +93,13 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
 )(SideBar)
+
+
+const Dropdown = () => (
+  <div style={{ borderRadius: '3px', zIndex: 3, width: '200px', height: '500px', position: 'absolute', top: '60px', left: '10px', background: 'white'}}> 
+    asdasd
+  </div>
+)
 
 
 const Player = ({ name, player, onClick, isActive }) => (

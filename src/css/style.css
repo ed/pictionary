@@ -410,6 +410,7 @@ html, body {
             }
 
     #sidebar {
+        cursor: default;
         float:left;
         height: 100%;
         width:240px;

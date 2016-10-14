@@ -21,13 +21,21 @@ const BrowseRoomsWrapper = () => (
     </div>
 )
 
+const Container = ({children}) => (
+    <div className="container">
+        {children}
+    </div>
+)
+
 
 module.exports = (
-    <Route path='/' component={GameContainer}>
-    <IndexRoute component={CreateRoomWrapper} />
-    <Route path='login' component={Login}/>
-    <Route path='signup' component={Register}/>
-    <Route path='browse' component={BrowseRoomsWrapper} />
-    <Route path=':roomName' component={GameView} />
+    <Route path='/' component={Container}>
+        <Route path='login' component={Login}/>
+        <IndexRoute component={Register}/>
+        <Route path='game' component={GameContainer}>
+            <IndexRoute component={CreateRoomWrapper} />
+            <Route path='browse' component={BrowseRoomsWrapper} />
+            <Route path='r/:roomName' component={GameView} />
+        </Route>
     </Route>
 )

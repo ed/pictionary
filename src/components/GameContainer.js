@@ -24,7 +24,7 @@ class Container extends Component {
       })
     }
     else {
-      //this.props.dispatch(setTempUserInfo())
+      this.props.dispatch(setTempUserInfo())
       this.setState({
         isFetching: false
       })
@@ -34,7 +34,8 @@ class Container extends Component {
 
   render() {
     const { roomStatus, user, cookie, error } = this.props
-    const { isFetching } = this.state
+    const { isFetching } = this.state;
+    console.log('notifications: ' + this.props.notifications)
     return (
       <div className="container">
       <NotificationStack
@@ -71,13 +72,10 @@ class Container extends Component {
           }
         }
         />
-      {!this.state.isFetching ?
-      roomStatus ?
+      {!this.state.isFetching && roomStatus ?
       <div className="container">
 	      {this.props.children}
       </div>
-      :
-      <Register/>
       :
       null }
       </div>
