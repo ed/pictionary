@@ -38,12 +38,16 @@ li a {
     text-align: center;
     padding: 8px 12px 10px 12px;
     text-decoration: none;
+    opacity: .7;
 }
 
-/* Change the link color to #111 (black) on hover */
 li a:hover {
-    background-color: rgba(255,255,255,.2);
+    opacity: 1;
     text-decoration: none;
+}
+
+li a:active {
+  color: white;
 }
 
 
