@@ -2,10 +2,17 @@ import React, {Component} from 'react'
 import { login } from '../actions'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import Form from './Form'
 
 
 class Login extends Component {
+
+  componentDidMount() {
+    if (this.props.authStatus) {
+      this.props.dispatch(push('/game'))
+    }
+  }
 
   render() {
     const {...props} = this.props;
@@ -24,7 +31,7 @@ class Login extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    data: state,
+    authStatus: state.root.auth.status,
   }
 }
 

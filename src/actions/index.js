@@ -59,7 +59,7 @@ export const onSuccess = (user) => {
     dispatch({ type: 'REQUEST_SUCCESS' });
     dispatch({ type: 'SET_USER_INFO', user: user});
     dispatch(setSocket());
-    return dispatch(fetchRooms()).then(() => dispatch(push('/')))
+    return dispatch(fetchRooms()).then(() => dispatch(push('/game')))
   }
 }
 
@@ -101,7 +101,7 @@ export const logout = () => {
       .then(() => {
         dispatch({ type: 'REQUEST_FAILURE' });
         dispatch({ type: 'BYE_FELICIA' });
-        dispatch(push('/'));
+        dispatch(push('/game'));
       }).catch(error => {
         dispatch(requestFailure(error.message))
       });

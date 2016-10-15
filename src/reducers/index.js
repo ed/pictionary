@@ -116,7 +116,10 @@ function notifications(state=OrderedSet(), action) {
       action: <i className="ion-ios-close-empty" aria-hidden="true"></i>,
       actionStyle: {color: 'white', width: '1px', fontSize: '200%'},
       dismissAfter: 3400,
-      onClick: () => action.removeNotification(key),
+      onClick: (deactivate) => {
+        deactivate();
+        setTimeout(() => action.removeNotification(key),400);
+      }
     })
   case types.REMOVE_NOTIFICATION:
     return state.filter(n => n.key !== action.key)

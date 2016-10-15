@@ -6,6 +6,8 @@ import CreateRoom from './src/components/CreateRoom'
 import Login from './src/components/Login'
 import Register from './src/components/Register'
 import BrowseRooms from './src/components/BrowseRooms'
+import Home from './src/components/Home'
+import AppContainer from './src/components/AppContainer'
 
 
 const CreateRoomWrapper = () => (
@@ -29,9 +31,10 @@ const Container = ({children}) => (
 
 
 module.exports = (
-    <Route path='/' component={Container}>
+    <Route path='/' component={AppContainer}>
+        <IndexRoute component={Home}/>
         <Route path='login' component={Login}/>
-        <IndexRoute component={Register}/>
+        <Route path='register' component={Register}/>
         <Route path='game' component={GameContainer}>
             <IndexRoute component={CreateRoomWrapper} />
             <Route path='browse' component={BrowseRoomsWrapper} />

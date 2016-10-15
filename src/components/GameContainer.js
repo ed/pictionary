@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
 import { whoami, addNotification, dismissNotification, setTempUserInfo } from '../actions'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 import Login from './Login'
 import Register from './Register'
-import { NotificationStack } from 'react-notification';
+import { NotificationStack } from 'react-notification'
 
 class Container extends Component {
   constructor(props) {
@@ -15,7 +15,8 @@ class Container extends Component {
   }
 
   componentDidMount() {
-    const { cookie, status, user } = this.props
+    const { cookie, authStatus, user } = this.props
+    console.log(cookie, authStatus, user)
     if (cookie) {
       this.props.dispatch(whoami()).then(() => {
         this.setState({
@@ -24,7 +25,7 @@ class Container extends Component {
       })
     }
     else {
-      this.props.dispatch(setTempUserInfo())
+      if (!authStatus) this.props.dispatch(setTempUserInfo())
       this.setState({
         isFetching: false
       })
@@ -35,50 +36,13 @@ class Container extends Component {
   render() {
     const { roomStatus, user, cookie, error } = this.props
     const { isFetching } = this.state;
-    console.log('notifications: ' + this.props.notifications)
     return (
-      <div className="container">
-      <NotificationStack
-          notifications={this.props.notifications.toArray()}
-          onDismiss={notification => this.props.dispatch(dismissNotification(notification))}
-          barStyleFactory={(ind, style) => {
-            return {
-              ...style, 
-              fontFamily: 'Lato',
-              background: '#ffad90',
-              borderWidth: '0px',
-              height: '30px',
-              color: 'white',
-              borderRadius: '0px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              top: `${2 + ind * 5}rem`,
-              opacity: 0,
-              boxShadow: '',
-              right: '-100%',
-              left: '',
-            }
-          }
-        }
-        activeBarStyleFactory={(ind, style) => {
-            return {
-              ...style, 
-              left: '',
-              right: '0px',
-              top: `${2 + ind * 5}rem`,
-              opacity: 1
-            }
-          }
-        }
-        />
-      {!this.state.isFetching && roomStatus ?
+      !isFetching && roomStatus ?
       <div className="container">
 	      {this.props.children}
       </div>
       :
-      null }
-      </div>
+      null
     )
   }
     
@@ -89,7 +53,7 @@ const mapStateToProps = (state) => {
     notifications: state.root.notifications,
     user: state.root.user,
     cookie: state.root.cookie,
-    status: state.root.auth.status,
+    authStatus: state.root.auth.status,
     roomStatus: state.root.rooms.isValid
   }
 };
