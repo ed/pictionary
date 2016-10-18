@@ -9,7 +9,8 @@ const emptyGame = {
   players: [],
   word : '',
   artist: 'doesntmatter',
-  timeLeft: -1
+  timeLeft: -1,
+  turnStatus: 'none'
 };
 
 const emptyRoom = {
@@ -96,8 +97,6 @@ class DMTManager {
   endGame(room) {
     console.log(`end game in room ${room}`)
     if ( room in this.rooms && this.rooms[room].gameInProgress ){
-      io.sockets.in(room).emit('update game', emptyGame);
-      clearInterval(this.rooms[room].game.turnTimer);
       this.rooms[room].gameInProgress = false;
     }
   } 
@@ -151,6 +150,7 @@ class DMT {
   }
 
   start() {
+    this.gameTimer = setInterval(() => this.updateGame(), 1000);
     this.startTurn();
   }
 
@@ -162,8 +162,7 @@ class DMT {
       let msg = createMessage(text, author);
       msg.color = 'red';
       io.sockets.in(this.room).emit('update chat', msg);
-      this.gameState.players = this.players;
-      io.sockets.in(this.room).emit('update game', this.gameState);
+      this.setState({players: this.players});
       return true;
     }
     return false;
@@ -191,25 +190,9 @@ class DMT {
     }
     else {
       this.endGame();
-      this.gameState = {...emptyGame};
+      clearTimeout(this.gameTimer);
+      this.setState({gameInProgress: false});
     }
-  }
-
-  endTurn() {
-    clearTimeout(this.turnTimer);
-
-    let guessers = this.playerOrder.filter((player) => this.players[player].pointsThisTurn > 0 && player !== this.currentArtist())
-    this.setState({turnStatus: 'finished'});
-    io.sockets.in(this.room).emit('update game', this.gameState);
-    setTimeout(() => {
-      this.curArtist++;
-      if (this.curArtist >= this.numPlayers) {
-        this.endRound();
-      }
-      else {
-        this.startTurn();
-      }  
-    },10000)
   }
 
   startTurn() {
@@ -218,7 +201,7 @@ class DMT {
     for (let player in this.players) {
       this.players[player].pointsThisTurn = 0;
     }
-    this.gameState = {
+    this.setState({
       gameInProgress: true,
       turnStatus: 'starting',
       players: this.players,
@@ -227,32 +210,33 @@ class DMT {
       timeLeft: 5,
       totalRounds: this.numRounds,
       round: this.curRound,
-      timePerTurn: this.secondsPerTurn
-    };
-    io.sockets.in(this.room).emit('update game', this.gameState);
-    this.startTimer = setInterval(() => this.tickStart(), 1000);
+      timePerTurn: this.secondsPerTurn,
+      canvasData: null
+    });
   }
 
-  tickStart() {
-    if (this.gameState['timeLeft'] > 0) {
-      this.gameState['timeLeft']--;
-      io.sockets.in(this.room).emit('update game', this.gameState);
-    }
-    else {
-      this.setState({turnStatus: 'drawing', timeLeft: this.secondsPerTurn});
-      io.sockets.in(this.room).emit('update game', this.gameState);
-      this.turnTimer = setInterval(() => this.tickTurn(), 1000);
-      clearInterval(this.startTimer);
-    }
+  endTurn() {
+    this.setState({turnStatus: 'finished', timeLeft: 10});
   }
 
-  tickTurn() {
+  updateGame() {
     if (this.gameState['timeLeft'] > 0) {
-      this.gameState['timeLeft']--;
-      io.sockets.in(this.room).emit('update game', this.gameState);
+      this.setState({timeLeft : this.gameState.timeLeft-1})
     }
-    else {
+    else if (this.gameState.turnStatus === 'drawing') {
       this.endTurn();
+    }
+    else if (this.gameState.turnStatus === 'starting') {
+      this.setState({turnStatus: 'drawing', timeLeft: this.secondsPerTurn});
+    }
+    else if (this.gameState.turnStatus === 'finished') {
+      this.curArtist++;
+      if (this.curArtist >= this.numPlayers) {
+        this.endRound();
+      }
+      else {
+        this.startTurn();
+      }
     }
   }
 
@@ -274,6 +258,7 @@ class DMT {
     for (let key in newStates) { 
       this.gameState[key] = newStates[key]; 
     }
+    io.sockets.in(this.room).emit('update game', this.gameState);
   }
 }
 

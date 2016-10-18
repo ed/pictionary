@@ -15,6 +15,7 @@ export class WhiteBoard extends Component {
   }
 
   render() {
+    console.log(this.props.artist)
     return (
       <div className="whiteboard">
         { this.props.gameInProgress ? 

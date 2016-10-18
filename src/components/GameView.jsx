@@ -28,8 +28,6 @@ class GameView extends Component {
 
   fetchRoomData(room) {
     this.props.dispatch(fetchRoomData(room)).then((res) => {
-      console.log(res)
-      console.log(room)
       if (!res.error) {
         this.props.socket.emit('join room', room);
       }
@@ -43,7 +41,6 @@ class GameView extends Component {
   }
 
   updateRoom(roomData) {
-    console.log(roomData)
     this.props.dispatch(updateRoom(roomData.curRoom));
     this.props.dispatch(setRooms(roomData.rooms));
     this.setState({
@@ -83,7 +80,6 @@ class GameView extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
   return { 
       socket: state.root.socket,
       user: state.root.user

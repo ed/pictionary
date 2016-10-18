@@ -22,7 +22,7 @@ export default class Popover extends Component {
 
   handleClose() {
     this.setState({ active: false });
-    setTimeout(this.props.close, 250);
+    setTimeout(this.props.close, 150);
   }
 
   fadeIn() {
@@ -52,7 +52,7 @@ export default class Popover extends Component {
             textAlign                  : 'center',
             color                      : '#252525',
                           opacity           ,
-              transition        : 'opacity .25s ease-in-out'
+              transition        : 'opacity .15s ease-in-out'
           }
         }}
         onAfterOpen={() => this.fadeIn()}

@@ -81,7 +81,6 @@ class Canvas extends Component {
     this.curMark = new Mark(this.ctx, this.state.brushColor, this.state.brushSize, pos);
     this.curMark.startStroke();
     this.setState({ drawing: true });
-    e.preventDefault();
   }
 
   drawStroke(e) {
@@ -246,9 +245,9 @@ class ArtistOptions extends Component {
   }
 
   componentDidMount() {
-    key('ctrl + z', () => this.undo());
-    key('ctrl + y', () => this.redo());
-    key('ctrl + c', () => this.clear());
+    key('ctrl + z', () => this.props.undo());
+    key('ctrl + y', () => this.props.redo());
+    key('ctrl + c', () => this.props.clear());
   }
 
   render () {
