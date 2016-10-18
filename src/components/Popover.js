@@ -31,7 +31,6 @@ export default class Popover extends Component {
 
   render() {
     let opacity = this.state.active ? 1 : 0;
-    console.log(opacity)
     return (
       <Modal 
         isOpen={this.props.isOpen}

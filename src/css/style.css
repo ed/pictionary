@@ -311,6 +311,7 @@ canvas {
 }
 
 .canvasMessage {
+  font-size: 200%;
   pointer-events: none;
   width: 600px;
   height: 100px;

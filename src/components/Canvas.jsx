@@ -35,19 +35,11 @@ class Canvas extends Component {
     if (this.props.canvasData) {
       this.buildRemoteCanvas(this.props.canvasData);
     }
-
-    key('ctrl + z', () => this.undo());
-    key('ctrl + y', () => this.redo());
-    key('ctrl + c', () => this.clear());
   }
 
   componentWillUnmount() {
-    key.unbind('ctrl + z');
-    key.unbind('ctrl + y');
-    key.unbind('ctrl + c');
     this.props.socket.off('turn over');
     this.props.socket.off('update canvas');
-    clearInterval(this.milliTick)
   }
 
   buildRemoteCanvas(canvasData) {
@@ -168,26 +160,17 @@ class Canvas extends Component {
         ref={(canvas) => this.canvas = canvas}
         />
         {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
-        <div className="canvasMessage">
-        {
-          !this.state.turnOver ?  
-          <div className="timer" style={{display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background:'white', left:0, right:0}}> 
-          <Circle
-                progress={this.props.timeLeft/this.props.timePerTurn}
-                options={{strokeWidth: 6, color: '#FF3232', text: { value: this.props.timeLeft, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} }, trailColor: '#eee', trailWidth: 4  }}
-                initialAnimate={true}
-                containerStyle={{ width: '80px', height: '80px' }}
-                containerClassName={'.progressbar'} /> 
-          </div> 
-        : 
-          <div> The word was <span style={{fontWeight:'bold',color: 'orange'}}>{this.props.word}</span>! <br/>
-          <span> {this.state.guessers.length > 0 ? 
-            <span style={{fontWeight:'bold'}}>{ this.state.guessers.length === this.props.numPlayers - 1 ? 'everyone' : this.state.guessers.join(', ')}</span> : 'No one'} guessed the word!</span>
-          </div> 
+
+        {!this.state.turnOver ? 
+          <div style={{position: 'absolute', top:0, right:'20px', width: '100px', height: '100px'}}>
+          <Timer progress={this.props.timeLeft/this.props.timePerTurn} timeLeft={this.props.timeLeft}/>
+          </div>
+          : 
+          null
         }
-        </div> 
-        {canIDraw ? <div className="word"> <span>{this.props.word}</span> </div> : null}
-        {canIDraw ? <ArtistOptions 
+        <CanvasMessage turnOver={this.state.turnover} guessers={this.state.guessers} canIDraw={canIDraw} {...this.props} />
+        {canIDraw ? 
+          <ArtistOptions 
           color={this.state.brushColor} 
           radius={this.state.brushSize} 
           clear={() => this.clear()} 
@@ -221,7 +204,50 @@ export default connect(
 )(Canvas)
 
 
+const CanvasMessage = ({ canIDraw, guessers, numPlayers, word, artist, turnOver }) => (
+  <div className="canvasMessage">
+  {
+    !turnOver ?
+    <div style={{pointerEvents: 'auto'}}>  
+    { canIDraw ? <span> your turn, <br/> your word is <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span> </span> 
+    : 
+    <span > <span style={{fontWeight:'bold',color: 'orange'}}>{artist}</span> is drawing, <br/> guess the word! </span> }
+    </div>
+  : 
+    <div> The word was <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span>! <br/>
+    <span> { guessers.length > 0 ? 
+      <span style={{fontWeight:'bold'}}>{ guessers.length === numPlayers - 1 ? 'everyone' : guessers.join(', ')}</span> : 'No one'} guessed the word!</span>
+    </div> 
+  }
+  </div> 
+)
+
+const Timer = ({ progress, timeLeft }) => (
+  <div className="timer" style={{display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background:'white', left:0, right:0}}> 
+  <Circle
+        progress={progress}
+        options={{strokeWidth: 6, color: '#FF3232', text: { value: timeLeft, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} }, trailColor: '#eee', trailWidth: 4  }}
+        initialAnimate={true}
+        containerStyle={{ width: '80px', height: '80px' }}
+        containerClassName={'.progressbar'} />
+  </div>
+)
+
+
 class ArtistOptions extends Component {
+
+  componentWillUnmount() {
+    key.unbind('ctrl + z');
+    key.unbind('ctrl + y');
+    key.unbind('ctrl + c');
+  }
+
+  componentDidMount() {
+    key('ctrl + z', () => this.undo());
+    key('ctrl + y', () => this.redo());
+    key('ctrl + c', () => this.clear());
+  }
+
   render () {
     return (
       <div className="artistOptions">
