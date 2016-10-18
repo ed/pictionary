@@ -100,9 +100,11 @@
 	
 	var _routes2 = _interopRequireDefault(_routes);
 	
-	__webpack_require__(615);
+	__webpack_require__(633);
 	
-	__webpack_require__(619);
+	__webpack_require__(638);
+	
+	__webpack_require__(640);
 	
 	var _immutable = __webpack_require__(180);
 	
@@ -20694,8 +20696,11 @@
 	            action: _react2.default.createElement('i', { className: 'ion-ios-close-empty', 'aria-hidden': 'true' }),
 	            actionStyle: { color: 'white', width: '1px', fontSize: '200%' },
 	            dismissAfter: 3400,
-	            onClick: function onClick() {
-	              return action.removeNotification(key);
+	            onClick: function onClick(deactivate) {
+	              deactivate();
+	              setTimeout(function () {
+	                return action.removeNotification(key);
+	              }, 400);
 	            }
 	          })
 	        };
@@ -21149,7 +21154,7 @@
 
 /***/ },
 /* 169 */
-[621, 170],
+[642, 170],
 /* 170 */
 /***/ function(module, exports) {
 
@@ -33196,9 +33201,17 @@
 	
 	var _Register2 = _interopRequireDefault(_Register);
 	
-	var _BrowseRooms = __webpack_require__(427);
+	var _BrowseRooms = __webpack_require__(433);
 	
 	var _BrowseRooms2 = _interopRequireDefault(_BrowseRooms);
+	
+	var _Home = __webpack_require__(631);
+	
+	var _Home2 = _interopRequireDefault(_Home);
+	
+	var _AppContainer = __webpack_require__(632);
+	
+	var _AppContainer2 = _interopRequireDefault(_AppContainer);
 	
 	function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : { default: obj };
@@ -33217,7 +33230,7 @@
 	    return _react2.default.createElement('div', { className: 'container' }, children);
 	};
 	
-	module.exports = _react2.default.createElement(_reactRouter.Route, { path: '/', component: Container }, _react2.default.createElement(_reactRouter.Route, { path: 'login', component: _Login2.default }), _react2.default.createElement(_reactRouter.IndexRoute, { component: _Register2.default }), _react2.default.createElement(_reactRouter.Route, { path: 'game', component: _GameContainer2.default }, _react2.default.createElement(_reactRouter.IndexRoute, { component: CreateRoomWrapper }), _react2.default.createElement(_reactRouter.Route, { path: 'browse', component: BrowseRoomsWrapper }), _react2.default.createElement(_reactRouter.Route, { path: 'r/:roomName', component: _GameView2.default })));
+	module.exports = _react2.default.createElement(_reactRouter.Route, { path: '/', component: _AppContainer2.default }, _react2.default.createElement(_reactRouter.IndexRoute, { component: _Home2.default }), _react2.default.createElement(_reactRouter.Route, { path: 'login', component: _Login2.default }), _react2.default.createElement(_reactRouter.Route, { path: 'register', component: _Register2.default }), _react2.default.createElement(_reactRouter.Route, { path: 'game', component: _GameContainer2.default }, _react2.default.createElement(_reactRouter.IndexRoute, { component: CreateRoomWrapper }), _react2.default.createElement(_reactRouter.Route, { path: 'browse', component: BrowseRoomsWrapper }), _react2.default.createElement(_reactRouter.Route, { path: 'r/:roomName', component: _GameView2.default })));
 
 /***/ },
 /* 259 */
@@ -33230,16 +33243,6 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	
-	var _extends = Object.assign || function (target) {
-	  for (var i = 1; i < arguments.length; i++) {
-	    var source = arguments[i];for (var key in source) {
-	      if (Object.prototype.hasOwnProperty.call(source, key)) {
-	        target[key] = source[key];
-	      }
-	    }
-	  }return target;
-	};
 	
 	var _createClass = function () {
 	  function defineProperties(target, props) {
@@ -33268,6 +33271,10 @@
 	var _Register2 = _interopRequireDefault(_Register);
 	
 	var _reactNotification = __webpack_require__(267);
+	
+	var _Spinner = __webpack_require__(265);
+	
+	var _Spinner2 = _interopRequireDefault(_Spinner);
 	
 	function _interopRequireDefault(obj) {
 	  return obj && obj.__esModule ? obj : { default: obj };
@@ -33312,9 +33319,10 @@
 	
 	      var _props = this.props;
 	      var cookie = _props.cookie;
-	      var status = _props.status;
+	      var authStatus = _props.authStatus;
 	      var user = _props.user;
 	
+	      console.log(cookie, authStatus, user);
 	      if (cookie) {
 	        this.props.dispatch((0, _actions.whoami)()).then(function () {
 	          _this2.setState({
@@ -33322,7 +33330,7 @@
 	          });
 	        });
 	      } else {
-	        this.props.dispatch((0, _actions.setTempUserInfo)());
+	        if (!authStatus) this.props.dispatch((0, _actions.setTempUserInfo)());
 	        this.setState({
 	          isFetching: false
 	        });
@@ -33331,8 +33339,6 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this;
-	
 	      var _props2 = this.props;
 	      var roomStatus = _props2.roomStatus;
 	      var user = _props2.user;
@@ -33340,39 +33346,7 @@
 	      var error = _props2.error;
 	      var isFetching = this.state.isFetching;
 	
-	      console.log('notifications: ' + this.props.notifications);
-	      return _react2.default.createElement('div', { className: 'container' }, _react2.default.createElement(_reactNotification.NotificationStack, {
-	        notifications: this.props.notifications.toArray(),
-	        onDismiss: function onDismiss(notification) {
-	          return _this3.props.dispatch((0, _actions.dismissNotification)(notification));
-	        },
-	        barStyleFactory: function barStyleFactory(ind, style) {
-	          return _extends({}, style, {
-	            fontFamily: 'Lato',
-	            background: '#ffad90',
-	            borderWidth: '0px',
-	            height: '30px',
-	            color: 'white',
-	            borderRadius: '0px',
-	            display: 'flex',
-	            alignItems: 'center',
-	            justifyContent: 'center',
-	            top: 2 + ind * 5 + 'rem',
-	            opacity: 0,
-	            boxShadow: '',
-	            right: '-100%',
-	            left: ''
-	          });
-	        },
-	        activeBarStyleFactory: function activeBarStyleFactory(ind, style) {
-	          return _extends({}, style, {
-	            left: '',
-	            right: '0px',
-	            top: 2 + ind * 5 + 'rem',
-	            opacity: 1
-	          });
-	        }
-	      }), !this.state.isFetching && roomStatus ? _react2.default.createElement('div', { className: 'container' }, this.props.children) : null);
+	      return !isFetching && roomStatus ? _react2.default.createElement('div', { className: 'container' }, this.props.children) : _react2.default.createElement(_Spinner2.default, null);
 	    }
 	  }]);
 	
@@ -33384,7 +33358,7 @@
 	    notifications: state.root.notifications,
 	    user: state.root.user,
 	    cookie: state.root.cookie,
-	    status: state.root.auth.status,
+	    authStatus: state.root.auth.status,
 	    roomStatus: state.root.rooms.isValid
 	  };
 	};
@@ -33482,7 +33456,7 @@
 	    dispatch({ type: 'SET_USER_INFO', user: user });
 	    dispatch(setSocket());
 	    return dispatch(fetchRooms()).then(function () {
-	      return dispatch((0, _reactRouterRedux.push)('/'));
+	      return dispatch((0, _reactRouterRedux.push)('/game'));
 	    });
 	  };
 	};
@@ -33519,7 +33493,7 @@
 	    }).then(checkStatus).then(function () {
 	      dispatch({ type: 'REQUEST_FAILURE' });
 	      dispatch({ type: 'BYE_FELICIA' });
-	      dispatch((0, _reactRouterRedux.push)('/'));
+	      dispatch((0, _reactRouterRedux.push)('/game'));
 	    }).catch(function (error) {
 	      dispatch(requestFailure(error.message));
 	    });
@@ -34187,6 +34161,8 @@
 	
 	var _reactRedux = __webpack_require__(251);
 	
+	var _reactRouterRedux = __webpack_require__(182);
+	
 	var _Form = __webpack_require__(264);
 	
 	var _Form2 = _interopRequireDefault(_Form);
@@ -34211,6 +34187,13 @@
 	  }
 	
 	  _createClass(Login, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      if (this.props.authStatus) {
+	        this.props.dispatch((0, _reactRouterRedux.push)('/game'));
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var props = _objectWithoutProperties(this.props, []);
@@ -34238,7 +34221,7 @@
 	
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
-	    data: state
+	    authStatus: state.root.auth.status
 	  };
 	};
 	
@@ -34512,20 +34495,26 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.NotificationStack = exports.Notification = undefined;
 	
 	var _notification = __webpack_require__(268);
 	
-	var _notification2 = _interopRequireDefault(_notification);
+	Object.defineProperty(exports, 'Notification', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_notification).default;
+	  }
+	});
 	
 	var _notificationStack = __webpack_require__(270);
 	
-	var _notificationStack2 = _interopRequireDefault(_notificationStack);
+	Object.defineProperty(exports, 'NotificationStack', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_notificationStack).default;
+	  }
+	});
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.Notification = _notification2.default;
-	exports.NotificationStack = _notificationStack2.default;
 
 /***/ },
 /* 268 */
@@ -34580,7 +34569,9 @@
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
 	      if (this.props.dismissAfter === false) return;
-	      if (!nextProps.hasOwnProperty('isLast')) clearTimeout(this.dismissTimeout);
+	      if (!nextProps.hasOwnProperty('isLast')) {
+	        clearTimeout(this.dismissTimeout);
+	      }
 	      if (nextProps.onDismiss && nextProps.isActive && !this.props.isActive) {
 	        this.dismissTimeout = setTimeout(nextProps.onDismiss, nextProps.dismissAfter);
 	      }
@@ -34592,9 +34583,9 @@
 	    }
 	
 	    /*
-	     * @description Dynamically get the styles for the bar.
-	     * @returns {object} result The style.
-	     */
+	    * @description Dynamically get the styles for the bar.
+	    * @returns {object} result The style.
+	    */
 	
 	  }, {
 	    key: 'getBarStyle',
@@ -34633,16 +34624,14 @@
 	        transform: 'translatez(0)'
 	      };
 	
-	      return isActive ? _extends({}, baseStyle, {
-	        left: '1rem'
-	      }, barStyle, activeBarStyle) : _extends({}, baseStyle, barStyle);
+	      return isActive ? _extends({}, baseStyle, { left: '1rem' }, barStyle, activeBarStyle) : _extends({}, baseStyle, barStyle);
 	    }
 	
 	    /*
-	     * @function getActionStyle
-	     * @description Dynamically get the styles for the action text.
-	     * @returns {object} result The style.
-	     */
+	    * @function getActionStyle
+	    * @description Dynamically get the styles for the action text.
+	    * @returns {object} result The style.
+	    */
 	
 	  }, {
 	    key: 'getActionStyle',
@@ -34661,10 +34650,10 @@
 	    }
 	
 	    /*
-	     * @function getTitleStyle
-	     * @description Dynamically get the styles for the title.
-	     * @returns {object} result The style.
-	     */
+	    * @function getTitleStyle
+	    * @description Dynamically get the styles for the title.
+	    * @returns {object} result The style.
+	    */
 	
 	  }, {
 	    key: 'getTitleStyle',
@@ -34676,9 +34665,9 @@
 	    }
 	
 	    /*
-	     * @function handleClick
-	     * @description Handle click events on the action button.
-	     */
+	    * @function handleClick
+	    * @description Handle click events on the action button.
+	    */
 	
 	  }, {
 	    key: 'handleClick',
@@ -34769,7 +34758,7 @@
 	  dismissAfter: _react.PropTypes.oneOfType([_react.PropTypes.bool, _react.PropTypes.number]),
 	  onDismiss: _react.PropTypes.func,
 	  className: _react.PropTypes.string,
-	  activeClassName: _react.PropTypes.string.isRequired,
+	  activeClassName: _react.PropTypes.string,
 	  isActive: _react.PropTypes.bool,
 	  title: _react.PropTypes.string
 	};
@@ -34784,15 +34773,12 @@
 	  value: true
 	});
 	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /* eslint-disable react/jsx-no-bind */
+	
 	
 	var _react = __webpack_require__(2);
 	
 	var _react2 = _interopRequireDefault(_react);
-	
-	var _defaultPropTypes = __webpack_require__(269);
-	
-	var _defaultPropTypes2 = _interopRequireDefault(_defaultPropTypes);
 	
 	var _stackedNotification = __webpack_require__(271);
 	
@@ -34805,10 +34791,10 @@
 	}
 	
 	/**
-	 * The notification list does not have any state, so use a
-	 * pure function here. It just needs to return the stacked array
-	 * of notification components.
-	 */
+	* The notification list does not have any state, so use a
+	* pure function here. It just needs to return the stacked array
+	* of notification components.
+	*/
 	var NotificationStack = function NotificationStack(props) {
 	  return _react2.default.createElement(
 	    'div',
@@ -34865,6 +34851,10 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _defaultPropTypes = __webpack_require__(269);
+	
+	var _defaultPropTypes2 = _interopRequireDefault(_defaultPropTypes);
+	
 	var _notification = __webpack_require__(268);
 	
 	var _notification2 = _interopRequireDefault(_notification);
@@ -34888,6 +34878,8 @@
 	    _this.state = {
 	      isActive: false
 	    };
+	
+	    _this.handleClick = _this.handleClick.bind(_this);
 	    return _this;
 	  }
 	
@@ -34910,12 +34902,26 @@
 	      clearTimeout(this.activeTimeout);
 	      clearTimeout(this.dismissTimeout);
 	    }
+	
+	    /*
+	    * @function handleClick
+	    * @description Bind deactivate Notification function to Notification click handler
+	    */
+	
+	  }, {
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      if (this.props.onClick && typeof this.props.onClick === 'function') {
+	        return this.props.onClick(this.setState.bind(this, { isActive: false }));
+	      }
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this2 = this;
 	
 	      return _react2.default.createElement(_notification2.default, _extends({}, this.props, {
+	        onClick: this.handleClick,
 	        onDismiss: function onDismiss() {
 	          return setTimeout(_this2.props.onDismiss, 300);
 	        },
@@ -34927,7 +34933,7 @@
 	  return StackedNotification;
 	}(_react.Component);
 	
-	;
+	StackedNotification.propTypes = _defaultPropTypes2.default;
 	
 	exports.default = StackedNotification;
 
@@ -34961,7 +34967,7 @@
 	
 	var _Sidebar2 = _interopRequireDefault(_Sidebar);
 	
-	var _WhiteBoard = __webpack_require__(428);
+	var _WhiteBoard = __webpack_require__(434);
 	
 	var _WhiteBoard2 = _interopRequireDefault(_WhiteBoard);
 	
@@ -35019,6 +35025,7 @@
 	
 	      this.props.dispatch((0, _actions.fetchRoomData)(room)).then(function (res) {
 	        console.log(res);
+	        console.log(room);
 	        if (!res.error) {
 	          _this3.props.socket.emit('join room', room);
 	        }
@@ -35034,6 +35041,7 @@
 	  }, {
 	    key: 'updateRoom',
 	    value: function updateRoom(roomData) {
+	      console.log(roomData);
 	      this.props.dispatch((0, _actions.updateRoom)(roomData.curRoom));
 	      this.props.dispatch((0, _actions.setRooms)(roomData.rooms));
 	      this.setState({
@@ -53784,11 +53792,11 @@
 	
 	var _Popover2 = _interopRequireDefault(_Popover);
 	
-	var _BrowseRooms = __webpack_require__(427);
+	var _BrowseRooms = __webpack_require__(433);
 	
 	var _BrowseRooms2 = _interopRequireDefault(_BrowseRooms);
 	
-	var _reactCopyToClipboard = __webpack_require__(611);
+	var _reactCopyToClipboard = __webpack_require__(627);
 	
 	var _reactCopyToClipboard2 = _interopRequireDefault(_reactCopyToClipboard);
 	
@@ -54270,7 +54278,9 @@
 	          return _this3._onKeyDown(e);
 	        } }), _react2.default.createElement('div', { style: { marginBottom: '12px', fontSize: '70%', color: '#c1c1c1' } }, ' Names must be lowercase, with no spaces or periods. ')), _react2.default.createElement('button', { className: 'myButton' + (buttonActive ? ' active' : ''), onClick: function onClick() {
 	          return _this3.createRoom();
-	        } }, 'Create Room'), _react2.default.createElement('div', null, ' or ', _react2.default.createElement(_reactRouter.Link, { onClick: this.setState({ private: true }), to: '/game/browse' }, 'join a public room ')));
+	        } }, 'Create Room'), _react2.default.createElement('div', null, ' or ', _react2.default.createElement(_reactRouter.Link, { onClick: function onClick() {
+	          return _this3.setState({ private: true });
+	        }, to: '/game/browse' }, 'join a public room ')));
 	    }
 	  }]);
 	
@@ -54319,6 +54329,10 @@
 	
 	var _reactModal2 = _interopRequireDefault(_reactModal);
 	
+	var _ReactCSSTransitionGroup = __webpack_require__(427);
+	
+	var _ReactCSSTransitionGroup2 = _interopRequireDefault(_ReactCSSTransitionGroup);
+	
 	function _interopRequireDefault(obj) {
 	  return obj && obj.__esModule ? obj : { default: obj };
 	}
@@ -54344,16 +54358,25 @@
 	var Popover = function (_Component) {
 	  _inherits(Popover, _Component);
 	
-	  function Popover() {
+	  function Popover(props) {
 	    _classCallCheck(this, Popover);
 	
-	    return _possibleConstructorReturn(this, (Popover.__proto__ || Object.getPrototypeOf(Popover)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (Popover.__proto__ || Object.getPrototypeOf(Popover)).call(this, props));
+	
+	    _this.state = {
+	      active: false
+	    };
+	    return _this;
 	  }
 	
 	  _createClass(Popover, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      key('esc', this.props.close);
+	      var _this2 = this;
+	
+	      key('esc', function () {
+	        return _this2.handleClose();
+	      });
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -54361,8 +54384,23 @@
 	      key.unbind('esc');
 	    }
 	  }, {
+	    key: 'handleClose',
+	    value: function handleClose() {
+	      this.setState({ active: false });
+	      setTimeout(this.props.close, 250);
+	    }
+	  }, {
+	    key: 'fadeIn',
+	    value: function fadeIn() {
+	      this.setState({ active: true });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this3 = this;
+	
+	      var opacity = this.state.active ? 1 : 0;
+	      console.log(opacity);
 	      return _react2.default.createElement(_reactModal2.default, {
 	        isOpen: this.props.isOpen,
 	        style: {
@@ -54372,7 +54410,7 @@
 	            left: 0,
 	            right: 0,
 	            bottom: 0,
-	            backgroundColor: 'rgba(0, 0, 0, 0.3)'
+	            backgroundColor: 'rgba(0, 0, 0, 0)'
 	          },
 	          content: {
 	            position: 'absolute',
@@ -54381,11 +54419,20 @@
 	            right: '0',
 	            bottom: '0',
 	            textAlign: 'center',
-	            color: '#252525'
+	            color: '#252525',
+	            opacity: opacity,
+	            transition: 'opacity .25s ease-in-out'
 	          }
 	        },
-	        closeTimeoutMS: 2000
-	      }, _react2.default.createElement('div', { className: 'closeModal', tabIndex: '-1', onClick: this.props.close }, _react2.default.createElement('i', { className: 'ion-ios-close-empty' })), _react2.default.createElement('div', { className: 'popoverContainer' }, this.props.children));
+	        onAfterOpen: function onAfterOpen() {
+	          return _this3.fadeIn();
+	        },
+	        onRequestClose: function onRequestClose() {
+	          return _this3.handleClose();
+	        }
+	      }, _react2.default.createElement('div', { className: 'closeModal', tabIndex: '-1', onClick: function onClick() {
+	          return _this3.handleClose();
+	        } }, _react2.default.createElement('i', { className: 'ion-ios-close-empty' })), _react2.default.createElement('div', { className: 'popoverContainer' }, this.props.children));
 	    }
 	  }]);
 	
@@ -56337,6 +56384,833 @@
 /* 427 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactCSSTransitionGroup
+	 */
+	
+	'use strict';
+	
+	var _assign = __webpack_require__(4);
+	
+	var React = __webpack_require__(3);
+	
+	var ReactTransitionGroup = __webpack_require__(428);
+	var ReactCSSTransitionGroupChild = __webpack_require__(430);
+	
+	function createTransitionTimeoutPropValidator(transitionType) {
+	  var timeoutPropName = 'transition' + transitionType + 'Timeout';
+	  var enabledPropName = 'transition' + transitionType;
+	
+	  return function (props) {
+	    // If the transition is enabled
+	    if (props[enabledPropName]) {
+	      // If no timeout duration is provided
+	      if (props[timeoutPropName] == null) {
+	        return new Error(timeoutPropName + ' wasn\'t supplied to ReactCSSTransitionGroup: ' + 'this can cause unreliable animations and won\'t be supported in ' + 'a future version of React. See ' + 'https://fb.me/react-animation-transition-group-timeout for more ' + 'information.');
+	
+	        // If the duration isn't a number
+	      } else if (typeof props[timeoutPropName] !== 'number') {
+	          return new Error(timeoutPropName + ' must be a number (in milliseconds)');
+	        }
+	    }
+	  };
+	}
+	
+	/**
+	 * An easy way to perform CSS transitions and animations when a React component
+	 * enters or leaves the DOM.
+	 * See https://facebook.github.io/react/docs/animation.html#high-level-api-reactcsstransitiongroup
+	 */
+	var ReactCSSTransitionGroup = React.createClass({
+	  displayName: 'ReactCSSTransitionGroup',
+	
+	  propTypes: {
+	    transitionName: ReactCSSTransitionGroupChild.propTypes.name,
+	
+	    transitionAppear: React.PropTypes.bool,
+	    transitionEnter: React.PropTypes.bool,
+	    transitionLeave: React.PropTypes.bool,
+	    transitionAppearTimeout: createTransitionTimeoutPropValidator('Appear'),
+	    transitionEnterTimeout: createTransitionTimeoutPropValidator('Enter'),
+	    transitionLeaveTimeout: createTransitionTimeoutPropValidator('Leave')
+	  },
+	
+	  getDefaultProps: function () {
+	    return {
+	      transitionAppear: false,
+	      transitionEnter: true,
+	      transitionLeave: true
+	    };
+	  },
+	
+	  _wrapChild: function (child) {
+	    // We need to provide this childFactory so that
+	    // ReactCSSTransitionGroupChild can receive updates to name, enter, and
+	    // leave while it is leaving.
+	    return React.createElement(ReactCSSTransitionGroupChild, {
+	      name: this.props.transitionName,
+	      appear: this.props.transitionAppear,
+	      enter: this.props.transitionEnter,
+	      leave: this.props.transitionLeave,
+	      appearTimeout: this.props.transitionAppearTimeout,
+	      enterTimeout: this.props.transitionEnterTimeout,
+	      leaveTimeout: this.props.transitionLeaveTimeout
+	    }, child);
+	  },
+	
+	  render: function () {
+	    return React.createElement(ReactTransitionGroup, _assign({}, this.props, { childFactory: this._wrapChild }));
+	  }
+	});
+	
+	module.exports = ReactCSSTransitionGroup;
+
+/***/ },
+/* 428 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactTransitionGroup
+	 */
+	
+	'use strict';
+	
+	var _assign = __webpack_require__(4);
+	
+	var React = __webpack_require__(3);
+	var ReactInstanceMap = __webpack_require__(110);
+	var ReactTransitionChildMapping = __webpack_require__(429);
+	
+	var emptyFunction = __webpack_require__(12);
+	
+	/**
+	 * A basis for animations. When children are declaratively added or removed,
+	 * special lifecycle hooks are called.
+	 * See https://facebook.github.io/react/docs/animation.html#low-level-api-reacttransitiongroup
+	 */
+	var ReactTransitionGroup = React.createClass({
+	  displayName: 'ReactTransitionGroup',
+	
+	  propTypes: {
+	    component: React.PropTypes.any,
+	    childFactory: React.PropTypes.func
+	  },
+	
+	  getDefaultProps: function () {
+	    return {
+	      component: 'span',
+	      childFactory: emptyFunction.thatReturnsArgument
+	    };
+	  },
+	
+	  getInitialState: function () {
+	    return {
+	      // TODO: can we get useful debug information to show at this point?
+	      children: ReactTransitionChildMapping.getChildMapping(this.props.children)
+	    };
+	  },
+	
+	  componentWillMount: function () {
+	    this.currentlyTransitioningKeys = {};
+	    this.keysToEnter = [];
+	    this.keysToLeave = [];
+	  },
+	
+	  componentDidMount: function () {
+	    var initialChildMapping = this.state.children;
+	    for (var key in initialChildMapping) {
+	      if (initialChildMapping[key]) {
+	        this.performAppear(key);
+	      }
+	    }
+	  },
+	
+	  componentWillReceiveProps: function (nextProps) {
+	    var nextChildMapping;
+	    if (false) {
+	      nextChildMapping = ReactTransitionChildMapping.getChildMapping(nextProps.children, ReactInstanceMap.get(this)._debugID);
+	    } else {
+	      nextChildMapping = ReactTransitionChildMapping.getChildMapping(nextProps.children);
+	    }
+	    var prevChildMapping = this.state.children;
+	
+	    this.setState({
+	      children: ReactTransitionChildMapping.mergeChildMappings(prevChildMapping, nextChildMapping)
+	    });
+	
+	    var key;
+	
+	    for (key in nextChildMapping) {
+	      var hasPrev = prevChildMapping && prevChildMapping.hasOwnProperty(key);
+	      if (nextChildMapping[key] && !hasPrev && !this.currentlyTransitioningKeys[key]) {
+	        this.keysToEnter.push(key);
+	      }
+	    }
+	
+	    for (key in prevChildMapping) {
+	      var hasNext = nextChildMapping && nextChildMapping.hasOwnProperty(key);
+	      if (prevChildMapping[key] && !hasNext && !this.currentlyTransitioningKeys[key]) {
+	        this.keysToLeave.push(key);
+	      }
+	    }
+	
+	    // If we want to someday check for reordering, we could do it here.
+	  },
+	
+	  componentDidUpdate: function () {
+	    var keysToEnter = this.keysToEnter;
+	    this.keysToEnter = [];
+	    keysToEnter.forEach(this.performEnter);
+	
+	    var keysToLeave = this.keysToLeave;
+	    this.keysToLeave = [];
+	    keysToLeave.forEach(this.performLeave);
+	  },
+	
+	  performAppear: function (key) {
+	    this.currentlyTransitioningKeys[key] = true;
+	
+	    var component = this.refs[key];
+	
+	    if (component.componentWillAppear) {
+	      component.componentWillAppear(this._handleDoneAppearing.bind(this, key));
+	    } else {
+	      this._handleDoneAppearing(key);
+	    }
+	  },
+	
+	  _handleDoneAppearing: function (key) {
+	    var component = this.refs[key];
+	    if (component.componentDidAppear) {
+	      component.componentDidAppear();
+	    }
+	
+	    delete this.currentlyTransitioningKeys[key];
+	
+	    var currentChildMapping;
+	    if (false) {
+	      currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children, ReactInstanceMap.get(this)._debugID);
+	    } else {
+	      currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
+	    }
+	
+	    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
+	      // This was removed before it had fully appeared. Remove it.
+	      this.performLeave(key);
+	    }
+	  },
+	
+	  performEnter: function (key) {
+	    this.currentlyTransitioningKeys[key] = true;
+	
+	    var component = this.refs[key];
+	
+	    if (component.componentWillEnter) {
+	      component.componentWillEnter(this._handleDoneEntering.bind(this, key));
+	    } else {
+	      this._handleDoneEntering(key);
+	    }
+	  },
+	
+	  _handleDoneEntering: function (key) {
+	    var component = this.refs[key];
+	    if (component.componentDidEnter) {
+	      component.componentDidEnter();
+	    }
+	
+	    delete this.currentlyTransitioningKeys[key];
+	
+	    var currentChildMapping;
+	    if (false) {
+	      currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children, ReactInstanceMap.get(this)._debugID);
+	    } else {
+	      currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
+	    }
+	
+	    if (!currentChildMapping || !currentChildMapping.hasOwnProperty(key)) {
+	      // This was removed before it had fully entered. Remove it.
+	      this.performLeave(key);
+	    }
+	  },
+	
+	  performLeave: function (key) {
+	    this.currentlyTransitioningKeys[key] = true;
+	
+	    var component = this.refs[key];
+	    if (component.componentWillLeave) {
+	      component.componentWillLeave(this._handleDoneLeaving.bind(this, key));
+	    } else {
+	      // Note that this is somewhat dangerous b/c it calls setState()
+	      // again, effectively mutating the component before all the work
+	      // is done.
+	      this._handleDoneLeaving(key);
+	    }
+	  },
+	
+	  _handleDoneLeaving: function (key) {
+	    var component = this.refs[key];
+	
+	    if (component.componentDidLeave) {
+	      component.componentDidLeave();
+	    }
+	
+	    delete this.currentlyTransitioningKeys[key];
+	
+	    var currentChildMapping;
+	    if (false) {
+	      currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children, ReactInstanceMap.get(this)._debugID);
+	    } else {
+	      currentChildMapping = ReactTransitionChildMapping.getChildMapping(this.props.children);
+	    }
+	
+	    if (currentChildMapping && currentChildMapping.hasOwnProperty(key)) {
+	      // This entered again before it fully left. Add it again.
+	      this.performEnter(key);
+	    } else {
+	      this.setState(function (state) {
+	        var newChildren = _assign({}, state.children);
+	        delete newChildren[key];
+	        return { children: newChildren };
+	      });
+	    }
+	  },
+	
+	  render: function () {
+	    // TODO: we could get rid of the need for the wrapper node
+	    // by cloning a single child
+	    var childrenToRender = [];
+	    for (var key in this.state.children) {
+	      var child = this.state.children[key];
+	      if (child) {
+	        // You may need to apply reactive updates to a child as it is leaving.
+	        // The normal React way to do it won't work since the child will have
+	        // already been removed. In case you need this behavior you can provide
+	        // a childFactory function to wrap every child, even the ones that are
+	        // leaving.
+	        childrenToRender.push(React.cloneElement(this.props.childFactory(child), { ref: key, key: key }));
+	      }
+	    }
+	
+	    // Do not forward ReactTransitionGroup props to primitive DOM nodes
+	    var props = _assign({}, this.props);
+	    delete props.transitionLeave;
+	    delete props.transitionName;
+	    delete props.transitionAppear;
+	    delete props.transitionEnter;
+	    delete props.childFactory;
+	    delete props.transitionLeaveTimeout;
+	    delete props.transitionEnterTimeout;
+	    delete props.transitionAppearTimeout;
+	    delete props.component;
+	
+	    return React.createElement(this.props.component, props, childrenToRender);
+	  }
+	});
+	
+	module.exports = ReactTransitionGroup;
+
+/***/ },
+/* 429 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactTransitionChildMapping
+	 */
+	
+	'use strict';
+	
+	var flattenChildren = __webpack_require__(122);
+	
+	var ReactTransitionChildMapping = {
+	  /**
+	   * Given `this.props.children`, return an object mapping key to child. Just
+	   * simple syntactic sugar around flattenChildren().
+	   *
+	   * @param {*} children `this.props.children`
+	   * @param {number=} selfDebugID Optional debugID of the current internal instance.
+	   * @return {object} Mapping of key to child
+	   */
+	  getChildMapping: function (children, selfDebugID) {
+	    if (!children) {
+	      return children;
+	    }
+	
+	    if (false) {
+	      return flattenChildren(children, selfDebugID);
+	    }
+	
+	    return flattenChildren(children);
+	  },
+	
+	  /**
+	   * When you're adding or removing children some may be added or removed in the
+	   * same render pass. We want to show *both* since we want to simultaneously
+	   * animate elements in and out. This function takes a previous set of keys
+	   * and a new set of keys and merges them with its best guess of the correct
+	   * ordering. In the future we may expose some of the utilities in
+	   * ReactMultiChild to make this easy, but for now React itself does not
+	   * directly have this concept of the union of prevChildren and nextChildren
+	   * so we implement it here.
+	   *
+	   * @param {object} prev prev children as returned from
+	   * `ReactTransitionChildMapping.getChildMapping()`.
+	   * @param {object} next next children as returned from
+	   * `ReactTransitionChildMapping.getChildMapping()`.
+	   * @return {object} a key set that contains all keys in `prev` and all keys
+	   * in `next` in a reasonable order.
+	   */
+	  mergeChildMappings: function (prev, next) {
+	    prev = prev || {};
+	    next = next || {};
+	
+	    function getValueForKey(key) {
+	      if (next.hasOwnProperty(key)) {
+	        return next[key];
+	      } else {
+	        return prev[key];
+	      }
+	    }
+	
+	    // For each key of `next`, the list of keys to insert before that key in
+	    // the combined list
+	    var nextKeysPending = {};
+	
+	    var pendingKeys = [];
+	    for (var prevKey in prev) {
+	      if (next.hasOwnProperty(prevKey)) {
+	        if (pendingKeys.length) {
+	          nextKeysPending[prevKey] = pendingKeys;
+	          pendingKeys = [];
+	        }
+	      } else {
+	        pendingKeys.push(prevKey);
+	      }
+	    }
+	
+	    var i;
+	    var childMapping = {};
+	    for (var nextKey in next) {
+	      if (nextKeysPending.hasOwnProperty(nextKey)) {
+	        for (i = 0; i < nextKeysPending[nextKey].length; i++) {
+	          var pendingNextKey = nextKeysPending[nextKey][i];
+	          childMapping[nextKeysPending[nextKey][i]] = getValueForKey(pendingNextKey);
+	        }
+	      }
+	      childMapping[nextKey] = getValueForKey(nextKey);
+	    }
+	
+	    // Finally, add the keys which didn't appear before any key in `next`
+	    for (i = 0; i < pendingKeys.length; i++) {
+	      childMapping[pendingKeys[i]] = getValueForKey(pendingKeys[i]);
+	    }
+	
+	    return childMapping;
+	  }
+	};
+	
+	module.exports = ReactTransitionChildMapping;
+
+/***/ },
+/* 430 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactCSSTransitionGroupChild
+	 */
+	
+	'use strict';
+	
+	var React = __webpack_require__(3);
+	var ReactDOM = __webpack_require__(32);
+	
+	var CSSCore = __webpack_require__(431);
+	var ReactTransitionEvents = __webpack_require__(432);
+	
+	var onlyChild = __webpack_require__(30);
+	
+	var TICK = 17;
+	
+	var ReactCSSTransitionGroupChild = React.createClass({
+	  displayName: 'ReactCSSTransitionGroupChild',
+	
+	  propTypes: {
+	    name: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.shape({
+	      enter: React.PropTypes.string,
+	      leave: React.PropTypes.string,
+	      active: React.PropTypes.string
+	    }), React.PropTypes.shape({
+	      enter: React.PropTypes.string,
+	      enterActive: React.PropTypes.string,
+	      leave: React.PropTypes.string,
+	      leaveActive: React.PropTypes.string,
+	      appear: React.PropTypes.string,
+	      appearActive: React.PropTypes.string
+	    })]).isRequired,
+	
+	    // Once we require timeouts to be specified, we can remove the
+	    // boolean flags (appear etc.) and just accept a number
+	    // or a bool for the timeout flags (appearTimeout etc.)
+	    appear: React.PropTypes.bool,
+	    enter: React.PropTypes.bool,
+	    leave: React.PropTypes.bool,
+	    appearTimeout: React.PropTypes.number,
+	    enterTimeout: React.PropTypes.number,
+	    leaveTimeout: React.PropTypes.number
+	  },
+	
+	  transition: function (animationType, finishCallback, userSpecifiedDelay) {
+	    var node = ReactDOM.findDOMNode(this);
+	
+	    if (!node) {
+	      if (finishCallback) {
+	        finishCallback();
+	      }
+	      return;
+	    }
+	
+	    var className = this.props.name[animationType] || this.props.name + '-' + animationType;
+	    var activeClassName = this.props.name[animationType + 'Active'] || className + '-active';
+	    var timeout = null;
+	
+	    var endListener = function (e) {
+	      if (e && e.target !== node) {
+	        return;
+	      }
+	
+	      clearTimeout(timeout);
+	
+	      CSSCore.removeClass(node, className);
+	      CSSCore.removeClass(node, activeClassName);
+	
+	      ReactTransitionEvents.removeEndEventListener(node, endListener);
+	
+	      // Usually this optional callback is used for informing an owner of
+	      // a leave animation and telling it to remove the child.
+	      if (finishCallback) {
+	        finishCallback();
+	      }
+	    };
+	
+	    CSSCore.addClass(node, className);
+	
+	    // Need to do this to actually trigger a transition.
+	    this.queueClassAndNode(activeClassName, node);
+	
+	    // If the user specified a timeout delay.
+	    if (userSpecifiedDelay) {
+	      // Clean-up the animation after the specified delay
+	      timeout = setTimeout(endListener, userSpecifiedDelay);
+	      this.transitionTimeouts.push(timeout);
+	    } else {
+	      // DEPRECATED: this listener will be removed in a future version of react
+	      ReactTransitionEvents.addEndEventListener(node, endListener);
+	    }
+	  },
+	
+	  queueClassAndNode: function (className, node) {
+	    this.classNameAndNodeQueue.push({
+	      className: className,
+	      node: node
+	    });
+	
+	    if (!this.timeout) {
+	      this.timeout = setTimeout(this.flushClassNameAndNodeQueue, TICK);
+	    }
+	  },
+	
+	  flushClassNameAndNodeQueue: function () {
+	    if (this.isMounted()) {
+	      this.classNameAndNodeQueue.forEach(function (obj) {
+	        CSSCore.addClass(obj.node, obj.className);
+	      });
+	    }
+	    this.classNameAndNodeQueue.length = 0;
+	    this.timeout = null;
+	  },
+	
+	  componentWillMount: function () {
+	    this.classNameAndNodeQueue = [];
+	    this.transitionTimeouts = [];
+	  },
+	
+	  componentWillUnmount: function () {
+	    if (this.timeout) {
+	      clearTimeout(this.timeout);
+	    }
+	    this.transitionTimeouts.forEach(function (timeout) {
+	      clearTimeout(timeout);
+	    });
+	
+	    this.classNameAndNodeQueue.length = 0;
+	  },
+	
+	  componentWillAppear: function (done) {
+	    if (this.props.appear) {
+	      this.transition('appear', done, this.props.appearTimeout);
+	    } else {
+	      done();
+	    }
+	  },
+	
+	  componentWillEnter: function (done) {
+	    if (this.props.enter) {
+	      this.transition('enter', done, this.props.enterTimeout);
+	    } else {
+	      done();
+	    }
+	  },
+	
+	  componentWillLeave: function (done) {
+	    if (this.props.leave) {
+	      this.transition('leave', done, this.props.leaveTimeout);
+	    } else {
+	      done();
+	    }
+	  },
+	
+	  render: function () {
+	    return onlyChild(this.props.children);
+	  }
+	});
+	
+	module.exports = ReactCSSTransitionGroupChild;
+
+/***/ },
+/* 431 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @typechecks
+	 */
+	
+	var invariant = __webpack_require__(8);
+	
+	/**
+	 * The CSSCore module specifies the API (and implements most of the methods)
+	 * that should be used when dealing with the display of elements (via their
+	 * CSS classes and visibility on screen. It is an API focused on mutating the
+	 * display and not reading it as no logical state should be encoded in the
+	 * display of elements.
+	 */
+	
+	/* Slow implementation for browsers that don't natively support .matches() */
+	function matchesSelector_SLOW(element, selector) {
+	  var root = element;
+	  while (root.parentNode) {
+	    root = root.parentNode;
+	  }
+	
+	  var all = root.querySelectorAll(selector);
+	  return Array.prototype.indexOf.call(all, element) !== -1;
+	}
+	
+	var CSSCore = {
+	
+	  /**
+	   * Adds the class passed in to the element if it doesn't already have it.
+	   *
+	   * @param {DOMElement} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @return {DOMElement} the element passed in
+	   */
+	  addClass: function addClass(element, className) {
+	    !!/\s/.test(className) ?  false ? invariant(false, 'CSSCore.addClass takes only a single class name. "%s" contains ' + 'multiple classes.', className) : invariant(false) : void 0;
+	
+	    if (className) {
+	      if (element.classList) {
+	        element.classList.add(className);
+	      } else if (!CSSCore.hasClass(element, className)) {
+	        element.className = element.className + ' ' + className;
+	      }
+	    }
+	    return element;
+	  },
+	
+	  /**
+	   * Removes the class passed in from the element
+	   *
+	   * @param {DOMElement} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @return {DOMElement} the element passed in
+	   */
+	  removeClass: function removeClass(element, className) {
+	    !!/\s/.test(className) ?  false ? invariant(false, 'CSSCore.removeClass takes only a single class name. "%s" contains ' + 'multiple classes.', className) : invariant(false) : void 0;
+	
+	    if (className) {
+	      if (element.classList) {
+	        element.classList.remove(className);
+	      } else if (CSSCore.hasClass(element, className)) {
+	        element.className = element.className.replace(new RegExp('(^|\\s)' + className + '(?:\\s|$)', 'g'), '$1').replace(/\s+/g, ' ') // multiple spaces to one
+	        .replace(/^\s*|\s*$/g, ''); // trim the ends
+	      }
+	    }
+	    return element;
+	  },
+	
+	  /**
+	   * Helper to add or remove a class from an element based on a condition.
+	   *
+	   * @param {DOMElement} element the element to set the class on
+	   * @param {string} className the CSS className
+	   * @param {*} bool condition to whether to add or remove the class
+	   * @return {DOMElement} the element passed in
+	   */
+	  conditionClass: function conditionClass(element, className, bool) {
+	    return (bool ? CSSCore.addClass : CSSCore.removeClass)(element, className);
+	  },
+	
+	  /**
+	   * Tests whether the element has the class specified.
+	   *
+	   * @param {DOMNode|DOMWindow} element the element to check the class on
+	   * @param {string} className the CSS className
+	   * @return {boolean} true if the element has the class, false if not
+	   */
+	  hasClass: function hasClass(element, className) {
+	    !!/\s/.test(className) ?  false ? invariant(false, 'CSS.hasClass takes only a single class name.') : invariant(false) : void 0;
+	    if (element.classList) {
+	      return !!className && element.classList.contains(className);
+	    }
+	    return (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
+	  },
+	
+	  /**
+	   * Tests whether the element matches the selector specified
+	   *
+	   * @param {DOMNode|DOMWindow} element the element that we are querying
+	   * @param {string} selector the CSS selector
+	   * @return {boolean} true if the element matches the selector, false if not
+	   */
+	  matchesSelector: function matchesSelector(element, selector) {
+	    var matchesImpl = element.matches || element.webkitMatchesSelector || element.mozMatchesSelector || element.msMatchesSelector || function (s) {
+	      return matchesSelector_SLOW(element, s);
+	    };
+	    return matchesImpl.call(element, selector);
+	  }
+	
+	};
+	
+	module.exports = CSSCore;
+
+/***/ },
+/* 432 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactTransitionEvents
+	 */
+	
+	'use strict';
+	
+	var ExecutionEnvironment = __webpack_require__(46);
+	
+	var getVendorPrefixedEventName = __webpack_require__(100);
+	
+	var endEvents = [];
+	
+	function detectEvents() {
+	  var animEnd = getVendorPrefixedEventName('animationend');
+	  var transEnd = getVendorPrefixedEventName('transitionend');
+	
+	  if (animEnd) {
+	    endEvents.push(animEnd);
+	  }
+	
+	  if (transEnd) {
+	    endEvents.push(transEnd);
+	  }
+	}
+	
+	if (ExecutionEnvironment.canUseDOM) {
+	  detectEvents();
+	}
+	
+	// We use the raw {add|remove}EventListener() call because EventListener
+	// does not know how to remove event listeners and we really should
+	// clean up. Also, these events are not triggered in older browsers
+	// so we should be A-OK here.
+	
+	function addEventListener(node, eventName, eventListener) {
+	  node.addEventListener(eventName, eventListener, false);
+	}
+	
+	function removeEventListener(node, eventName, eventListener) {
+	  node.removeEventListener(eventName, eventListener, false);
+	}
+	
+	var ReactTransitionEvents = {
+	  addEndEventListener: function (node, eventListener) {
+	    if (endEvents.length === 0) {
+	      // If CSS transitions are not supported, trigger an "end animation"
+	      // event immediately.
+	      window.setTimeout(eventListener, 0);
+	      return;
+	    }
+	    endEvents.forEach(function (endEvent) {
+	      addEventListener(node, endEvent, eventListener);
+	    });
+	  },
+	
+	  removeEndEventListener: function (node, eventListener) {
+	    if (endEvents.length === 0) {
+	      return;
+	    }
+	    endEvents.forEach(function (endEvent) {
+	      removeEventListener(node, endEvent, eventListener);
+	    });
+	  }
+	};
+	
+	module.exports = ReactTransitionEvents;
+
+/***/ },
+/* 433 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 	
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -56365,11 +57239,11 @@
 	
 	var _actions = __webpack_require__(260);
 	
-	var _WhiteBoard = __webpack_require__(428);
+	var _WhiteBoard = __webpack_require__(434);
 	
 	var _WhiteBoard2 = _interopRequireDefault(_WhiteBoard);
 	
-	var _CanvasViewOnly = __webpack_require__(610);
+	var _CanvasViewOnly = __webpack_require__(626);
 	
 	var _CanvasViewOnly2 = _interopRequireDefault(_CanvasViewOnly);
 	
@@ -56550,7 +57424,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps)(BrowseRooms);
 
 /***/ },
-/* 428 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56568,7 +57442,7 @@
 	
 	var _reactDom = __webpack_require__(31);
 	
-	var _Canvas = __webpack_require__(429);
+	var _Canvas = __webpack_require__(435);
 	
 	var _Canvas2 = _interopRequireDefault(_Canvas);
 	
@@ -56646,7 +57520,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps)(WhiteBoard);
 
 /***/ },
-/* 429 */
+/* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56662,11 +57536,13 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _CanvasUtils = __webpack_require__(430);
+	var _CanvasUtils = __webpack_require__(436);
 	
-	var _reactColor = __webpack_require__(431);
+	var _reactColor = __webpack_require__(437);
 	
 	var _reactRedux = __webpack_require__(251);
+	
+	var _reactProgressbar = __webpack_require__(616);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -56691,7 +57567,8 @@
 	      brushColor: "#C45100",
 	      brushSize: 8,
 	      guessers: [],
-	      turnOver: false
+	      turnOver: false,
+	      timeLeft: 0
 	    };
 	    _this.remakeCanvasRemote = function () {
 	      return null;
@@ -56741,6 +57618,7 @@
 	      key.unbind('ctrl + c');
 	      this.props.socket.off('turn over');
 	      this.props.socket.off('update canvas');
+	      clearInterval(this.milliTick);
 	    }
 	  }, {
 	    key: 'buildRemoteCanvas',
@@ -56931,13 +57809,16 @@
 	          { className: 'canvasMessage' },
 	          !this.state.turnOver ? _react2.default.createElement(
 	            'div',
-	            { className: 'timer' },
-	            ' ',
-	            this.props.timeLeft,
-	            ' '
+	            { className: 'timer', style: { display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background: 'white', left: 0, right: 0 } },
+	            _react2.default.createElement(_reactProgressbar.Circle, {
+	              progress: this.props.timeLeft / this.props.timePerTurn,
+	              options: { strokeWidth: 6, color: '#FF3232', text: { value: this.props.timeLeft, style: { width: '60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%' } }, trailColor: '#eee', trailWidth: 4 },
+	              initialAnimate: true,
+	              containerStyle: { width: '80px', height: '80px' },
+	              containerClassName: '.progressbar' })
 	          ) : _react2.default.createElement(
 	            'div',
-	            { className: 'guesserDisplay' },
+	            null,
 	            ' The word was ',
 	            _react2.default.createElement(
 	              'span',
@@ -56953,9 +57834,9 @@
 	              this.state.guessers.length > 0 ? _react2.default.createElement(
 	                'span',
 	                { style: { fontWeight: 'bold' } },
-	                this.state.guessers.join(', ')
+	                this.state.guessers.length === this.props.numPlayers - 1 ? 'everyone' : this.state.guessers.join(', ')
 	              ) : 'No one',
-	              ' guessed the word '
+	              ' guessed the word!'
 	            )
 	          )
 	        ),
@@ -56996,6 +57877,8 @@
 	  var canIDraw = state.root.user === state.root.room.game.artist;
 	  var isSpectating = !(state.root.user in state.root.room.game.players);
 	  return {
+	    numPlayers: Object.keys(state.root.room.game.players).length,
+	    timePerTurn: state.root.room.game.timePerTurn,
 	    word: state.root.room.game.word,
 	    artist: state.root.room.game.artist,
 	    timeLeft: state.root.room.game.timeLeft,
@@ -57146,7 +58029,7 @@
 	}(_react.Component);
 
 /***/ },
-/* 430 */
+/* 436 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -57318,7 +58201,7 @@
 	};
 
 /***/ },
-/* 431 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57328,7 +58211,7 @@
 	});
 	exports.default = exports.CustomPicker = exports.SwatchesPicker = exports.SliderPicker = exports.SketchPicker = exports.PhotoshopPicker = exports.MaterialPicker = exports.CompactPicker = exports.ChromePicker = undefined;
 	
-	var _Chrome = __webpack_require__(432);
+	var _Chrome = __webpack_require__(438);
 	
 	Object.defineProperty(exports, 'ChromePicker', {
 	  enumerable: true,
@@ -57337,7 +58220,7 @@
 	  }
 	});
 	
-	var _Compact = __webpack_require__(585);
+	var _Compact = __webpack_require__(591);
 	
 	Object.defineProperty(exports, 'CompactPicker', {
 	  enumerable: true,
@@ -57346,7 +58229,7 @@
 	  }
 	});
 	
-	var _Material = __webpack_require__(594);
+	var _Material = __webpack_require__(600);
 	
 	Object.defineProperty(exports, 'MaterialPicker', {
 	  enumerable: true,
@@ -57355,7 +58238,7 @@
 	  }
 	});
 	
-	var _Photoshop = __webpack_require__(595);
+	var _Photoshop = __webpack_require__(601);
 	
 	Object.defineProperty(exports, 'PhotoshopPicker', {
 	  enumerable: true,
@@ -57364,7 +58247,7 @@
 	  }
 	});
 	
-	var _Sketch = __webpack_require__(599);
+	var _Sketch = __webpack_require__(605);
 	
 	Object.defineProperty(exports, 'SketchPicker', {
 	  enumerable: true,
@@ -57373,7 +58256,7 @@
 	  }
 	});
 	
-	var _Slider = __webpack_require__(602);
+	var _Slider = __webpack_require__(608);
 	
 	Object.defineProperty(exports, 'SliderPicker', {
 	  enumerable: true,
@@ -57382,7 +58265,7 @@
 	  }
 	});
 	
-	var _Swatches = __webpack_require__(606);
+	var _Swatches = __webpack_require__(612);
 	
 	Object.defineProperty(exports, 'SwatchesPicker', {
 	  enumerable: true,
@@ -57391,7 +58274,7 @@
 	  }
 	});
 	
-	var _ColorWrap = __webpack_require__(576);
+	var _ColorWrap = __webpack_require__(582);
 	
 	Object.defineProperty(exports, 'CustomPicker', {
 	  enumerable: true,
@@ -57407,7 +58290,7 @@
 	exports.default = _Chrome2.default;
 
 /***/ },
-/* 432 */
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57425,25 +58308,25 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
-	var _ChromeFields = __webpack_require__(582);
+	var _ChromeFields = __webpack_require__(588);
 	
 	var _ChromeFields2 = _interopRequireDefault(_ChromeFields);
 	
-	var _ChromePointer = __webpack_require__(583);
+	var _ChromePointer = __webpack_require__(589);
 	
 	var _ChromePointer2 = _interopRequireDefault(_ChromePointer);
 	
-	var _ChromePointerCircle = __webpack_require__(584);
+	var _ChromePointerCircle = __webpack_require__(590);
 	
 	var _ChromePointerCircle2 = _interopRequireDefault(_ChromePointerCircle);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -57628,27 +58511,27 @@
 	exports.default = (0, _common.ColorWrap)(Chrome);
 
 /***/ },
-/* 433 */
+/* 439 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.ReactCSS=exports.loop=exports.hover=exports.Component=void 0;var _objectAssign=__webpack_require__(434),_objectAssign2=_interopRequireDefault(_objectAssign),_flattenNames=__webpack_require__(435),_flattenNames2=_interopRequireDefault(_flattenNames),_mergeClasses=__webpack_require__(549),_mergeClasses2=_interopRequireDefault(_mergeClasses),_autoprefix=__webpack_require__(550),_autoprefix2=_interopRequireDefault(_autoprefix),_Component2=__webpack_require__(551),_Component3=_interopRequireDefault(_Component2),_hover2=__webpack_require__(563),_hover3=_interopRequireDefault(_hover2),_loop2=__webpack_require__(564),_loop3=_interopRequireDefault(_loop2);exports.Component=_Component3["default"],exports.hover=_hover3["default"],exports.loop=_loop3["default"];var ReactCSS=exports.ReactCSS=function(e){for(var t=arguments.length,o=Array(t>1?t-1:0),r=1;r<t;r++)o[r-1]=arguments[r];var a=(0,_flattenNames2["default"])(o),s=(0,_mergeClasses2["default"])(e,a);return(0,_autoprefix2["default"])(s)};ReactCSS.m=_objectAssign2["default"],exports["default"]=ReactCSS;
+	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.ReactCSS=exports.loop=exports.hover=exports.Component=void 0;var _objectAssign=__webpack_require__(440),_objectAssign2=_interopRequireDefault(_objectAssign),_flattenNames=__webpack_require__(441),_flattenNames2=_interopRequireDefault(_flattenNames),_mergeClasses=__webpack_require__(555),_mergeClasses2=_interopRequireDefault(_mergeClasses),_autoprefix=__webpack_require__(556),_autoprefix2=_interopRequireDefault(_autoprefix),_Component2=__webpack_require__(557),_Component3=_interopRequireDefault(_Component2),_hover2=__webpack_require__(569),_hover3=_interopRequireDefault(_hover2),_loop2=__webpack_require__(570),_loop3=_interopRequireDefault(_loop2);exports.Component=_Component3["default"],exports.hover=_hover3["default"],exports.loop=_loop3["default"];var ReactCSS=exports.ReactCSS=function(e){for(var t=arguments.length,o=Array(t>1?t-1:0),r=1;r<t;r++)o[r-1]=arguments[r];var a=(0,_flattenNames2["default"])(o),s=(0,_mergeClasses2["default"])(e,a);return(0,_autoprefix2["default"])(s)};ReactCSS.m=_objectAssign2["default"],exports["default"]=ReactCSS;
 
 /***/ },
-/* 434 */
+/* 440 */
 4,
-/* 435 */
+/* 441 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.flattenNames=void 0;var _map=__webpack_require__(436),_map2=_interopRequireDefault(_map),_isPlainObject=__webpack_require__(546),_isPlainObject2=_interopRequireDefault(_isPlainObject),_isString=__webpack_require__(548),_isString2=_interopRequireDefault(_isString),flattenNames=exports.flattenNames=function e(t){var i=[];return t.map(function(t){return Array.isArray(t)&&e(t).map(function(e){return i.push(e)}),(0,_isPlainObject2["default"])(t)&&(0,_map2["default"])(t,function(e,t){e===!0&&i.push(t),i.push(t+"-"+e)}),(0,_isString2["default"])(t)&&i.push(t),t}),i};exports["default"]=flattenNames;
+	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.flattenNames=void 0;var _map=__webpack_require__(442),_map2=_interopRequireDefault(_map),_isPlainObject=__webpack_require__(552),_isPlainObject2=_interopRequireDefault(_isPlainObject),_isString=__webpack_require__(554),_isString2=_interopRequireDefault(_isString),flattenNames=exports.flattenNames=function e(t){var i=[];return t.map(function(t){return Array.isArray(t)&&e(t).map(function(e){return i.push(e)}),(0,_isPlainObject2["default"])(t)&&(0,_map2["default"])(t,function(e,t){e===!0&&i.push(t),i.push(t+"-"+e)}),(0,_isString2["default"])(t)&&i.push(t),t}),i};exports["default"]=flattenNames;
 
 /***/ },
-/* 436 */
+/* 442 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayMap = __webpack_require__(437),
-	    baseIteratee = __webpack_require__(438),
-	    baseMap = __webpack_require__(540),
-	    isArray = __webpack_require__(503);
+	var arrayMap = __webpack_require__(443),
+	    baseIteratee = __webpack_require__(444),
+	    baseMap = __webpack_require__(546),
+	    isArray = __webpack_require__(509);
 	
 	/**
 	 * Creates an array of values by running each element in `collection` thru
@@ -57701,7 +58584,7 @@
 
 
 /***/ },
-/* 437 */
+/* 443 */
 /***/ function(module, exports) {
 
 	/**
@@ -57728,14 +58611,14 @@
 
 
 /***/ },
-/* 438 */
+/* 444 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMatches = __webpack_require__(439),
-	    baseMatchesProperty = __webpack_require__(522),
-	    identity = __webpack_require__(536),
-	    isArray = __webpack_require__(503),
-	    property = __webpack_require__(537);
+	var baseMatches = __webpack_require__(445),
+	    baseMatchesProperty = __webpack_require__(528),
+	    identity = __webpack_require__(542),
+	    isArray = __webpack_require__(509),
+	    property = __webpack_require__(543);
 	
 	/**
 	 * The base implementation of `_.iteratee`.
@@ -57765,12 +58648,12 @@
 
 
 /***/ },
-/* 439 */
+/* 445 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsMatch = __webpack_require__(440),
-	    getMatchData = __webpack_require__(519),
-	    matchesStrictComparable = __webpack_require__(521);
+	var baseIsMatch = __webpack_require__(446),
+	    getMatchData = __webpack_require__(525),
+	    matchesStrictComparable = __webpack_require__(527);
 	
 	/**
 	 * The base implementation of `_.matches` which doesn't clone `source`.
@@ -57793,11 +58676,11 @@
 
 
 /***/ },
-/* 440 */
+/* 446 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(441),
-	    baseIsEqual = __webpack_require__(482);
+	var Stack = __webpack_require__(447),
+	    baseIsEqual = __webpack_require__(488);
 	
 	/** Used to compose bitmasks for comparison styles. */
 	var UNORDERED_COMPARE_FLAG = 1,
@@ -57861,15 +58744,15 @@
 
 
 /***/ },
-/* 441 */
+/* 447 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(442),
-	    stackClear = __webpack_require__(450),
-	    stackDelete = __webpack_require__(451),
-	    stackGet = __webpack_require__(452),
-	    stackHas = __webpack_require__(453),
-	    stackSet = __webpack_require__(454);
+	var ListCache = __webpack_require__(448),
+	    stackClear = __webpack_require__(456),
+	    stackDelete = __webpack_require__(457),
+	    stackGet = __webpack_require__(458),
+	    stackHas = __webpack_require__(459),
+	    stackSet = __webpack_require__(460);
 	
 	/**
 	 * Creates a stack cache object to store key-value pairs.
@@ -57893,14 +58776,14 @@
 
 
 /***/ },
-/* 442 */
+/* 448 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var listCacheClear = __webpack_require__(443),
-	    listCacheDelete = __webpack_require__(444),
-	    listCacheGet = __webpack_require__(447),
-	    listCacheHas = __webpack_require__(448),
-	    listCacheSet = __webpack_require__(449);
+	var listCacheClear = __webpack_require__(449),
+	    listCacheDelete = __webpack_require__(450),
+	    listCacheGet = __webpack_require__(453),
+	    listCacheHas = __webpack_require__(454),
+	    listCacheSet = __webpack_require__(455);
 	
 	/**
 	 * Creates an list cache object.
@@ -57931,7 +58814,7 @@
 
 
 /***/ },
-/* 443 */
+/* 449 */
 /***/ function(module, exports) {
 
 	/**
@@ -57949,10 +58832,10 @@
 
 
 /***/ },
-/* 444 */
+/* 450 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(445);
+	var assocIndexOf = __webpack_require__(451);
 	
 	/** Used for built-in method references. */
 	var arrayProto = Array.prototype;
@@ -57989,10 +58872,10 @@
 
 
 /***/ },
-/* 445 */
+/* 451 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(446);
+	var eq = __webpack_require__(452);
 	
 	/**
 	 * Gets the index at which the `key` is found in `array` of key-value pairs.
@@ -58016,7 +58899,7 @@
 
 
 /***/ },
-/* 446 */
+/* 452 */
 /***/ function(module, exports) {
 
 	/**
@@ -58059,10 +58942,10 @@
 
 
 /***/ },
-/* 447 */
+/* 453 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(445);
+	var assocIndexOf = __webpack_require__(451);
 	
 	/**
 	 * Gets the list cache value for `key`.
@@ -58084,10 +58967,10 @@
 
 
 /***/ },
-/* 448 */
+/* 454 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(445);
+	var assocIndexOf = __webpack_require__(451);
 	
 	/**
 	 * Checks if a list cache value for `key` exists.
@@ -58106,10 +58989,10 @@
 
 
 /***/ },
-/* 449 */
+/* 455 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(445);
+	var assocIndexOf = __webpack_require__(451);
 	
 	/**
 	 * Sets the list cache `key` to `value`.
@@ -58137,10 +59020,10 @@
 
 
 /***/ },
-/* 450 */
+/* 456 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(442);
+	var ListCache = __webpack_require__(448);
 	
 	/**
 	 * Removes all key-value entries from the stack.
@@ -58157,7 +59040,7 @@
 
 
 /***/ },
-/* 451 */
+/* 457 */
 /***/ function(module, exports) {
 
 	/**
@@ -58177,7 +59060,7 @@
 
 
 /***/ },
-/* 452 */
+/* 458 */
 /***/ function(module, exports) {
 
 	/**
@@ -58197,7 +59080,7 @@
 
 
 /***/ },
-/* 453 */
+/* 459 */
 /***/ function(module, exports) {
 
 	/**
@@ -58217,12 +59100,12 @@
 
 
 /***/ },
-/* 454 */
+/* 460 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(442),
-	    Map = __webpack_require__(455),
-	    MapCache = __webpack_require__(467);
+	var ListCache = __webpack_require__(448),
+	    Map = __webpack_require__(461),
+	    MapCache = __webpack_require__(473);
 	
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -58255,11 +59138,11 @@
 
 
 /***/ },
-/* 455 */
+/* 461 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(456),
-	    root = __webpack_require__(463);
+	var getNative = __webpack_require__(462),
+	    root = __webpack_require__(469);
 	
 	/* Built-in method references that are verified to be native. */
 	var Map = getNative(root, 'Map');
@@ -58268,11 +59151,11 @@
 
 
 /***/ },
-/* 456 */
+/* 462 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsNative = __webpack_require__(457),
-	    getValue = __webpack_require__(466);
+	var baseIsNative = __webpack_require__(463),
+	    getValue = __webpack_require__(472);
 	
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -58291,14 +59174,14 @@
 
 
 /***/ },
-/* 457 */
+/* 463 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(458),
-	    isHostObject = __webpack_require__(460),
-	    isMasked = __webpack_require__(461),
-	    isObject = __webpack_require__(459),
-	    toSource = __webpack_require__(465);
+	var isFunction = __webpack_require__(464),
+	    isHostObject = __webpack_require__(466),
+	    isMasked = __webpack_require__(467),
+	    isObject = __webpack_require__(465),
+	    toSource = __webpack_require__(471);
 	
 	/**
 	 * Used to match `RegExp`
@@ -58345,10 +59228,10 @@
 
 
 /***/ },
-/* 458 */
+/* 464 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(459);
+	var isObject = __webpack_require__(465);
 	
 	/** `Object#toString` result references. */
 	var funcTag = '[object Function]',
@@ -58392,7 +59275,7 @@
 
 
 /***/ },
-/* 459 */
+/* 465 */
 /***/ function(module, exports) {
 
 	/**
@@ -58429,7 +59312,7 @@
 
 
 /***/ },
-/* 460 */
+/* 466 */
 /***/ function(module, exports) {
 
 	/**
@@ -58455,10 +59338,10 @@
 
 
 /***/ },
-/* 461 */
+/* 467 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var coreJsData = __webpack_require__(462);
+	var coreJsData = __webpack_require__(468);
 	
 	/** Used to detect methods masquerading as native. */
 	var maskSrcKey = (function() {
@@ -58481,10 +59364,10 @@
 
 
 /***/ },
-/* 462 */
+/* 468 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(463);
+	var root = __webpack_require__(469);
 	
 	/** Used to detect overreaching core-js shims. */
 	var coreJsData = root['__core-js_shared__'];
@@ -58493,10 +59376,10 @@
 
 
 /***/ },
-/* 463 */
+/* 469 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(464);
+	var freeGlobal = __webpack_require__(470);
 	
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -58508,7 +59391,7 @@
 
 
 /***/ },
-/* 464 */
+/* 470 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -58519,7 +59402,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 465 */
+/* 471 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -58551,7 +59434,7 @@
 
 
 /***/ },
-/* 466 */
+/* 472 */
 /***/ function(module, exports) {
 
 	/**
@@ -58570,14 +59453,14 @@
 
 
 /***/ },
-/* 467 */
+/* 473 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var mapCacheClear = __webpack_require__(468),
-	    mapCacheDelete = __webpack_require__(476),
-	    mapCacheGet = __webpack_require__(479),
-	    mapCacheHas = __webpack_require__(480),
-	    mapCacheSet = __webpack_require__(481);
+	var mapCacheClear = __webpack_require__(474),
+	    mapCacheDelete = __webpack_require__(482),
+	    mapCacheGet = __webpack_require__(485),
+	    mapCacheHas = __webpack_require__(486),
+	    mapCacheSet = __webpack_require__(487);
 	
 	/**
 	 * Creates a map cache object to store key-value pairs.
@@ -58608,12 +59491,12 @@
 
 
 /***/ },
-/* 468 */
+/* 474 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Hash = __webpack_require__(469),
-	    ListCache = __webpack_require__(442),
-	    Map = __webpack_require__(455);
+	var Hash = __webpack_require__(475),
+	    ListCache = __webpack_require__(448),
+	    Map = __webpack_require__(461);
 	
 	/**
 	 * Removes all key-value entries from the map.
@@ -58634,14 +59517,14 @@
 
 
 /***/ },
-/* 469 */
+/* 475 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hashClear = __webpack_require__(470),
-	    hashDelete = __webpack_require__(472),
-	    hashGet = __webpack_require__(473),
-	    hashHas = __webpack_require__(474),
-	    hashSet = __webpack_require__(475);
+	var hashClear = __webpack_require__(476),
+	    hashDelete = __webpack_require__(478),
+	    hashGet = __webpack_require__(479),
+	    hashHas = __webpack_require__(480),
+	    hashSet = __webpack_require__(481);
 	
 	/**
 	 * Creates a hash object.
@@ -58672,10 +59555,10 @@
 
 
 /***/ },
-/* 470 */
+/* 476 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(471);
+	var nativeCreate = __webpack_require__(477);
 	
 	/**
 	 * Removes all key-value entries from the hash.
@@ -58692,10 +59575,10 @@
 
 
 /***/ },
-/* 471 */
+/* 477 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(456);
+	var getNative = __webpack_require__(462);
 	
 	/* Built-in method references that are verified to be native. */
 	var nativeCreate = getNative(Object, 'create');
@@ -58704,7 +59587,7 @@
 
 
 /***/ },
-/* 472 */
+/* 478 */
 /***/ function(module, exports) {
 
 	/**
@@ -58725,10 +59608,10 @@
 
 
 /***/ },
-/* 473 */
+/* 479 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(471);
+	var nativeCreate = __webpack_require__(477);
 	
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -58761,10 +59644,10 @@
 
 
 /***/ },
-/* 474 */
+/* 480 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(471);
+	var nativeCreate = __webpack_require__(477);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -58790,10 +59673,10 @@
 
 
 /***/ },
-/* 475 */
+/* 481 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(471);
+	var nativeCreate = __webpack_require__(477);
 	
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -58818,10 +59701,10 @@
 
 
 /***/ },
-/* 476 */
+/* 482 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(477);
+	var getMapData = __webpack_require__(483);
 	
 	/**
 	 * Removes `key` and its value from the map.
@@ -58840,10 +59723,10 @@
 
 
 /***/ },
-/* 477 */
+/* 483 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isKeyable = __webpack_require__(478);
+	var isKeyable = __webpack_require__(484);
 	
 	/**
 	 * Gets the data for `map`.
@@ -58864,7 +59747,7 @@
 
 
 /***/ },
-/* 478 */
+/* 484 */
 /***/ function(module, exports) {
 
 	/**
@@ -58885,10 +59768,10 @@
 
 
 /***/ },
-/* 479 */
+/* 485 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(477);
+	var getMapData = __webpack_require__(483);
 	
 	/**
 	 * Gets the map value for `key`.
@@ -58907,10 +59790,10 @@
 
 
 /***/ },
-/* 480 */
+/* 486 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(477);
+	var getMapData = __webpack_require__(483);
 	
 	/**
 	 * Checks if a map value for `key` exists.
@@ -58929,10 +59812,10 @@
 
 
 /***/ },
-/* 481 */
+/* 487 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(477);
+	var getMapData = __webpack_require__(483);
 	
 	/**
 	 * Sets the map `key` to `value`.
@@ -58953,12 +59836,12 @@
 
 
 /***/ },
-/* 482 */
+/* 488 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqualDeep = __webpack_require__(483),
-	    isObject = __webpack_require__(459),
-	    isObjectLike = __webpack_require__(502);
+	var baseIsEqualDeep = __webpack_require__(489),
+	    isObject = __webpack_require__(465),
+	    isObjectLike = __webpack_require__(508);
 	
 	/**
 	 * The base implementation of `_.isEqual` which supports partial comparisons
@@ -58989,17 +59872,17 @@
 
 
 /***/ },
-/* 483 */
+/* 489 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(441),
-	    equalArrays = __webpack_require__(484),
-	    equalByTag = __webpack_require__(489),
-	    equalObjects = __webpack_require__(494),
-	    getTag = __webpack_require__(509),
-	    isArray = __webpack_require__(503),
-	    isHostObject = __webpack_require__(460),
-	    isTypedArray = __webpack_require__(515);
+	var Stack = __webpack_require__(447),
+	    equalArrays = __webpack_require__(490),
+	    equalByTag = __webpack_require__(495),
+	    equalObjects = __webpack_require__(500),
+	    getTag = __webpack_require__(515),
+	    isArray = __webpack_require__(509),
+	    isHostObject = __webpack_require__(466),
+	    isTypedArray = __webpack_require__(521);
 	
 	/** Used to compose bitmasks for comparison styles. */
 	var PARTIAL_COMPARE_FLAG = 2;
@@ -59077,11 +59960,11 @@
 
 
 /***/ },
-/* 484 */
+/* 490 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(485),
-	    arraySome = __webpack_require__(488);
+	var SetCache = __webpack_require__(491),
+	    arraySome = __webpack_require__(494);
 	
 	/** Used to compose bitmasks for comparison styles. */
 	var UNORDERED_COMPARE_FLAG = 1,
@@ -59166,12 +60049,12 @@
 
 
 /***/ },
-/* 485 */
+/* 491 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(467),
-	    setCacheAdd = __webpack_require__(486),
-	    setCacheHas = __webpack_require__(487);
+	var MapCache = __webpack_require__(473),
+	    setCacheAdd = __webpack_require__(492),
+	    setCacheHas = __webpack_require__(493);
 	
 	/**
 	 *
@@ -59199,7 +60082,7 @@
 
 
 /***/ },
-/* 486 */
+/* 492 */
 /***/ function(module, exports) {
 
 	/** Used to stand-in for `undefined` hash values. */
@@ -59224,7 +60107,7 @@
 
 
 /***/ },
-/* 487 */
+/* 493 */
 /***/ function(module, exports) {
 
 	/**
@@ -59244,7 +60127,7 @@
 
 
 /***/ },
-/* 488 */
+/* 494 */
 /***/ function(module, exports) {
 
 	/**
@@ -59273,15 +60156,15 @@
 
 
 /***/ },
-/* 489 */
+/* 495 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(490),
-	    Uint8Array = __webpack_require__(491),
-	    eq = __webpack_require__(446),
-	    equalArrays = __webpack_require__(484),
-	    mapToArray = __webpack_require__(492),
-	    setToArray = __webpack_require__(493);
+	var Symbol = __webpack_require__(496),
+	    Uint8Array = __webpack_require__(497),
+	    eq = __webpack_require__(452),
+	    equalArrays = __webpack_require__(490),
+	    mapToArray = __webpack_require__(498),
+	    setToArray = __webpack_require__(499);
 	
 	/** Used to compose bitmasks for comparison styles. */
 	var UNORDERED_COMPARE_FLAG = 1,
@@ -59392,10 +60275,10 @@
 
 
 /***/ },
-/* 490 */
+/* 496 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(463);
+	var root = __webpack_require__(469);
 	
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -59404,10 +60287,10 @@
 
 
 /***/ },
-/* 491 */
+/* 497 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(463);
+	var root = __webpack_require__(469);
 	
 	/** Built-in value references. */
 	var Uint8Array = root.Uint8Array;
@@ -59416,7 +60299,7 @@
 
 
 /***/ },
-/* 492 */
+/* 498 */
 /***/ function(module, exports) {
 
 	/**
@@ -59440,7 +60323,7 @@
 
 
 /***/ },
-/* 493 */
+/* 499 */
 /***/ function(module, exports) {
 
 	/**
@@ -59464,10 +60347,10 @@
 
 
 /***/ },
-/* 494 */
+/* 500 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var keys = __webpack_require__(495);
+	var keys = __webpack_require__(501);
 	
 	/** Used to compose bitmasks for comparison styles. */
 	var PARTIAL_COMPARE_FLAG = 2;
@@ -59560,12 +60443,12 @@
 
 
 /***/ },
-/* 495 */
+/* 501 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(496),
-	    baseKeys = __webpack_require__(505),
-	    isArrayLike = __webpack_require__(500);
+	var arrayLikeKeys = __webpack_require__(502),
+	    baseKeys = __webpack_require__(511),
+	    isArrayLike = __webpack_require__(506);
 	
 	/**
 	 * Creates an array of the own enumerable property names of `object`.
@@ -59603,13 +60486,13 @@
 
 
 /***/ },
-/* 496 */
+/* 502 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(497),
-	    isArguments = __webpack_require__(498),
-	    isArray = __webpack_require__(503),
-	    isIndex = __webpack_require__(504);
+	var baseTimes = __webpack_require__(503),
+	    isArguments = __webpack_require__(504),
+	    isArray = __webpack_require__(509),
+	    isIndex = __webpack_require__(510);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -59648,7 +60531,7 @@
 
 
 /***/ },
-/* 497 */
+/* 503 */
 /***/ function(module, exports) {
 
 	/**
@@ -59674,10 +60557,10 @@
 
 
 /***/ },
-/* 498 */
+/* 504 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLikeObject = __webpack_require__(499);
+	var isArrayLikeObject = __webpack_require__(505);
 	
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]';
@@ -59726,11 +60609,11 @@
 
 
 /***/ },
-/* 499 */
+/* 505 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(500),
-	    isObjectLike = __webpack_require__(502);
+	var isArrayLike = __webpack_require__(506),
+	    isObjectLike = __webpack_require__(508);
 	
 	/**
 	 * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -59765,11 +60648,11 @@
 
 
 /***/ },
-/* 500 */
+/* 506 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(458),
-	    isLength = __webpack_require__(501);
+	var isFunction = __webpack_require__(464),
+	    isLength = __webpack_require__(507);
 	
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -59804,7 +60687,7 @@
 
 
 /***/ },
-/* 501 */
+/* 507 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -59845,7 +60728,7 @@
 
 
 /***/ },
-/* 502 */
+/* 508 */
 /***/ function(module, exports) {
 
 	/**
@@ -59880,7 +60763,7 @@
 
 
 /***/ },
-/* 503 */
+/* 509 */
 /***/ function(module, exports) {
 
 	/**
@@ -59912,7 +60795,7 @@
 
 
 /***/ },
-/* 504 */
+/* 510 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -59940,11 +60823,11 @@
 
 
 /***/ },
-/* 505 */
+/* 511 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isPrototype = __webpack_require__(506),
-	    nativeKeys = __webpack_require__(507);
+	var isPrototype = __webpack_require__(512),
+	    nativeKeys = __webpack_require__(513);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -59976,7 +60859,7 @@
 
 
 /***/ },
-/* 506 */
+/* 512 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -60000,10 +60883,10 @@
 
 
 /***/ },
-/* 507 */
+/* 513 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(508);
+	var overArg = __webpack_require__(514);
 	
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeKeys = overArg(Object.keys, Object);
@@ -60012,18 +60895,18 @@
 
 
 /***/ },
-/* 508 */
+/* 514 */
 170,
-/* 509 */
+/* 515 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DataView = __webpack_require__(510),
-	    Map = __webpack_require__(455),
-	    Promise = __webpack_require__(511),
-	    Set = __webpack_require__(512),
-	    WeakMap = __webpack_require__(513),
-	    baseGetTag = __webpack_require__(514),
-	    toSource = __webpack_require__(465);
+	var DataView = __webpack_require__(516),
+	    Map = __webpack_require__(461),
+	    Promise = __webpack_require__(517),
+	    Set = __webpack_require__(518),
+	    WeakMap = __webpack_require__(519),
+	    baseGetTag = __webpack_require__(520),
+	    toSource = __webpack_require__(471);
 	
 	/** `Object#toString` result references. */
 	var mapTag = '[object Map]',
@@ -60089,11 +60972,11 @@
 
 
 /***/ },
-/* 510 */
+/* 516 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(456),
-	    root = __webpack_require__(463);
+	var getNative = __webpack_require__(462),
+	    root = __webpack_require__(469);
 	
 	/* Built-in method references that are verified to be native. */
 	var DataView = getNative(root, 'DataView');
@@ -60102,11 +60985,11 @@
 
 
 /***/ },
-/* 511 */
+/* 517 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(456),
-	    root = __webpack_require__(463);
+	var getNative = __webpack_require__(462),
+	    root = __webpack_require__(469);
 	
 	/* Built-in method references that are verified to be native. */
 	var Promise = getNative(root, 'Promise');
@@ -60115,11 +60998,11 @@
 
 
 /***/ },
-/* 512 */
+/* 518 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(456),
-	    root = __webpack_require__(463);
+	var getNative = __webpack_require__(462),
+	    root = __webpack_require__(469);
 	
 	/* Built-in method references that are verified to be native. */
 	var Set = getNative(root, 'Set');
@@ -60128,11 +61011,11 @@
 
 
 /***/ },
-/* 513 */
+/* 519 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(456),
-	    root = __webpack_require__(463);
+	var getNative = __webpack_require__(462),
+	    root = __webpack_require__(469);
 	
 	/* Built-in method references that are verified to be native. */
 	var WeakMap = getNative(root, 'WeakMap');
@@ -60141,7 +61024,7 @@
 
 
 /***/ },
-/* 514 */
+/* 520 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -60169,12 +61052,12 @@
 
 
 /***/ },
-/* 515 */
+/* 521 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsTypedArray = __webpack_require__(516),
-	    baseUnary = __webpack_require__(517),
-	    nodeUtil = __webpack_require__(518);
+	var baseIsTypedArray = __webpack_require__(522),
+	    baseUnary = __webpack_require__(523),
+	    nodeUtil = __webpack_require__(524);
 	
 	/* Node.js helper references. */
 	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -60202,11 +61085,11 @@
 
 
 /***/ },
-/* 516 */
+/* 522 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isLength = __webpack_require__(501),
-	    isObjectLike = __webpack_require__(502);
+	var isLength = __webpack_require__(507),
+	    isObjectLike = __webpack_require__(508);
 	
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]',
@@ -60277,7 +61160,7 @@
 
 
 /***/ },
-/* 517 */
+/* 523 */
 /***/ function(module, exports) {
 
 	/**
@@ -60297,10 +61180,10 @@
 
 
 /***/ },
-/* 518 */
+/* 524 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(464);
+	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(470);
 	
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -60326,11 +61209,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(300)(module)))
 
 /***/ },
-/* 519 */
+/* 525 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isStrictComparable = __webpack_require__(520),
-	    keys = __webpack_require__(495);
+	var isStrictComparable = __webpack_require__(526),
+	    keys = __webpack_require__(501);
 	
 	/**
 	 * Gets the property names, values, and compare flags of `object`.
@@ -60356,10 +61239,10 @@
 
 
 /***/ },
-/* 520 */
+/* 526 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(459);
+	var isObject = __webpack_require__(465);
 	
 	/**
 	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
@@ -60377,7 +61260,7 @@
 
 
 /***/ },
-/* 521 */
+/* 527 */
 /***/ function(module, exports) {
 
 	/**
@@ -60403,16 +61286,16 @@
 
 
 /***/ },
-/* 522 */
+/* 528 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(482),
-	    get = __webpack_require__(523),
-	    hasIn = __webpack_require__(533),
-	    isKey = __webpack_require__(531),
-	    isStrictComparable = __webpack_require__(520),
-	    matchesStrictComparable = __webpack_require__(521),
-	    toKey = __webpack_require__(532);
+	var baseIsEqual = __webpack_require__(488),
+	    get = __webpack_require__(529),
+	    hasIn = __webpack_require__(539),
+	    isKey = __webpack_require__(537),
+	    isStrictComparable = __webpack_require__(526),
+	    matchesStrictComparable = __webpack_require__(527),
+	    toKey = __webpack_require__(538);
 	
 	/** Used to compose bitmasks for comparison styles. */
 	var UNORDERED_COMPARE_FLAG = 1,
@@ -60442,10 +61325,10 @@
 
 
 /***/ },
-/* 523 */
+/* 529 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(524);
+	var baseGet = __webpack_require__(530);
 	
 	/**
 	 * Gets the value at `path` of `object`. If the resolved value is
@@ -60481,12 +61364,12 @@
 
 
 /***/ },
-/* 524 */
+/* 530 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(525),
-	    isKey = __webpack_require__(531),
-	    toKey = __webpack_require__(532);
+	var castPath = __webpack_require__(531),
+	    isKey = __webpack_require__(537),
+	    toKey = __webpack_require__(538);
 	
 	/**
 	 * The base implementation of `_.get` without support for default values.
@@ -60512,11 +61395,11 @@
 
 
 /***/ },
-/* 525 */
+/* 531 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(503),
-	    stringToPath = __webpack_require__(526);
+	var isArray = __webpack_require__(509),
+	    stringToPath = __webpack_require__(532);
 	
 	/**
 	 * Casts `value` to a path array if it's not one.
@@ -60533,11 +61416,11 @@
 
 
 /***/ },
-/* 526 */
+/* 532 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoize = __webpack_require__(527),
-	    toString = __webpack_require__(528);
+	var memoize = __webpack_require__(533),
+	    toString = __webpack_require__(534);
 	
 	/** Used to match property names within property paths. */
 	var reLeadingDot = /^\./,
@@ -60570,10 +61453,10 @@
 
 
 /***/ },
-/* 527 */
+/* 533 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(467);
+	var MapCache = __webpack_require__(473);
 	
 	/** Used as the `TypeError` message for "Functions" methods. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -60649,10 +61532,10 @@
 
 
 /***/ },
-/* 528 */
+/* 534 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseToString = __webpack_require__(529);
+	var baseToString = __webpack_require__(535);
 	
 	/**
 	 * Converts `value` to a string. An empty string is returned for `null`
@@ -60683,11 +61566,11 @@
 
 
 /***/ },
-/* 529 */
+/* 535 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(490),
-	    isSymbol = __webpack_require__(530);
+	var Symbol = __webpack_require__(496),
+	    isSymbol = __webpack_require__(536);
 	
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -60720,10 +61603,10 @@
 
 
 /***/ },
-/* 530 */
+/* 536 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObjectLike = __webpack_require__(502);
+	var isObjectLike = __webpack_require__(508);
 	
 	/** `Object#toString` result references. */
 	var symbolTag = '[object Symbol]';
@@ -60764,11 +61647,11 @@
 
 
 /***/ },
-/* 531 */
+/* 537 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(503),
-	    isSymbol = __webpack_require__(530);
+	var isArray = __webpack_require__(509),
+	    isSymbol = __webpack_require__(536);
 	
 	/** Used to match property names within property paths. */
 	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
@@ -60799,10 +61682,10 @@
 
 
 /***/ },
-/* 532 */
+/* 538 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isSymbol = __webpack_require__(530);
+	var isSymbol = __webpack_require__(536);
 	
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -60826,11 +61709,11 @@
 
 
 /***/ },
-/* 533 */
+/* 539 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseHasIn = __webpack_require__(534),
-	    hasPath = __webpack_require__(535);
+	var baseHasIn = __webpack_require__(540),
+	    hasPath = __webpack_require__(541);
 	
 	/**
 	 * Checks if `path` is a direct or inherited property of `object`.
@@ -60866,7 +61749,7 @@
 
 
 /***/ },
-/* 534 */
+/* 540 */
 /***/ function(module, exports) {
 
 	/**
@@ -60885,16 +61768,16 @@
 
 
 /***/ },
-/* 535 */
+/* 541 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(525),
-	    isArguments = __webpack_require__(498),
-	    isArray = __webpack_require__(503),
-	    isIndex = __webpack_require__(504),
-	    isKey = __webpack_require__(531),
-	    isLength = __webpack_require__(501),
-	    toKey = __webpack_require__(532);
+	var castPath = __webpack_require__(531),
+	    isArguments = __webpack_require__(504),
+	    isArray = __webpack_require__(509),
+	    isIndex = __webpack_require__(510),
+	    isKey = __webpack_require__(537),
+	    isLength = __webpack_require__(507),
+	    toKey = __webpack_require__(538);
 	
 	/**
 	 * Checks if `path` exists on `object`.
@@ -60931,7 +61814,7 @@
 
 
 /***/ },
-/* 536 */
+/* 542 */
 /***/ function(module, exports) {
 
 	/**
@@ -60958,13 +61841,13 @@
 
 
 /***/ },
-/* 537 */
+/* 543 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(538),
-	    basePropertyDeep = __webpack_require__(539),
-	    isKey = __webpack_require__(531),
-	    toKey = __webpack_require__(532);
+	var baseProperty = __webpack_require__(544),
+	    basePropertyDeep = __webpack_require__(545),
+	    isKey = __webpack_require__(537),
+	    toKey = __webpack_require__(538);
 	
 	/**
 	 * Creates a function that returns the value at `path` of a given object.
@@ -60996,7 +61879,7 @@
 
 
 /***/ },
-/* 538 */
+/* 544 */
 /***/ function(module, exports) {
 
 	/**
@@ -61016,10 +61899,10 @@
 
 
 /***/ },
-/* 539 */
+/* 545 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(524);
+	var baseGet = __webpack_require__(530);
 	
 	/**
 	 * A specialized version of `baseProperty` which supports deep paths.
@@ -61038,11 +61921,11 @@
 
 
 /***/ },
-/* 540 */
+/* 546 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseEach = __webpack_require__(541),
-	    isArrayLike = __webpack_require__(500);
+	var baseEach = __webpack_require__(547),
+	    isArrayLike = __webpack_require__(506);
 	
 	/**
 	 * The base implementation of `_.map` without support for iteratee shorthands.
@@ -61066,11 +61949,11 @@
 
 
 /***/ },
-/* 541 */
+/* 547 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseForOwn = __webpack_require__(542),
-	    createBaseEach = __webpack_require__(545);
+	var baseForOwn = __webpack_require__(548),
+	    createBaseEach = __webpack_require__(551);
 	
 	/**
 	 * The base implementation of `_.forEach` without support for iteratee shorthands.
@@ -61086,11 +61969,11 @@
 
 
 /***/ },
-/* 542 */
+/* 548 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFor = __webpack_require__(543),
-	    keys = __webpack_require__(495);
+	var baseFor = __webpack_require__(549),
+	    keys = __webpack_require__(501);
 	
 	/**
 	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
@@ -61108,10 +61991,10 @@
 
 
 /***/ },
-/* 543 */
+/* 549 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createBaseFor = __webpack_require__(544);
+	var createBaseFor = __webpack_require__(550);
 	
 	/**
 	 * The base implementation of `baseForOwn` which iterates over `object`
@@ -61130,7 +62013,7 @@
 
 
 /***/ },
-/* 544 */
+/* 550 */
 /***/ function(module, exports) {
 
 	/**
@@ -61161,10 +62044,10 @@
 
 
 /***/ },
-/* 545 */
+/* 551 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(500);
+	var isArrayLike = __webpack_require__(506);
 	
 	/**
 	 * Creates a `baseEach` or `baseEachRight` function.
@@ -61199,12 +62082,12 @@
 
 
 /***/ },
-/* 546 */
+/* 552 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getPrototype = __webpack_require__(547),
-	    isHostObject = __webpack_require__(460),
-	    isObjectLike = __webpack_require__(502);
+	var getPrototype = __webpack_require__(553),
+	    isHostObject = __webpack_require__(466),
+	    isObjectLike = __webpack_require__(508);
 	
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -61275,13 +62158,13 @@
 
 
 /***/ },
-/* 547 */
-[621, 508],
-/* 548 */
+/* 553 */
+[642, 514],
+/* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(503),
-	    isObjectLike = __webpack_require__(502);
+	var isArray = __webpack_require__(509),
+	    isObjectLike = __webpack_require__(508);
 	
 	/** `Object#toString` result references. */
 	var stringTag = '[object String]';
@@ -61322,49 +62205,49 @@
 
 
 /***/ },
-/* 549 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.mergeClasses=void 0;var _map=__webpack_require__(436),_map2=_interopRequireDefault(_map),_objectAssign=__webpack_require__(434),_objectAssign2=_interopRequireDefault(_objectAssign),mergeClasses=exports.mergeClasses=function(e){var t=arguments.length<=1||void 0===arguments[1]?[]:arguments[1],s=e["default"]&&(0,_objectAssign2["default"])({},e["default"])||{};return t.map(function(t){var r=e[t];return r&&(0,_map2["default"])(r,function(e,t){s[t]||(s[t]={}),(0,_objectAssign2["default"])(s[t],r[t])}),t}),s};exports["default"]=mergeClasses;
-
-/***/ },
-/* 550 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.autoprefix=void 0;var _map=__webpack_require__(436),_map2=_interopRequireDefault(_map),_objectAssign=__webpack_require__(434),_objectAssign2=_interopRequireDefault(_objectAssign),transforms={borderRadius:function(e){return{msBorderRadius:e,MozBorderRadius:e,OBorderRadius:e,WebkitBorderRadius:e,borderRadius:e}},boxShadow:function(e){return{msBoxShadow:e,MozBoxShadow:e,OBoxShadow:e,WebkitBoxShadow:e,boxShadow:e}},userSelect:function(e){return{WebkitTouchCallout:e,KhtmlUserSelect:e,MozUserSelect:e,msUserSelect:e,WebkitUserSelect:e,userSelect:e}},flex:function(e){return{WebkitBoxFlex:e,MozBoxFlex:e,WebkitFlex:e,msFlex:e,flex:e}},flexBasis:function(e){return{WebkitFlexBasis:e,flexBasis:e}},justifyContent:function(e){return{WebkitJustifyContent:e,justifyContent:e}},transition:function(e){return{msTransition:e,MozTransition:e,OTransition:e,WebkitTransition:e,transition:e}},transform:function(e){return{msTransform:e,MozTransform:e,OTransform:e,WebkitTransform:e,transform:e}},absolute:function(e){var t=e&&e.split(" ");return{position:"absolute",top:t&&t[0],right:t&&t[1],bottom:t&&t[2],left:t&&t[3]}},extend:function(e,t){var r=t[e];return r?r:{extend:e}}},autoprefix=exports.autoprefix=function(e){var t={};return(0,_map2["default"])(e,function(e,r){var o={};(0,_map2["default"])(e,function(e,t){var r=transforms[t];r?(0,_objectAssign2["default"])(o,r(e)):o[t]=e}),t[r]=o}),t};exports["default"]=autoprefix;
-
-/***/ },
-/* 551 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function _inherits(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.ReactCSSComponent=void 0;var _createClass=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),_react=__webpack_require__(2),_react2=_interopRequireDefault(_react),_inline=__webpack_require__(552),_inline2=_interopRequireDefault(_inline),_once=__webpack_require__(558),_once2=_interopRequireDefault(_once),warning=(0,_once2["default"])(function(){return console.warn("Extending ReactCSS.Component\n  is deprecated in ReactCSS 1.0.0")}),ReactCSSComponent=exports.ReactCSSComponent=function(e){function t(){return _classCallCheck(this,t),_possibleConstructorReturn(this,Object.getPrototypeOf(t).apply(this,arguments))}return _inherits(t,e),_createClass(t,[{key:"css",value:function(e){return warning(),_inline2["default"].call(this,e)}},{key:"styles",value:function(){return this.css()}}]),t}(_react2["default"].Component);ReactCSSComponent.contextTypes={mixins:_react2["default"].PropTypes.object},exports["default"]=ReactCSSComponent;
-
-/***/ },
-/* 552 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var _isObject=__webpack_require__(459),_isObject2=_interopRequireDefault(_isObject),_checkClassStructure=__webpack_require__(553),_checkClassStructure2=_interopRequireDefault(_checkClassStructure),_combine=__webpack_require__(554),_combine2=_interopRequireDefault(_combine);module.exports=function(e){var s=this,t=[];if(!this.classes)throw console.warn("Define this.classes on `"+this.constructor.name+"`");(0,_checkClassStructure2["default"])(this.classes());var r=function(e,r){s.classes()[e]?t.push(s.classes()[e]):e&&r&&r.warn===!0&&console.warn("The `"+e+"` css class does not exist on `"+s.constructor.name+"`")};r("default");for(var i in this.props){var c=this.props[i];(0,_isObject2["default"])(c)||(c===!0?(r(i),r(i+"-true")):r(c?i+"-"+c:i+"-false"))}if(this.props&&this.props.activeBounds)for(var o=0;o<this.props.activeBounds.length;o++){var n=this.props.activeBounds[o];r(n)}for(var a in e){var u=e[a];u===!0&&r(a,{warn:!0})}var l={};return this.context&&this.context.mixins&&(l=this.context.mixins),(0,_combine2["default"])(t,l)};
-
-/***/ },
-/* 553 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.checkClassStructure=void 0;var _map=__webpack_require__(436),_map2=_interopRequireDefault(_map),_isObject=__webpack_require__(459),_isObject2=_interopRequireDefault(_isObject),checkClassStructure=exports.checkClassStructure=function(e){(0,_map2["default"])(e,function(t,s){e.hasOwnProperty(s)&&((0,_isObject2["default"])(t)?(0,_map2["default"])(t,function(e,u){t.hasOwnProperty(u)&&((0,_isObject2["default"])(e)||console.warn("Make sure the value of the element `"+s+"`\n                is an object of css. You passed it `"+t+"`"))}):console.warn("Make sure the value of `"+s+"` is an object of\n          html elements. You passed it `"+t+"`"))})};exports["default"]=checkClassStructure;
-
-/***/ },
-/* 554 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.combine=void 0;var _merge=__webpack_require__(555),_merge2=_interopRequireDefault(_merge),_transformMixins=__webpack_require__(557),_transformMixins2=_interopRequireDefault(_transformMixins),combine=exports.combine=function(e,r){var i=(0,_merge2["default"])(e);return(0,_transformMixins2["default"])(i,r)};exports["default"]=combine;
-
-/***/ },
 /* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0});var _merge=__webpack_require__(556),_merge2=_interopRequireDefault(_merge),_isObject=__webpack_require__(459),_isObject2=_interopRequireDefault(_isObject),merge=function(e){return(0,_isObject2["default"])(e)&&!Array.isArray(e)?e:1===e.length?e[0]:_merge2["default"].recursive.apply(void 0,e)};exports["default"]=merge;
+	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.mergeClasses=void 0;var _map=__webpack_require__(442),_map2=_interopRequireDefault(_map),_objectAssign=__webpack_require__(440),_objectAssign2=_interopRequireDefault(_objectAssign),mergeClasses=exports.mergeClasses=function(e){var t=arguments.length<=1||void 0===arguments[1]?[]:arguments[1],s=e["default"]&&(0,_objectAssign2["default"])({},e["default"])||{};return t.map(function(t){var r=e[t];return r&&(0,_map2["default"])(r,function(e,t){s[t]||(s[t]={}),(0,_objectAssign2["default"])(s[t],r[t])}),t}),s};exports["default"]=mergeClasses;
 
 /***/ },
 /* 556 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.autoprefix=void 0;var _map=__webpack_require__(442),_map2=_interopRequireDefault(_map),_objectAssign=__webpack_require__(440),_objectAssign2=_interopRequireDefault(_objectAssign),transforms={borderRadius:function(e){return{msBorderRadius:e,MozBorderRadius:e,OBorderRadius:e,WebkitBorderRadius:e,borderRadius:e}},boxShadow:function(e){return{msBoxShadow:e,MozBoxShadow:e,OBoxShadow:e,WebkitBoxShadow:e,boxShadow:e}},userSelect:function(e){return{WebkitTouchCallout:e,KhtmlUserSelect:e,MozUserSelect:e,msUserSelect:e,WebkitUserSelect:e,userSelect:e}},flex:function(e){return{WebkitBoxFlex:e,MozBoxFlex:e,WebkitFlex:e,msFlex:e,flex:e}},flexBasis:function(e){return{WebkitFlexBasis:e,flexBasis:e}},justifyContent:function(e){return{WebkitJustifyContent:e,justifyContent:e}},transition:function(e){return{msTransition:e,MozTransition:e,OTransition:e,WebkitTransition:e,transition:e}},transform:function(e){return{msTransform:e,MozTransform:e,OTransform:e,WebkitTransform:e,transform:e}},absolute:function(e){var t=e&&e.split(" ");return{position:"absolute",top:t&&t[0],right:t&&t[1],bottom:t&&t[2],left:t&&t[3]}},extend:function(e,t){var r=t[e];return r?r:{extend:e}}},autoprefix=exports.autoprefix=function(e){var t={};return(0,_map2["default"])(e,function(e,r){var o={};(0,_map2["default"])(e,function(e,t){var r=transforms[t];r?(0,_objectAssign2["default"])(o,r(e)):o[t]=e}),t[r]=o}),t};exports["default"]=autoprefix;
+
+/***/ },
+/* 557 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function _inherits(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.ReactCSSComponent=void 0;var _createClass=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),_react=__webpack_require__(2),_react2=_interopRequireDefault(_react),_inline=__webpack_require__(558),_inline2=_interopRequireDefault(_inline),_once=__webpack_require__(564),_once2=_interopRequireDefault(_once),warning=(0,_once2["default"])(function(){return console.warn("Extending ReactCSS.Component\n  is deprecated in ReactCSS 1.0.0")}),ReactCSSComponent=exports.ReactCSSComponent=function(e){function t(){return _classCallCheck(this,t),_possibleConstructorReturn(this,Object.getPrototypeOf(t).apply(this,arguments))}return _inherits(t,e),_createClass(t,[{key:"css",value:function(e){return warning(),_inline2["default"].call(this,e)}},{key:"styles",value:function(){return this.css()}}]),t}(_react2["default"].Component);ReactCSSComponent.contextTypes={mixins:_react2["default"].PropTypes.object},exports["default"]=ReactCSSComponent;
+
+/***/ },
+/* 558 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var _isObject=__webpack_require__(465),_isObject2=_interopRequireDefault(_isObject),_checkClassStructure=__webpack_require__(559),_checkClassStructure2=_interopRequireDefault(_checkClassStructure),_combine=__webpack_require__(560),_combine2=_interopRequireDefault(_combine);module.exports=function(e){var s=this,t=[];if(!this.classes)throw console.warn("Define this.classes on `"+this.constructor.name+"`");(0,_checkClassStructure2["default"])(this.classes());var r=function(e,r){s.classes()[e]?t.push(s.classes()[e]):e&&r&&r.warn===!0&&console.warn("The `"+e+"` css class does not exist on `"+s.constructor.name+"`")};r("default");for(var i in this.props){var c=this.props[i];(0,_isObject2["default"])(c)||(c===!0?(r(i),r(i+"-true")):r(c?i+"-"+c:i+"-false"))}if(this.props&&this.props.activeBounds)for(var o=0;o<this.props.activeBounds.length;o++){var n=this.props.activeBounds[o];r(n)}for(var a in e){var u=e[a];u===!0&&r(a,{warn:!0})}var l={};return this.context&&this.context.mixins&&(l=this.context.mixins),(0,_combine2["default"])(t,l)};
+
+/***/ },
+/* 559 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.checkClassStructure=void 0;var _map=__webpack_require__(442),_map2=_interopRequireDefault(_map),_isObject=__webpack_require__(465),_isObject2=_interopRequireDefault(_isObject),checkClassStructure=exports.checkClassStructure=function(e){(0,_map2["default"])(e,function(t,s){e.hasOwnProperty(s)&&((0,_isObject2["default"])(t)?(0,_map2["default"])(t,function(e,u){t.hasOwnProperty(u)&&((0,_isObject2["default"])(e)||console.warn("Make sure the value of the element `"+s+"`\n                is an object of css. You passed it `"+t+"`"))}):console.warn("Make sure the value of `"+s+"` is an object of\n          html elements. You passed it `"+t+"`"))})};exports["default"]=checkClassStructure;
+
+/***/ },
+/* 560 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.combine=void 0;var _merge=__webpack_require__(561),_merge2=_interopRequireDefault(_merge),_transformMixins=__webpack_require__(563),_transformMixins2=_interopRequireDefault(_transformMixins),combine=exports.combine=function(e,r){var i=(0,_merge2["default"])(e);return(0,_transformMixins2["default"])(i,r)};exports["default"]=combine;
+
+/***/ },
+/* 561 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0});var _merge=__webpack_require__(562),_merge2=_interopRequireDefault(_merge),_isObject=__webpack_require__(465),_isObject2=_interopRequireDefault(_isObject),merge=function(e){return(0,_isObject2["default"])(e)&&!Array.isArray(e)?e:1===e.length?e[0]:_merge2["default"].recursive.apply(void 0,e)};exports["default"]=merge;
+
+/***/ },
+/* 562 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/*!
@@ -61545,16 +62428,16 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(300)(module)))
 
 /***/ },
-/* 557 */
+/* 563 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var _isObject=__webpack_require__(459),_isObject2=_interopRequireDefault(_isObject),_merge=__webpack_require__(556),_merge2=_interopRequireDefault(_merge),localProps={borderRadius:function(e){if(null!==e)return{msBorderRadius:e,MozBorderRadius:e,OBorderRadius:e,WebkitBorderRadius:e,borderRadius:e}},boxShadow:function(e){if(null!==e)return{msBoxShadow:e,MozBoxShadow:e,OBoxShadow:e,WebkitBoxShadow:e,boxShadow:e}},userSelect:function(e){if(null!==e)return{WebkitTouchCallout:e,KhtmlUserSelect:e,MozUserSelect:e,msUserSelect:e,WebkitUserSelect:e,userSelect:e}},flex:function(e){if(null!==e)return{WebkitBoxFlex:e,MozBoxFlex:e,WebkitFlex:e,msFlex:e,flex:e}},flexBasis:function(e){if(null!==e)return{WebkitFlexBasis:e,flexBasis:e}},justifyContent:function(e){if(null!==e)return{WebkitJustifyContent:e,justifyContent:e}},transition:function(e){if(null!==e)return{msTransition:e,MozTransition:e,OTransition:e,WebkitTransition:e,transition:e}},transform:function(e){if(null!==e)return{msTransform:e,MozTransform:e,OTransform:e,WebkitTransform:e,transform:e}},Absolute:function(e){if(null!==e){var r=e.split(" ");return{position:"absolute",top:r[0],right:r[1],bottom:r[2],left:r[3]}}},Extend:function(e,r){var t=r[e];if(t)return t}},transform=function e(r,t,n){var i=(0,_merge2["default"])(t,localProps),o={};for(var u in r){var s=r[u];if((0,_isObject2["default"])(s)&&!Array.isArray(s))o[u]=e(s,t,r);else if(i[u]){var l=i[u](s,n);for(var a in l){var f=l[a];o[a]=f}}else o[u]=s}return o};module.exports=function(e,r,t){return transform(e,r,t)};
+	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var _isObject=__webpack_require__(465),_isObject2=_interopRequireDefault(_isObject),_merge=__webpack_require__(562),_merge2=_interopRequireDefault(_merge),localProps={borderRadius:function(e){if(null!==e)return{msBorderRadius:e,MozBorderRadius:e,OBorderRadius:e,WebkitBorderRadius:e,borderRadius:e}},boxShadow:function(e){if(null!==e)return{msBoxShadow:e,MozBoxShadow:e,OBoxShadow:e,WebkitBoxShadow:e,boxShadow:e}},userSelect:function(e){if(null!==e)return{WebkitTouchCallout:e,KhtmlUserSelect:e,MozUserSelect:e,msUserSelect:e,WebkitUserSelect:e,userSelect:e}},flex:function(e){if(null!==e)return{WebkitBoxFlex:e,MozBoxFlex:e,WebkitFlex:e,msFlex:e,flex:e}},flexBasis:function(e){if(null!==e)return{WebkitFlexBasis:e,flexBasis:e}},justifyContent:function(e){if(null!==e)return{WebkitJustifyContent:e,justifyContent:e}},transition:function(e){if(null!==e)return{msTransition:e,MozTransition:e,OTransition:e,WebkitTransition:e,transition:e}},transform:function(e){if(null!==e)return{msTransform:e,MozTransform:e,OTransform:e,WebkitTransform:e,transform:e}},Absolute:function(e){if(null!==e){var r=e.split(" ");return{position:"absolute",top:r[0],right:r[1],bottom:r[2],left:r[3]}}},Extend:function(e,r){var t=r[e];if(t)return t}},transform=function e(r,t,n){var i=(0,_merge2["default"])(t,localProps),o={};for(var u in r){var s=r[u];if((0,_isObject2["default"])(s)&&!Array.isArray(s))o[u]=e(s,t,r);else if(i[u]){var l=i[u](s,n);for(var a in l){var f=l[a];o[a]=f}}else o[u]=s}return o};module.exports=function(e,r,t){return transform(e,r,t)};
 
 /***/ },
-/* 558 */
+/* 564 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var before = __webpack_require__(559);
+	var before = __webpack_require__(565);
 	
 	/**
 	 * Creates a function that is restricted to invoking `func` once. Repeat calls
@@ -61582,10 +62465,10 @@
 
 
 /***/ },
-/* 559 */
+/* 565 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toInteger = __webpack_require__(560);
+	var toInteger = __webpack_require__(566);
 	
 	/** Used as the `TypeError` message for "Functions" methods. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -61628,10 +62511,10 @@
 
 
 /***/ },
-/* 560 */
+/* 566 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toFinite = __webpack_require__(561);
+	var toFinite = __webpack_require__(567);
 	
 	/**
 	 * Converts `value` to an integer.
@@ -61670,10 +62553,10 @@
 
 
 /***/ },
-/* 561 */
+/* 567 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toNumber = __webpack_require__(562);
+	var toNumber = __webpack_require__(568);
 	
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0,
@@ -61718,11 +62601,11 @@
 
 
 /***/ },
-/* 562 */
+/* 568 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(459),
-	    isSymbol = __webpack_require__(530);
+	var isObject = __webpack_require__(465),
+	    isSymbol = __webpack_require__(536);
 	
 	/** Used as references for various `Number` constants. */
 	var NAN = 0 / 0;
@@ -61790,19 +62673,19 @@
 
 
 /***/ },
-/* 563 */
+/* 569 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function _inherits(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.hover=void 0;var _extends=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var r=arguments[t];for(var n in r)Object.prototype.hasOwnProperty.call(r,n)&&(e[n]=r[n])}return e},_createClass=function(){function e(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,r,n){return r&&e(t.prototype,r),n&&e(t,n),t}}(),_react=__webpack_require__(2),_react2=_interopRequireDefault(_react),hover=exports.hover=function(e){return function(t){function r(){_classCallCheck(this,r);var e=_possibleConstructorReturn(this,Object.getPrototypeOf(r).call(this));return e.handleMouseOver=function(){e.setState({hover:!0})},e.handleMouseOut=function(){e.setState({hover:!1})},e.state={hover:!1},e}return _inherits(r,t),_createClass(r,[{key:"render",value:function(){return _react2["default"].createElement("div",{onMouseOver:this.handleMouseOver,onMouseOut:this.handleMouseOut},_react2["default"].createElement(e,_extends({},this.props,this.state)))}}]),r}(_react2["default"].Component)};exports["default"]=hover;
 
 /***/ },
-/* 564 */
+/* 570 */
 /***/ function(module, exports) {
 
 	"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var loopable=function(e,t){var l={},o=function(e){var t=arguments.length<=1||void 0===arguments[1]||arguments[1];l[e]=t};return 0===e&&o("first-child"),e===t-1&&o("last-child"),(0===e||e%2===0)&&o("even"),1===Math.abs(e%2)&&o("odd"),o("nth-child",e),l};exports["default"]=loopable;
 
 /***/ },
-/* 565 */
+/* 571 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -61811,7 +62694,7 @@
 	  value: true
 	});
 	
-	var _Alpha = __webpack_require__(566);
+	var _Alpha = __webpack_require__(572);
 	
 	Object.defineProperty(exports, 'Alpha', {
 	  enumerable: true,
@@ -61820,7 +62703,7 @@
 	  }
 	});
 	
-	var _Checkboard = __webpack_require__(569);
+	var _Checkboard = __webpack_require__(575);
 	
 	Object.defineProperty(exports, 'Checkboard', {
 	  enumerable: true,
@@ -61829,7 +62712,7 @@
 	  }
 	});
 	
-	var _EditableInput = __webpack_require__(570);
+	var _EditableInput = __webpack_require__(576);
 	
 	Object.defineProperty(exports, 'EditableInput', {
 	  enumerable: true,
@@ -61838,7 +62721,7 @@
 	  }
 	});
 	
-	var _Hue = __webpack_require__(571);
+	var _Hue = __webpack_require__(577);
 	
 	Object.defineProperty(exports, 'Hue', {
 	  enumerable: true,
@@ -61847,7 +62730,7 @@
 	  }
 	});
 	
-	var _Saturation = __webpack_require__(572);
+	var _Saturation = __webpack_require__(578);
 	
 	Object.defineProperty(exports, 'Saturation', {
 	  enumerable: true,
@@ -61856,7 +62739,7 @@
 	  }
 	});
 	
-	var _ColorWrap = __webpack_require__(576);
+	var _ColorWrap = __webpack_require__(582);
 	
 	Object.defineProperty(exports, 'ColorWrap', {
 	  enumerable: true,
@@ -61868,7 +62751,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 566 */
+/* 572 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -61884,15 +62767,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _Checkboard = __webpack_require__(569);
+	var _Checkboard = __webpack_require__(575);
 	
 	var _Checkboard2 = _interopRequireDefault(_Checkboard);
 	
@@ -62038,13 +62921,13 @@
 	exports.default = Alpha;
 
 /***/ },
-/* 567 */
+/* 573 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(568);
+	module.exports = __webpack_require__(574);
 
 /***/ },
-/* 568 */
+/* 574 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -62074,7 +62957,7 @@
 	module.exports = shallowCompare;
 
 /***/ },
-/* 569 */
+/* 575 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -62090,11 +62973,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -62179,7 +63062,7 @@
 	exports.default = Checkboard;
 
 /***/ },
-/* 570 */
+/* 576 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -62195,11 +63078,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -62363,7 +63246,7 @@
 	exports.default = EditableInput;
 
 /***/ },
-/* 571 */
+/* 577 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -62379,11 +63262,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -62550,7 +63433,7 @@
 	exports.default = Hue;
 
 /***/ },
-/* 572 */
+/* 578 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -62566,15 +63449,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _throttle = __webpack_require__(573);
+	var _throttle = __webpack_require__(579);
 	
 	var _throttle2 = _interopRequireDefault(_throttle);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -62721,11 +63604,11 @@
 	exports.default = Saturation;
 
 /***/ },
-/* 573 */
+/* 579 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var debounce = __webpack_require__(574),
-	    isObject = __webpack_require__(459);
+	var debounce = __webpack_require__(580),
+	    isObject = __webpack_require__(465);
 	
 	/** Used as the `TypeError` message for "Functions" methods. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -62796,12 +63679,12 @@
 
 
 /***/ },
-/* 574 */
+/* 580 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(459),
-	    now = __webpack_require__(575),
-	    toNumber = __webpack_require__(562);
+	var isObject = __webpack_require__(465),
+	    now = __webpack_require__(581),
+	    toNumber = __webpack_require__(568);
 	
 	/** Used as the `TypeError` message for "Functions" methods. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -62990,10 +63873,10 @@
 
 
 /***/ },
-/* 575 */
+/* 581 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(463);
+	var root = __webpack_require__(469);
 	
 	/**
 	 * Gets the timestamp of the number of milliseconds that have elapsed since
@@ -63019,7 +63902,7 @@
 
 
 /***/ },
-/* 576 */
+/* 582 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -63037,19 +63920,19 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _merge = __webpack_require__(556);
+	var _merge = __webpack_require__(562);
 	
 	var _merge2 = _interopRequireDefault(_merge);
 	
-	var _debounce = __webpack_require__(574);
+	var _debounce = __webpack_require__(580);
 	
 	var _debounce2 = _interopRequireDefault(_debounce);
 	
-	var _color = __webpack_require__(577);
+	var _color = __webpack_require__(583);
 	
 	var _color2 = _interopRequireDefault(_color);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -63124,7 +64007,7 @@
 	exports.default = ColorWrap;
 
 /***/ },
-/* 577 */
+/* 583 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -63133,11 +64016,11 @@
 	  value: true
 	});
 	
-	var _each = __webpack_require__(578);
+	var _each = __webpack_require__(584);
 	
 	var _each2 = _interopRequireDefault(_each);
 	
-	var _tinycolor = __webpack_require__(581);
+	var _tinycolor = __webpack_require__(587);
 	
 	var _tinycolor2 = _interopRequireDefault(_tinycolor);
 	
@@ -63182,20 +64065,20 @@
 	};
 
 /***/ },
-/* 578 */
+/* 584 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(579);
+	module.exports = __webpack_require__(585);
 
 
 /***/ },
-/* 579 */
+/* 585 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayEach = __webpack_require__(580),
-	    baseEach = __webpack_require__(541),
-	    baseIteratee = __webpack_require__(438),
-	    isArray = __webpack_require__(503);
+	var arrayEach = __webpack_require__(586),
+	    baseEach = __webpack_require__(547),
+	    baseIteratee = __webpack_require__(444),
+	    isArray = __webpack_require__(509);
 	
 	/**
 	 * Iterates over elements of `collection` and invokes `iteratee` for each element.
@@ -63236,7 +64119,7 @@
 
 
 /***/ },
-/* 580 */
+/* 586 */
 /***/ function(module, exports) {
 
 	/**
@@ -63264,7 +64147,7 @@
 
 
 /***/ },
-/* 581 */
+/* 587 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;// jscs: disable
@@ -64436,7 +65319,7 @@
 
 
 /***/ },
-/* 582 */
+/* 588 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -64453,19 +65336,19 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _color = __webpack_require__(577);
+	var _color = __webpack_require__(583);
 	
 	var _color2 = _interopRequireDefault(_color);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -64790,7 +65673,7 @@
 	exports.default = ChromeFields;
 
 /***/ },
-/* 583 */
+/* 589 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -64806,11 +65689,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -64865,7 +65748,7 @@
 	exports.default = ChromePointer;
 
 /***/ },
-/* 584 */
+/* 590 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -64881,11 +65764,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -64939,7 +65822,7 @@
 	exports.default = ChromePointerCircle;
 
 /***/ },
-/* 585 */
+/* 591 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -64957,31 +65840,31 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _map = __webpack_require__(436);
+	var _map = __webpack_require__(442);
 	
 	var _map2 = _interopRequireDefault(_map);
 	
-	var _color = __webpack_require__(577);
+	var _color = __webpack_require__(583);
 	
 	var _color2 = _interopRequireDefault(_color);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _reactMaterialDesign = __webpack_require__(586);
+	var _reactMaterialDesign = __webpack_require__(592);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
-	var _CompactColor = __webpack_require__(592);
+	var _CompactColor = __webpack_require__(598);
 	
 	var _CompactColor2 = _interopRequireDefault(_CompactColor);
 	
-	var _CompactFields = __webpack_require__(593);
+	var _CompactFields = __webpack_require__(599);
 	
 	var _CompactFields2 = _interopRequireDefault(_CompactFields);
 	
@@ -65080,7 +65963,7 @@
 	exports.default = (0, _common.ColorWrap)(Compact);
 
 /***/ },
-/* 586 */
+/* 592 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65091,15 +65974,15 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _libComponentsRaised = __webpack_require__(587);
+	var _libComponentsRaised = __webpack_require__(593);
 	
 	var _libComponentsRaised2 = _interopRequireDefault(_libComponentsRaised);
 	
-	var _libComponentsTile = __webpack_require__(588);
+	var _libComponentsTile = __webpack_require__(594);
 	
 	var _libComponentsTile2 = _interopRequireDefault(_libComponentsTile);
 	
-	var _libComponentsTabs = __webpack_require__(589);
+	var _libComponentsTabs = __webpack_require__(595);
 	
 	var _libComponentsTabs2 = _interopRequireDefault(_libComponentsTabs);
 	
@@ -65109,7 +65992,7 @@
 
 
 /***/ },
-/* 587 */
+/* 593 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* jshint node: true, esnext: true */
@@ -65125,7 +66008,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
@@ -65239,7 +66122,7 @@
 	exports.default = Raised;
 
 /***/ },
-/* 588 */
+/* 594 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* jshint node: true, esnext: true */
@@ -65257,7 +66140,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
@@ -65369,7 +66252,7 @@
 	exports.default = Tile;
 
 /***/ },
-/* 589 */
+/* 595 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65384,19 +66267,19 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _isString = __webpack_require__(548);
+	var _isString = __webpack_require__(554);
 	
 	var _isString2 = _interopRequireDefault(_isString);
 	
-	var _Tab = __webpack_require__(590);
+	var _Tab = __webpack_require__(596);
 	
 	var _Tab2 = _interopRequireDefault(_Tab);
 	
-	var _Link = __webpack_require__(591);
+	var _Link = __webpack_require__(597);
 	
 	var _Link2 = _interopRequireDefault(_Link);
 	
@@ -65636,7 +66519,7 @@
 	exports.default = Tabs;
 
 /***/ },
-/* 590 */
+/* 596 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65651,7 +66534,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
@@ -65735,7 +66618,7 @@
 	exports.default = Tab;
 
 /***/ },
-/* 591 */
+/* 597 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65750,7 +66633,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _isString = __webpack_require__(548);
+	var _isString = __webpack_require__(554);
 	
 	var _isString2 = _interopRequireDefault(_isString);
 	
@@ -65820,7 +66703,7 @@
 	exports.default = Link;
 
 /***/ },
-/* 592 */
+/* 598 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65836,11 +66719,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -65922,7 +66805,7 @@
 	exports.default = CompactColor;
 
 /***/ },
-/* 593 */
+/* 599 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65938,15 +66821,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -66089,7 +66972,7 @@
 	exports.default = CompactColor;
 
 /***/ },
-/* 594 */
+/* 600 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66105,21 +66988,21 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _color = __webpack_require__(577);
+	var _color = __webpack_require__(583);
 	
 	var _color2 = _interopRequireDefault(_color);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _reactMaterialDesign = __webpack_require__(586);
+	var _reactMaterialDesign = __webpack_require__(592);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -66286,7 +67169,7 @@
 	exports.default = (0, _common.ColorWrap)(Material);
 
 /***/ },
-/* 595 */
+/* 601 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66304,25 +67187,25 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
-	var _PhotoshopFields = __webpack_require__(596);
+	var _PhotoshopFields = __webpack_require__(602);
 	
 	var _PhotoshopFields2 = _interopRequireDefault(_PhotoshopFields);
 	
-	var _PhotoshopPointerCircle = __webpack_require__(597);
+	var _PhotoshopPointerCircle = __webpack_require__(603);
 	
 	var _PhotoshopPointerCircle2 = _interopRequireDefault(_PhotoshopPointerCircle);
 	
-	var _PhotoshopPointer = __webpack_require__(598);
+	var _PhotoshopPointer = __webpack_require__(604);
 	
 	var _PhotoshopPointer2 = _interopRequireDefault(_PhotoshopPointer);
 	
@@ -66558,7 +67441,7 @@
 	exports.default = (0, _common.ColorWrap)(Photoshop);
 
 /***/ },
-/* 596 */
+/* 602 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66574,19 +67457,19 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _color = __webpack_require__(577);
+	var _color = __webpack_require__(583);
 	
 	var _color2 = _interopRequireDefault(_color);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -66784,7 +67667,7 @@
 	exports.default = PhotoshopPicker;
 
 /***/ },
-/* 597 */
+/* 603 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66800,11 +67683,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -66865,7 +67748,7 @@
 	exports.default = PhotoshopPointerCircle;
 
 /***/ },
-/* 598 */
+/* 604 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66881,11 +67764,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -66980,7 +67863,7 @@
 	exports.default = PhotoshopPointerCircle;
 
 /***/ },
-/* 599 */
+/* 605 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66998,21 +67881,21 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
-	var _SketchFields = __webpack_require__(600);
+	var _SketchFields = __webpack_require__(606);
 	
 	var _SketchFields2 = _interopRequireDefault(_SketchFields);
 	
-	var _SketchPresetColors = __webpack_require__(601);
+	var _SketchPresetColors = __webpack_require__(607);
 	
 	var _SketchPresetColors2 = _interopRequireDefault(_SketchPresetColors);
 	
@@ -67186,7 +68069,7 @@
 	exports.default = (0, _common.ColorWrap)(Sketch);
 
 /***/ },
-/* 600 */
+/* 606 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67202,19 +68085,19 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _color = __webpack_require__(577);
+	var _color = __webpack_require__(583);
 	
 	var _color2 = _interopRequireDefault(_color);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -67386,7 +68269,7 @@
 	exports.default = ShetchFields;
 
 /***/ },
-/* 601 */
+/* 607 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67402,15 +68285,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _map = __webpack_require__(436);
+	var _map = __webpack_require__(442);
 	
 	var _map2 = _interopRequireDefault(_map);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -67507,7 +68390,7 @@
 	exports.default = SketchPresetColors;
 
 /***/ },
-/* 602 */
+/* 608 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67525,21 +68408,21 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
-	var _SliderSwatches = __webpack_require__(603);
+	var _SliderSwatches = __webpack_require__(609);
 	
 	var _SliderSwatches2 = _interopRequireDefault(_SliderSwatches);
 	
-	var _SliderPointer = __webpack_require__(605);
+	var _SliderPointer = __webpack_require__(611);
 	
 	var _SliderPointer2 = _interopRequireDefault(_SliderPointer);
 	
@@ -67614,7 +68497,7 @@
 	exports.default = (0, _common.ColorWrap)(Slider);
 
 /***/ },
-/* 603 */
+/* 609 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67632,15 +68515,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _SliderSwatch = __webpack_require__(604);
+	var _SliderSwatch = __webpack_require__(610);
 	
 	var _SliderSwatch2 = _interopRequireDefault(_SliderSwatch);
 	
@@ -67752,7 +68635,7 @@
 	exports.default = SliderSwatches;
 
 /***/ },
-/* 604 */
+/* 610 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67768,11 +68651,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -67847,7 +68730,7 @@
 	exports.default = SliderSwatch;
 
 /***/ },
-/* 605 */
+/* 611 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67863,11 +68746,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -67922,7 +68805,7 @@
 	exports.default = SliderPointer;
 
 /***/ },
-/* 606 */
+/* 612 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67938,31 +68821,31 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _map = __webpack_require__(436);
+	var _map = __webpack_require__(442);
 	
 	var _map2 = _interopRequireDefault(_map);
 	
-	var _color = __webpack_require__(577);
+	var _color = __webpack_require__(583);
 	
 	var _color2 = _interopRequireDefault(_color);
 	
-	var _materialColors = __webpack_require__(607);
+	var _materialColors = __webpack_require__(613);
 	
 	var _materialColors2 = _interopRequireDefault(_materialColors);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _common = __webpack_require__(565);
+	var _common = __webpack_require__(571);
 	
-	var _reactMaterialDesign = __webpack_require__(586);
+	var _reactMaterialDesign = __webpack_require__(592);
 	
-	var _SwatchesGroup = __webpack_require__(608);
+	var _SwatchesGroup = __webpack_require__(614);
 	
 	var _SwatchesGroup2 = _interopRequireDefault(_SwatchesGroup);
 	
@@ -68064,7 +68947,7 @@
 	exports.default = (0, _common.ColorWrap)(Swatches);
 
 /***/ },
-/* 607 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(root, factory) {
@@ -68081,7 +68964,7 @@
 
 
 /***/ },
-/* 608 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68097,19 +68980,19 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _map = __webpack_require__(436);
+	var _map = __webpack_require__(442);
 	
 	var _map2 = _interopRequireDefault(_map);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
-	var _SwatchesColor = __webpack_require__(609);
+	var _SwatchesColor = __webpack_require__(615);
 	
 	var _SwatchesColor2 = _interopRequireDefault(_SwatchesColor);
 	
@@ -68179,7 +69062,7 @@
 	exports.default = SwatchesGroup;
 
 /***/ },
-/* 609 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68195,11 +69078,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactcss = __webpack_require__(433);
+	var _reactcss = __webpack_require__(439);
 	
 	var _reactcss2 = _interopRequireDefault(_reactcss);
 	
-	var _reactAddonsShallowCompare = __webpack_require__(567);
+	var _reactAddonsShallowCompare = __webpack_require__(573);
 	
 	var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 	
@@ -68289,7 +69172,4277 @@
 	exports.default = SwatchesColor;
 
 /***/ },
-/* 610 */
+/* 616 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	    if (true) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(2), __webpack_require__(31), __webpack_require__(617), __webpack_require__(618)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    } else if (typeof exports !== "undefined") {
+	        factory(module, require('react'), require('react-dom'), require('lodash.isequal'), require('progressbar.js'));
+	    } else {
+	        var mod = {
+	            exports: {}
+	        };
+	        factory(mod, global.react, global.reactDom, global.lodash, global.progressbar);
+	        global.main = mod.exports;
+	    }
+	})(this, function (module, React, ReactDom, isEqual, ProgressBar) {
+	    'use strict';
+	
+	    var _extends = Object.assign || function (target) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            var source = arguments[i];
+	
+	            for (var key in source) {
+	                if (Object.prototype.hasOwnProperty.call(source, key)) {
+	                    target[key] = source[key];
+	                }
+	            }
+	        }
+	
+	        return target;
+	    };
+	
+	    var Shape = React.createClass({
+	        displayName: 'Shape',
+	
+	        getDefaultProps: function getDefaultProps() {
+	            return {
+	                ShapeClass: null,
+	                options: {},
+	                progress: 0,
+	                text: null,
+	                initialAnimate: false,
+	                containerStyle: {},
+	                containerClassName: '.progressbar-container'
+	            };
+	        },
+	
+	        getInitialState: function getInitialState() {
+	            return {
+	                shape: null
+	            };
+	        },
+	
+	        render: function render() {
+	            var style = this.props.containerStyle;
+	            var className = this.props.containerClassName;
+	
+	            return React.createElement('div', { className: className, style: style, ref: 'progressBar' });
+	        },
+	
+	        componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	            if (!isEqual(this.props.options, nextProps.options)) {
+	                this._destroy();
+	                this._create(nextProps, this.props);
+	                return;
+	            }
+	
+	            this._animateProgress(nextProps.progress);
+	            this._setText(nextProps.text);
+	        },
+	
+	        componentDidMount: function componentDidMount() {
+	            this._create(this.props);
+	        },
+	
+	        componentWillUnmount: function componentWillUnmount() {
+	            this._destroy();
+	        },
+	
+	        _create: function _create(props, oldProps) {
+	            if (this.state.shape !== null) {
+	                throw new Error('Progressbar is already created');
+	            }
+	
+	            // setState function is not used to prevent a new render cycle
+	            // This handling happens outside of React component's lifecycle
+	            var container = ReactDom.findDOMNode(this.refs.progressBar);
+	            this.state.shape = new props.ShapeClass(container, props.options);
+	
+	            if (props.initialAnimate) {
+	                if (oldProps) {
+	                    this._setProgress(oldProps.progress);
+	                }
+	
+	                this._animateProgress(props.progress);
+	            } else {
+	                this._setProgress(props.progress);
+	            }
+	
+	            this._setText(props.text);
+	        },
+	
+	        _destroy: function _destroy() {
+	            if (this.state.shape) {
+	                this.state.shape.destroy();
+	                this.state.shape = null;
+	            }
+	        },
+	
+	        _animateProgress: function _animateProgress(progress) {
+	            this.state.shape.animate(progress);
+	        },
+	
+	        _setProgress: function _setProgress(progress) {
+	            this.state.shape.set(progress);
+	        },
+	
+	        _setText: function _setText(text) {
+	            if (text) {
+	                this.state.shape.setText(text);
+	            }
+	        }
+	    });
+	
+	    var Line = React.createClass({
+	        displayName: 'Line',
+	        render: function render() {
+	            return React.createElement(Shape, _extends({}, this.props, { ShapeClass: ProgressBar.Line }));
+	        }
+	    });
+	
+	    var Circle = React.createClass({
+	        displayName: 'Circle',
+	        render: function render() {
+	            return React.createElement(Shape, _extends({}, this.props, { ShapeClass: ProgressBar.Circle }));
+	        }
+	    });
+	
+	    var SemiCircle = React.createClass({
+	        displayName: 'SemiCircle',
+	        render: function render() {
+	            return React.createElement(Shape, _extends({}, this.props, { ShapeClass: ProgressBar.SemiCircle }));
+	        }
+	    });
+	
+	    module.exports = {
+	        Line: Line,
+	        Circle: Circle,
+	        SemiCircle: SemiCircle
+	    };
+	});
+
+
+/***/ },
+/* 617 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global, module) {/**
+	 * lodash (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modularize exports="npm" -o ./`
+	 * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+	 * Released under MIT license <https://lodash.com/license>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 */
+	
+	/** Used as the size to enable large array optimizations. */
+	var LARGE_ARRAY_SIZE = 200;
+	
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED = '__lodash_hash_undefined__';
+	
+	/** Used to compose bitmasks for comparison styles. */
+	var UNORDERED_COMPARE_FLAG = 1,
+	    PARTIAL_COMPARE_FLAG = 2;
+	
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]',
+	    arrayTag = '[object Array]',
+	    boolTag = '[object Boolean]',
+	    dateTag = '[object Date]',
+	    errorTag = '[object Error]',
+	    funcTag = '[object Function]',
+	    genTag = '[object GeneratorFunction]',
+	    mapTag = '[object Map]',
+	    numberTag = '[object Number]',
+	    objectTag = '[object Object]',
+	    promiseTag = '[object Promise]',
+	    regexpTag = '[object RegExp]',
+	    setTag = '[object Set]',
+	    stringTag = '[object String]',
+	    symbolTag = '[object Symbol]',
+	    weakMapTag = '[object WeakMap]';
+	
+	var arrayBufferTag = '[object ArrayBuffer]',
+	    dataViewTag = '[object DataView]',
+	    float32Tag = '[object Float32Array]',
+	    float64Tag = '[object Float64Array]',
+	    int8Tag = '[object Int8Array]',
+	    int16Tag = '[object Int16Array]',
+	    int32Tag = '[object Int32Array]',
+	    uint8Tag = '[object Uint8Array]',
+	    uint8ClampedTag = '[object Uint8ClampedArray]',
+	    uint16Tag = '[object Uint16Array]',
+	    uint32Tag = '[object Uint32Array]';
+	
+	/**
+	 * Used to match `RegExp`
+	 * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+	 */
+	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+	
+	/** Used to detect host constructors (Safari). */
+	var reIsHostCtor = /^\[object .+?Constructor\]$/;
+	
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^(?:0|[1-9]\d*)$/;
+	
+	/** Used to identify `toStringTag` values of typed arrays. */
+	var typedArrayTags = {};
+	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+	typedArrayTags[uint32Tag] = true;
+	typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+	typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+	typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+	typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+	typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+	typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
+	typedArrayTags[setTag] = typedArrayTags[stringTag] =
+	typedArrayTags[weakMapTag] = false;
+	
+	/** Detect free variable `global` from Node.js. */
+	var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+	
+	/** Detect free variable `self`. */
+	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+	
+	/** Used as a reference to the global object. */
+	var root = freeGlobal || freeSelf || Function('return this')();
+	
+	/** Detect free variable `exports`. */
+	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+	
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+	
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+	
+	/** Detect free variable `process` from Node.js. */
+	var freeProcess = moduleExports && freeGlobal.process;
+	
+	/** Used to access faster Node.js helpers. */
+	var nodeUtil = (function() {
+	  try {
+	    return freeProcess && freeProcess.binding('util');
+	  } catch (e) {}
+	}());
+	
+	/* Node.js helper references. */
+	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+	
+	/**
+	 * A specialized version of `_.some` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {boolean} Returns `true` if any element passes the predicate check,
+	 *  else `false`.
+	 */
+	function arraySome(array, predicate) {
+	  var index = -1,
+	      length = array ? array.length : 0;
+	
+	  while (++index < length) {
+	    if (predicate(array[index], index, array)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+	
+	/**
+	 * The base implementation of `_.times` without support for iteratee shorthands
+	 * or max array length checks.
+	 *
+	 * @private
+	 * @param {number} n The number of times to invoke `iteratee`.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the array of results.
+	 */
+	function baseTimes(n, iteratee) {
+	  var index = -1,
+	      result = Array(n);
+	
+	  while (++index < n) {
+	    result[index] = iteratee(index);
+	  }
+	  return result;
+	}
+	
+	/**
+	 * The base implementation of `_.unary` without support for storing metadata.
+	 *
+	 * @private
+	 * @param {Function} func The function to cap arguments for.
+	 * @returns {Function} Returns the new capped function.
+	 */
+	function baseUnary(func) {
+	  return function(value) {
+	    return func(value);
+	  };
+	}
+	
+	/**
+	 * Gets the value at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} [object] The object to query.
+	 * @param {string} key The key of the property to get.
+	 * @returns {*} Returns the property value.
+	 */
+	function getValue(object, key) {
+	  return object == null ? undefined : object[key];
+	}
+	
+	/**
+	 * Checks if `value` is a host object in IE < 9.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
+	 */
+	function isHostObject(value) {
+	  // Many host objects are `Object` objects that can coerce to strings
+	  // despite having improperly defined `toString` methods.
+	  var result = false;
+	  if (value != null && typeof value.toString != 'function') {
+	    try {
+	      result = !!(value + '');
+	    } catch (e) {}
+	  }
+	  return result;
+	}
+	
+	/**
+	 * Converts `map` to its key-value pairs.
+	 *
+	 * @private
+	 * @param {Object} map The map to convert.
+	 * @returns {Array} Returns the key-value pairs.
+	 */
+	function mapToArray(map) {
+	  var index = -1,
+	      result = Array(map.size);
+	
+	  map.forEach(function(value, key) {
+	    result[++index] = [key, value];
+	  });
+	  return result;
+	}
+	
+	/**
+	 * Creates a unary function that invokes `func` with its argument transformed.
+	 *
+	 * @private
+	 * @param {Function} func The function to wrap.
+	 * @param {Function} transform The argument transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overArg(func, transform) {
+	  return function(arg) {
+	    return func(transform(arg));
+	  };
+	}
+	
+	/**
+	 * Converts `set` to an array of its values.
+	 *
+	 * @private
+	 * @param {Object} set The set to convert.
+	 * @returns {Array} Returns the values.
+	 */
+	function setToArray(set) {
+	  var index = -1,
+	      result = Array(set.size);
+	
+	  set.forEach(function(value) {
+	    result[++index] = value;
+	  });
+	  return result;
+	}
+	
+	/** Used for built-in method references. */
+	var arrayProto = Array.prototype,
+	    funcProto = Function.prototype,
+	    objectProto = Object.prototype;
+	
+	/** Used to detect overreaching core-js shims. */
+	var coreJsData = root['__core-js_shared__'];
+	
+	/** Used to detect methods masquerading as native. */
+	var maskSrcKey = (function() {
+	  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+	  return uid ? ('Symbol(src)_1.' + uid) : '';
+	}());
+	
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString = funcProto.toString;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/** Used to detect if a method is native. */
+	var reIsNative = RegExp('^' +
+	  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	);
+	
+	/** Built-in value references. */
+	var Symbol = root.Symbol,
+	    Uint8Array = root.Uint8Array,
+	    propertyIsEnumerable = objectProto.propertyIsEnumerable,
+	    splice = arrayProto.splice;
+	
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeKeys = overArg(Object.keys, Object);
+	
+	/* Built-in method references that are verified to be native. */
+	var DataView = getNative(root, 'DataView'),
+	    Map = getNative(root, 'Map'),
+	    Promise = getNative(root, 'Promise'),
+	    Set = getNative(root, 'Set'),
+	    WeakMap = getNative(root, 'WeakMap'),
+	    nativeCreate = getNative(Object, 'create');
+	
+	/** Used to detect maps, sets, and weakmaps. */
+	var dataViewCtorString = toSource(DataView),
+	    mapCtorString = toSource(Map),
+	    promiseCtorString = toSource(Promise),
+	    setCtorString = toSource(Set),
+	    weakMapCtorString = toSource(WeakMap);
+	
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto = Symbol ? Symbol.prototype : undefined,
+	    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+	
+	/**
+	 * Creates a hash object.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function Hash(entries) {
+	  var index = -1,
+	      length = entries ? entries.length : 0;
+	
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+	
+	/**
+	 * Removes all key-value entries from the hash.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Hash
+	 */
+	function hashClear() {
+	  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+	}
+	
+	/**
+	 * Removes `key` and its value from the hash.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Hash
+	 * @param {Object} hash The hash to modify.
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function hashDelete(key) {
+	  return this.has(key) && delete this.__data__[key];
+	}
+	
+	/**
+	 * Gets the hash value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Hash
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function hashGet(key) {
+	  var data = this.__data__;
+	  if (nativeCreate) {
+	    var result = data[key];
+	    return result === HASH_UNDEFINED ? undefined : result;
+	  }
+	  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+	}
+	
+	/**
+	 * Checks if a hash value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Hash
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function hashHas(key) {
+	  var data = this.__data__;
+	  return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
+	}
+	
+	/**
+	 * Sets the hash `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Hash
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the hash instance.
+	 */
+	function hashSet(key, value) {
+	  var data = this.__data__;
+	  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+	  return this;
+	}
+	
+	// Add methods to `Hash`.
+	Hash.prototype.clear = hashClear;
+	Hash.prototype['delete'] = hashDelete;
+	Hash.prototype.get = hashGet;
+	Hash.prototype.has = hashHas;
+	Hash.prototype.set = hashSet;
+	
+	/**
+	 * Creates an list cache object.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function ListCache(entries) {
+	  var index = -1,
+	      length = entries ? entries.length : 0;
+	
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+	
+	/**
+	 * Removes all key-value entries from the list cache.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf ListCache
+	 */
+	function listCacheClear() {
+	  this.__data__ = [];
+	}
+	
+	/**
+	 * Removes `key` and its value from the list cache.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function listCacheDelete(key) {
+	  var data = this.__data__,
+	      index = assocIndexOf(data, key);
+	
+	  if (index < 0) {
+	    return false;
+	  }
+	  var lastIndex = data.length - 1;
+	  if (index == lastIndex) {
+	    data.pop();
+	  } else {
+	    splice.call(data, index, 1);
+	  }
+	  return true;
+	}
+	
+	/**
+	 * Gets the list cache value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function listCacheGet(key) {
+	  var data = this.__data__,
+	      index = assocIndexOf(data, key);
+	
+	  return index < 0 ? undefined : data[index][1];
+	}
+	
+	/**
+	 * Checks if a list cache value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf ListCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function listCacheHas(key) {
+	  return assocIndexOf(this.__data__, key) > -1;
+	}
+	
+	/**
+	 * Sets the list cache `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the list cache instance.
+	 */
+	function listCacheSet(key, value) {
+	  var data = this.__data__,
+	      index = assocIndexOf(data, key);
+	
+	  if (index < 0) {
+	    data.push([key, value]);
+	  } else {
+	    data[index][1] = value;
+	  }
+	  return this;
+	}
+	
+	// Add methods to `ListCache`.
+	ListCache.prototype.clear = listCacheClear;
+	ListCache.prototype['delete'] = listCacheDelete;
+	ListCache.prototype.get = listCacheGet;
+	ListCache.prototype.has = listCacheHas;
+	ListCache.prototype.set = listCacheSet;
+	
+	/**
+	 * Creates a map cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function MapCache(entries) {
+	  var index = -1,
+	      length = entries ? entries.length : 0;
+	
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+	
+	/**
+	 * Removes all key-value entries from the map.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf MapCache
+	 */
+	function mapCacheClear() {
+	  this.__data__ = {
+	    'hash': new Hash,
+	    'map': new (Map || ListCache),
+	    'string': new Hash
+	  };
+	}
+	
+	/**
+	 * Removes `key` and its value from the map.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function mapCacheDelete(key) {
+	  return getMapData(this, key)['delete'](key);
+	}
+	
+	/**
+	 * Gets the map value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function mapCacheGet(key) {
+	  return getMapData(this, key).get(key);
+	}
+	
+	/**
+	 * Checks if a map value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf MapCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function mapCacheHas(key) {
+	  return getMapData(this, key).has(key);
+	}
+	
+	/**
+	 * Sets the map `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the map cache instance.
+	 */
+	function mapCacheSet(key, value) {
+	  getMapData(this, key).set(key, value);
+	  return this;
+	}
+	
+	// Add methods to `MapCache`.
+	MapCache.prototype.clear = mapCacheClear;
+	MapCache.prototype['delete'] = mapCacheDelete;
+	MapCache.prototype.get = mapCacheGet;
+	MapCache.prototype.has = mapCacheHas;
+	MapCache.prototype.set = mapCacheSet;
+	
+	/**
+	 *
+	 * Creates an array cache object to store unique values.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [values] The values to cache.
+	 */
+	function SetCache(values) {
+	  var index = -1,
+	      length = values ? values.length : 0;
+	
+	  this.__data__ = new MapCache;
+	  while (++index < length) {
+	    this.add(values[index]);
+	  }
+	}
+	
+	/**
+	 * Adds `value` to the array cache.
+	 *
+	 * @private
+	 * @name add
+	 * @memberOf SetCache
+	 * @alias push
+	 * @param {*} value The value to cache.
+	 * @returns {Object} Returns the cache instance.
+	 */
+	function setCacheAdd(value) {
+	  this.__data__.set(value, HASH_UNDEFINED);
+	  return this;
+	}
+	
+	/**
+	 * Checks if `value` is in the array cache.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf SetCache
+	 * @param {*} value The value to search for.
+	 * @returns {number} Returns `true` if `value` is found, else `false`.
+	 */
+	function setCacheHas(value) {
+	  return this.__data__.has(value);
+	}
+	
+	// Add methods to `SetCache`.
+	SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
+	SetCache.prototype.has = setCacheHas;
+	
+	/**
+	 * Creates a stack cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function Stack(entries) {
+	  this.__data__ = new ListCache(entries);
+	}
+	
+	/**
+	 * Removes all key-value entries from the stack.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Stack
+	 */
+	function stackClear() {
+	  this.__data__ = new ListCache;
+	}
+	
+	/**
+	 * Removes `key` and its value from the stack.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function stackDelete(key) {
+	  return this.__data__['delete'](key);
+	}
+	
+	/**
+	 * Gets the stack value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function stackGet(key) {
+	  return this.__data__.get(key);
+	}
+	
+	/**
+	 * Checks if a stack value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Stack
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function stackHas(key) {
+	  return this.__data__.has(key);
+	}
+	
+	/**
+	 * Sets the stack `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the stack cache instance.
+	 */
+	function stackSet(key, value) {
+	  var cache = this.__data__;
+	  if (cache instanceof ListCache) {
+	    var pairs = cache.__data__;
+	    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+	      pairs.push([key, value]);
+	      return this;
+	    }
+	    cache = this.__data__ = new MapCache(pairs);
+	  }
+	  cache.set(key, value);
+	  return this;
+	}
+	
+	// Add methods to `Stack`.
+	Stack.prototype.clear = stackClear;
+	Stack.prototype['delete'] = stackDelete;
+	Stack.prototype.get = stackGet;
+	Stack.prototype.has = stackHas;
+	Stack.prototype.set = stackSet;
+	
+	/**
+	 * Creates an array of the enumerable property names of the array-like `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @param {boolean} inherited Specify returning inherited property names.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function arrayLikeKeys(value, inherited) {
+	  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
+	  // Safari 9 makes `arguments.length` enumerable in strict mode.
+	  var result = (isArray(value) || isArguments(value))
+	    ? baseTimes(value.length, String)
+	    : [];
+	
+	  var length = result.length,
+	      skipIndexes = !!length;
+	
+	  for (var key in value) {
+	    if ((inherited || hasOwnProperty.call(value, key)) &&
+	        !(skipIndexes && (key == 'length' || isIndex(key, length)))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+	
+	/**
+	 * Gets the index at which the `key` is found in `array` of key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} array The array to inspect.
+	 * @param {*} key The key to search for.
+	 * @returns {number} Returns the index of the matched value, else `-1`.
+	 */
+	function assocIndexOf(array, key) {
+	  var length = array.length;
+	  while (length--) {
+	    if (eq(array[length][0], key)) {
+	      return length;
+	    }
+	  }
+	  return -1;
+	}
+	
+	/**
+	 * The base implementation of `getTag`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	function baseGetTag(value) {
+	  return objectToString.call(value);
+	}
+	
+	/**
+	 * The base implementation of `_.isEqual` which supports partial comparisons
+	 * and tracks traversed objects.
+	 *
+	 * @private
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {boolean} [bitmask] The bitmask of comparison flags.
+	 *  The bitmask may be composed of the following flags:
+	 *     1 - Unordered comparison
+	 *     2 - Partial comparison
+	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 */
+	function baseIsEqual(value, other, customizer, bitmask, stack) {
+	  if (value === other) {
+	    return true;
+	  }
+	  if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
+	    return value !== value && other !== other;
+	  }
+	  return baseIsEqualDeep(value, other, baseIsEqual, customizer, bitmask, stack);
+	}
+	
+	/**
+	 * A specialized version of `baseIsEqual` for arrays and objects which performs
+	 * deep comparisons and tracks traversed objects enabling objects with circular
+	 * references to be compared.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual`
+	 *  for more details.
+	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function baseIsEqualDeep(object, other, equalFunc, customizer, bitmask, stack) {
+	  var objIsArr = isArray(object),
+	      othIsArr = isArray(other),
+	      objTag = arrayTag,
+	      othTag = arrayTag;
+	
+	  if (!objIsArr) {
+	    objTag = getTag(object);
+	    objTag = objTag == argsTag ? objectTag : objTag;
+	  }
+	  if (!othIsArr) {
+	    othTag = getTag(other);
+	    othTag = othTag == argsTag ? objectTag : othTag;
+	  }
+	  var objIsObj = objTag == objectTag && !isHostObject(object),
+	      othIsObj = othTag == objectTag && !isHostObject(other),
+	      isSameTag = objTag == othTag;
+	
+	  if (isSameTag && !objIsObj) {
+	    stack || (stack = new Stack);
+	    return (objIsArr || isTypedArray(object))
+	      ? equalArrays(object, other, equalFunc, customizer, bitmask, stack)
+	      : equalByTag(object, other, objTag, equalFunc, customizer, bitmask, stack);
+	  }
+	  if (!(bitmask & PARTIAL_COMPARE_FLAG)) {
+	    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+	        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+	
+	    if (objIsWrapped || othIsWrapped) {
+	      var objUnwrapped = objIsWrapped ? object.value() : object,
+	          othUnwrapped = othIsWrapped ? other.value() : other;
+	
+	      stack || (stack = new Stack);
+	      return equalFunc(objUnwrapped, othUnwrapped, customizer, bitmask, stack);
+	    }
+	  }
+	  if (!isSameTag) {
+	    return false;
+	  }
+	  stack || (stack = new Stack);
+	  return equalObjects(object, other, equalFunc, customizer, bitmask, stack);
+	}
+	
+	/**
+	 * The base implementation of `_.isNative` without bad shim checks.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function,
+	 *  else `false`.
+	 */
+	function baseIsNative(value) {
+	  if (!isObject(value) || isMasked(value)) {
+	    return false;
+	  }
+	  var pattern = (isFunction(value) || isHostObject(value)) ? reIsNative : reIsHostCtor;
+	  return pattern.test(toSource(value));
+	}
+	
+	/**
+	 * The base implementation of `_.isTypedArray` without Node.js optimizations.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 */
+	function baseIsTypedArray(value) {
+	  return isObjectLike(value) &&
+	    isLength(value.length) && !!typedArrayTags[objectToString.call(value)];
+	}
+	
+	/**
+	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeys(object) {
+	  if (!isPrototype(object)) {
+	    return nativeKeys(object);
+	  }
+	  var result = [];
+	  for (var key in Object(object)) {
+	    if (hasOwnProperty.call(object, key) && key != 'constructor') {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+	
+	/**
+	 * A specialized version of `baseIsEqualDeep` for arrays with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Array} array The array to compare.
+	 * @param {Array} other The other array to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual`
+	 *  for more details.
+	 * @param {Object} stack Tracks traversed `array` and `other` objects.
+	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+	 */
+	function equalArrays(array, other, equalFunc, customizer, bitmask, stack) {
+	  var isPartial = bitmask & PARTIAL_COMPARE_FLAG,
+	      arrLength = array.length,
+	      othLength = other.length;
+	
+	  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+	    return false;
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(array);
+	  if (stacked && stack.get(other)) {
+	    return stacked == other;
+	  }
+	  var index = -1,
+	      result = true,
+	      seen = (bitmask & UNORDERED_COMPARE_FLAG) ? new SetCache : undefined;
+	
+	  stack.set(array, other);
+	  stack.set(other, array);
+	
+	  // Ignore non-index properties.
+	  while (++index < arrLength) {
+	    var arrValue = array[index],
+	        othValue = other[index];
+	
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, arrValue, index, other, array, stack)
+	        : customizer(arrValue, othValue, index, array, other, stack);
+	    }
+	    if (compared !== undefined) {
+	      if (compared) {
+	        continue;
+	      }
+	      result = false;
+	      break;
+	    }
+	    // Recursively compare arrays (susceptible to call stack limits).
+	    if (seen) {
+	      if (!arraySome(other, function(othValue, othIndex) {
+	            if (!seen.has(othIndex) &&
+	                (arrValue === othValue || equalFunc(arrValue, othValue, customizer, bitmask, stack))) {
+	              return seen.add(othIndex);
+	            }
+	          })) {
+	        result = false;
+	        break;
+	      }
+	    } else if (!(
+	          arrValue === othValue ||
+	            equalFunc(arrValue, othValue, customizer, bitmask, stack)
+	        )) {
+	      result = false;
+	      break;
+	    }
+	  }
+	  stack['delete'](array);
+	  stack['delete'](other);
+	  return result;
+	}
+	
+	/**
+	 * A specialized version of `baseIsEqualDeep` for comparing objects of
+	 * the same `toStringTag`.
+	 *
+	 * **Note:** This function only supports comparing values with tags of
+	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {string} tag The `toStringTag` of the objects to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual`
+	 *  for more details.
+	 * @param {Object} stack Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalByTag(object, other, tag, equalFunc, customizer, bitmask, stack) {
+	  switch (tag) {
+	    case dataViewTag:
+	      if ((object.byteLength != other.byteLength) ||
+	          (object.byteOffset != other.byteOffset)) {
+	        return false;
+	      }
+	      object = object.buffer;
+	      other = other.buffer;
+	
+	    case arrayBufferTag:
+	      if ((object.byteLength != other.byteLength) ||
+	          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+	        return false;
+	      }
+	      return true;
+	
+	    case boolTag:
+	    case dateTag:
+	    case numberTag:
+	      // Coerce booleans to `1` or `0` and dates to milliseconds.
+	      // Invalid dates are coerced to `NaN`.
+	      return eq(+object, +other);
+	
+	    case errorTag:
+	      return object.name == other.name && object.message == other.message;
+	
+	    case regexpTag:
+	    case stringTag:
+	      // Coerce regexes to strings and treat strings, primitives and objects,
+	      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+	      // for more details.
+	      return object == (other + '');
+	
+	    case mapTag:
+	      var convert = mapToArray;
+	
+	    case setTag:
+	      var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
+	      convert || (convert = setToArray);
+	
+	      if (object.size != other.size && !isPartial) {
+	        return false;
+	      }
+	      // Assume cyclic values are equal.
+	      var stacked = stack.get(object);
+	      if (stacked) {
+	        return stacked == other;
+	      }
+	      bitmask |= UNORDERED_COMPARE_FLAG;
+	
+	      // Recursively compare objects (susceptible to call stack limits).
+	      stack.set(object, other);
+	      var result = equalArrays(convert(object), convert(other), equalFunc, customizer, bitmask, stack);
+	      stack['delete'](object);
+	      return result;
+	
+	    case symbolTag:
+	      if (symbolValueOf) {
+	        return symbolValueOf.call(object) == symbolValueOf.call(other);
+	      }
+	  }
+	  return false;
+	}
+	
+	/**
+	 * A specialized version of `baseIsEqualDeep` for objects with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual`
+	 *  for more details.
+	 * @param {Object} stack Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalObjects(object, other, equalFunc, customizer, bitmask, stack) {
+	  var isPartial = bitmask & PARTIAL_COMPARE_FLAG,
+	      objProps = keys(object),
+	      objLength = objProps.length,
+	      othProps = keys(other),
+	      othLength = othProps.length;
+	
+	  if (objLength != othLength && !isPartial) {
+	    return false;
+	  }
+	  var index = objLength;
+	  while (index--) {
+	    var key = objProps[index];
+	    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
+	      return false;
+	    }
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(object);
+	  if (stacked && stack.get(other)) {
+	    return stacked == other;
+	  }
+	  var result = true;
+	  stack.set(object, other);
+	  stack.set(other, object);
+	
+	  var skipCtor = isPartial;
+	  while (++index < objLength) {
+	    key = objProps[index];
+	    var objValue = object[key],
+	        othValue = other[key];
+	
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, objValue, key, other, object, stack)
+	        : customizer(objValue, othValue, key, object, other, stack);
+	    }
+	    // Recursively compare objects (susceptible to call stack limits).
+	    if (!(compared === undefined
+	          ? (objValue === othValue || equalFunc(objValue, othValue, customizer, bitmask, stack))
+	          : compared
+	        )) {
+	      result = false;
+	      break;
+	    }
+	    skipCtor || (skipCtor = key == 'constructor');
+	  }
+	  if (result && !skipCtor) {
+	    var objCtor = object.constructor,
+	        othCtor = other.constructor;
+	
+	    // Non `Object` object instances with different constructors are not equal.
+	    if (objCtor != othCtor &&
+	        ('constructor' in object && 'constructor' in other) &&
+	        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+	          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+	      result = false;
+	    }
+	  }
+	  stack['delete'](object);
+	  stack['delete'](other);
+	  return result;
+	}
+	
+	/**
+	 * Gets the data for `map`.
+	 *
+	 * @private
+	 * @param {Object} map The map to query.
+	 * @param {string} key The reference key.
+	 * @returns {*} Returns the map data.
+	 */
+	function getMapData(map, key) {
+	  var data = map.__data__;
+	  return isKeyable(key)
+	    ? data[typeof key == 'string' ? 'string' : 'hash']
+	    : data.map;
+	}
+	
+	/**
+	 * Gets the native function at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {string} key The key of the method to get.
+	 * @returns {*} Returns the function if it's native, else `undefined`.
+	 */
+	function getNative(object, key) {
+	  var value = getValue(object, key);
+	  return baseIsNative(value) ? value : undefined;
+	}
+	
+	/**
+	 * Gets the `toStringTag` of `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	var getTag = baseGetTag;
+	
+	// Fallback for data views, maps, sets, and weak maps in IE 11,
+	// for data views in Edge < 14, and promises in Node.js.
+	if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
+	    (Map && getTag(new Map) != mapTag) ||
+	    (Promise && getTag(Promise.resolve()) != promiseTag) ||
+	    (Set && getTag(new Set) != setTag) ||
+	    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
+	  getTag = function(value) {
+	    var result = objectToString.call(value),
+	        Ctor = result == objectTag ? value.constructor : undefined,
+	        ctorString = Ctor ? toSource(Ctor) : undefined;
+	
+	    if (ctorString) {
+	      switch (ctorString) {
+	        case dataViewCtorString: return dataViewTag;
+	        case mapCtorString: return mapTag;
+	        case promiseCtorString: return promiseTag;
+	        case setCtorString: return setTag;
+	        case weakMapCtorString: return weakMapTag;
+	      }
+	    }
+	    return result;
+	  };
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return !!length &&
+	    (typeof value == 'number' || reIsUint.test(value)) &&
+	    (value > -1 && value % 1 == 0 && value < length);
+	}
+	
+	/**
+	 * Checks if `value` is suitable for use as unique object key.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+	 */
+	function isKeyable(value) {
+	  var type = typeof value;
+	  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+	    ? (value !== '__proto__')
+	    : (value === null);
+	}
+	
+	/**
+	 * Checks if `func` has its source masked.
+	 *
+	 * @private
+	 * @param {Function} func The function to check.
+	 * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+	 */
+	function isMasked(func) {
+	  return !!maskSrcKey && (maskSrcKey in func);
+	}
+	
+	/**
+	 * Checks if `value` is likely a prototype object.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+	 */
+	function isPrototype(value) {
+	  var Ctor = value && value.constructor,
+	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+	
+	  return value === proto;
+	}
+	
+	/**
+	 * Converts `func` to its source code.
+	 *
+	 * @private
+	 * @param {Function} func The function to process.
+	 * @returns {string} Returns the source code.
+	 */
+	function toSource(func) {
+	  if (func != null) {
+	    try {
+	      return funcToString.call(func);
+	    } catch (e) {}
+	    try {
+	      return (func + '');
+	    } catch (e) {}
+	  }
+	  return '';
+	}
+	
+	/**
+	 * Performs a
+	 * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	 * comparison between two values to determine if they are equivalent.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 * var other = { 'a': 1 };
+	 *
+	 * _.eq(object, object);
+	 * // => true
+	 *
+	 * _.eq(object, other);
+	 * // => false
+	 *
+	 * _.eq('a', 'a');
+	 * // => true
+	 *
+	 * _.eq('a', Object('a'));
+	 * // => false
+	 *
+	 * _.eq(NaN, NaN);
+	 * // => true
+	 */
+	function eq(value, other) {
+	  return value === other || (value !== value && other !== other);
+	}
+	
+	/**
+	 * Checks if `value` is likely an `arguments` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isArguments(function() { return arguments; }());
+	 * // => true
+	 *
+	 * _.isArguments([1, 2, 3]);
+	 * // => false
+	 */
+	function isArguments(value) {
+	  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
+	  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
+	    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
+	}
+	
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(document.body.children);
+	 * // => false
+	 *
+	 * _.isArray('abc');
+	 * // => false
+	 *
+	 * _.isArray(_.noop);
+	 * // => false
+	 */
+	var isArray = Array.isArray;
+	
+	/**
+	 * Checks if `value` is array-like. A value is considered array-like if it's
+	 * not a function and has a `value.length` that's an integer greater than or
+	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLike(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLike('abc');
+	 * // => true
+	 *
+	 * _.isArrayLike(_.noop);
+	 * // => false
+	 */
+	function isArrayLike(value) {
+	  return value != null && isLength(value.length) && !isFunction(value);
+	}
+	
+	/**
+	 * This method is like `_.isArrayLike` except that it also checks if `value`
+	 * is an object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array-like object,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isArrayLikeObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLikeObject(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLikeObject('abc');
+	 * // => false
+	 *
+	 * _.isArrayLikeObject(_.noop);
+	 * // => false
+	 */
+	function isArrayLikeObject(value) {
+	  return isObjectLike(value) && isArrayLike(value);
+	}
+	
+	/**
+	 * Performs a deep comparison between two values to determine if they are
+	 * equivalent.
+	 *
+	 * **Note:** This method supports comparing arrays, array buffers, booleans,
+	 * date objects, error objects, maps, numbers, `Object` objects, regexes,
+	 * sets, strings, symbols, and typed arrays. `Object` objects are compared
+	 * by their own, not inherited, enumerable properties. Functions and DOM
+	 * nodes are **not** supported.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 * var other = { 'a': 1 };
+	 *
+	 * _.isEqual(object, other);
+	 * // => true
+	 *
+	 * object === other;
+	 * // => false
+	 */
+	function isEqual(value, other) {
+	  return baseIsEqual(value, other);
+	}
+	
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction(value) {
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in Safari 8-9 which returns 'object' for typed array and other constructors.
+	  var tag = isObject(value) ? objectToString.call(value) : '';
+	  return tag == funcTag || tag == genTag;
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This method is loosely based on
+	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 * @example
+	 *
+	 * _.isLength(3);
+	 * // => true
+	 *
+	 * _.isLength(Number.MIN_VALUE);
+	 * // => false
+	 *
+	 * _.isLength(Infinity);
+	 * // => false
+	 *
+	 * _.isLength('3');
+	 * // => false
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' &&
+	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+	
+	/**
+	 * Checks if `value` is the
+	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(_.noop);
+	 * // => true
+	 *
+	 * _.isObject(null);
+	 * // => false
+	 */
+	function isObject(value) {
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	/**
+	 * Checks if `value` is object-like. A value is object-like if it's not `null`
+	 * and has a `typeof` result of "object".
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 * @example
+	 *
+	 * _.isObjectLike({});
+	 * // => true
+	 *
+	 * _.isObjectLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObjectLike(_.noop);
+	 * // => false
+	 *
+	 * _.isObjectLike(null);
+	 * // => false
+	 */
+	function isObjectLike(value) {
+	  return !!value && typeof value == 'object';
+	}
+	
+	/**
+	 * Checks if `value` is classified as a typed array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 * @example
+	 *
+	 * _.isTypedArray(new Uint8Array);
+	 * // => true
+	 *
+	 * _.isTypedArray([]);
+	 * // => false
+	 */
+	var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+	
+	/**
+	 * Creates an array of the own enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects. See the
+	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+	 * for more details.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keys(new Foo);
+	 * // => ['a', 'b'] (iteration order is not guaranteed)
+	 *
+	 * _.keys('hi');
+	 * // => ['0', '1']
+	 */
+	function keys(object) {
+	  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+	}
+	
+	module.exports = isEqual;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(300)(module)))
+
+/***/ },
+/* 618 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = {
+	    // Higher level API, different shaped progress bars
+	    Line: __webpack_require__(619),
+	    Circle: __webpack_require__(624),
+	    SemiCircle: __webpack_require__(625),
+	
+	    // Lower level API to use any SVG path
+	    Path: __webpack_require__(621),
+	
+	    // Base-class for creating new custom shapes
+	    // to be in line with the API of built-in shapes
+	    // Undocumented.
+	    Shape: __webpack_require__(620),
+	
+	    // Internal utils, undocumented.
+	    utils: __webpack_require__(623)
+	};
+
+
+/***/ },
+/* 619 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Line shaped progress bar
+	
+	var Shape = __webpack_require__(620);
+	var utils = __webpack_require__(623);
+	
+	var Line = function Line(container, options) {
+	    this._pathTemplate = 'M 0,{center} L 100,{center}';
+	    Shape.apply(this, arguments);
+	};
+	
+	Line.prototype = new Shape();
+	Line.prototype.constructor = Line;
+	
+	Line.prototype._initializeSvg = function _initializeSvg(svg, opts) {
+	    svg.setAttribute('viewBox', '0 0 100 ' + opts.strokeWidth);
+	    svg.setAttribute('preserveAspectRatio', 'none');
+	};
+	
+	Line.prototype._pathString = function _pathString(opts) {
+	    return utils.render(this._pathTemplate, {
+	        center: opts.strokeWidth / 2
+	    });
+	};
+	
+	Line.prototype._trailString = function _trailString(opts) {
+	    return this._pathString(opts);
+	};
+	
+	module.exports = Line;
+
+
+/***/ },
+/* 620 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Base object for different progress bar shapes
+	
+	var Path = __webpack_require__(621);
+	var utils = __webpack_require__(623);
+	
+	var DESTROYED_ERROR = 'Object is destroyed';
+	
+	var Shape = function Shape(container, opts) {
+	    // Throw a better error if progress bars are not initialized with `new`
+	    // keyword
+	    if (!(this instanceof Shape)) {
+	        throw new Error('Constructor was called without new keyword');
+	    }
+	
+	    // Prevent calling constructor without parameters so inheritance
+	    // works correctly. To understand, this is how Shape is inherited:
+	    //
+	    //   Line.prototype = new Shape();
+	    //
+	    // We just want to set the prototype for Line.
+	    if (arguments.length === 0) {
+	        return;
+	    }
+	
+	    // Default parameters for progress bar creation
+	    this._opts = utils.extend({
+	        color: '#555',
+	        strokeWidth: 1.0,
+	        trailColor: null,
+	        trailWidth: null,
+	        fill: null,
+	        text: {
+	            style: {
+	                color: null,
+	                position: 'absolute',
+	                left: '50%',
+	                top: '50%',
+	                padding: 0,
+	                margin: 0,
+	                transform: {
+	                    prefix: true,
+	                    value: 'translate(-50%, -50%)'
+	                }
+	            },
+	            autoStyleContainer: true,
+	            alignToBottom: true,
+	            value: null,
+	            className: 'progressbar-text'
+	        },
+	        svgStyle: {
+	            display: 'block',
+	            width: '100%'
+	        },
+	        warnings: false
+	    }, opts, true);  // Use recursive extend
+	
+	    // If user specifies e.g. svgStyle or text style, the whole object
+	    // should replace the defaults to make working with styles easier
+	    if (utils.isObject(opts) && opts.svgStyle !== undefined) {
+	        this._opts.svgStyle = opts.svgStyle;
+	    }
+	    if (utils.isObject(opts) && utils.isObject(opts.text) && opts.text.style !== undefined) {
+	        this._opts.text.style = opts.text.style;
+	    }
+	
+	    var svgView = this._createSvgView(this._opts);
+	
+	    var element;
+	    if (utils.isString(container)) {
+	        element = document.querySelector(container);
+	    } else {
+	        element = container;
+	    }
+	
+	    if (!element) {
+	        throw new Error('Container does not exist: ' + container);
+	    }
+	
+	    this._container = element;
+	    this._container.appendChild(svgView.svg);
+	    if (this._opts.warnings) {
+	        this._warnContainerAspectRatio(this._container);
+	    }
+	
+	    if (this._opts.svgStyle) {
+	        utils.setStyles(svgView.svg, this._opts.svgStyle);
+	    }
+	
+	    // Expose public attributes before Path initialization
+	    this.svg = svgView.svg;
+	    this.path = svgView.path;
+	    this.trail = svgView.trail;
+	    this.text = null;
+	
+	    var newOpts = utils.extend({
+	        attachment: undefined,
+	        shape: this
+	    }, this._opts);
+	    this._progressPath = new Path(svgView.path, newOpts);
+	
+	    if (utils.isObject(this._opts.text) && this._opts.text.value !== null) {
+	        this.setText(this._opts.text.value);
+	    }
+	};
+	
+	Shape.prototype.animate = function animate(progress, opts, cb) {
+	    if (this._progressPath === null) {
+	        throw new Error(DESTROYED_ERROR);
+	    }
+	
+	    this._progressPath.animate(progress, opts, cb);
+	};
+	
+	Shape.prototype.stop = function stop() {
+	    if (this._progressPath === null) {
+	        throw new Error(DESTROYED_ERROR);
+	    }
+	
+	    // Don't crash if stop is called inside step function
+	    if (this._progressPath === undefined) {
+	        return;
+	    }
+	
+	    this._progressPath.stop();
+	};
+	
+	Shape.prototype.destroy = function destroy() {
+	    if (this._progressPath === null) {
+	        throw new Error(DESTROYED_ERROR);
+	    }
+	
+	    this.stop();
+	    this.svg.parentNode.removeChild(this.svg);
+	    this.svg = null;
+	    this.path = null;
+	    this.trail = null;
+	    this._progressPath = null;
+	
+	    if (this.text !== null) {
+	        this.text.parentNode.removeChild(this.text);
+	        this.text = null;
+	    }
+	};
+	
+	Shape.prototype.set = function set(progress) {
+	    if (this._progressPath === null) {
+	        throw new Error(DESTROYED_ERROR);
+	    }
+	
+	    this._progressPath.set(progress);
+	};
+	
+	Shape.prototype.value = function value() {
+	    if (this._progressPath === null) {
+	        throw new Error(DESTROYED_ERROR);
+	    }
+	
+	    if (this._progressPath === undefined) {
+	        return 0;
+	    }
+	
+	    return this._progressPath.value();
+	};
+	
+	Shape.prototype.setText = function setText(newText) {
+	    if (this._progressPath === null) {
+	        throw new Error(DESTROYED_ERROR);
+	    }
+	
+	    if (this.text === null) {
+	        // Create new text node
+	        this.text = this._createTextContainer(this._opts, this._container);
+	        this._container.appendChild(this.text);
+	    }
+	
+	    // Remove previous text and add new
+	    if (utils.isObject(newText)) {
+	        utils.removeChildren(this.text);
+	        this.text.appendChild(newText);
+	    } else {
+	        this.text.innerHTML = newText;
+	    }
+	};
+	
+	Shape.prototype._createSvgView = function _createSvgView(opts) {
+	    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	    this._initializeSvg(svg, opts);
+	
+	    var trailPath = null;
+	    // Each option listed in the if condition are 'triggers' for creating
+	    // the trail path
+	    if (opts.trailColor || opts.trailWidth) {
+	        trailPath = this._createTrail(opts);
+	        svg.appendChild(trailPath);
+	    }
+	
+	    var path = this._createPath(opts);
+	    svg.appendChild(path);
+	
+	    return {
+	        svg: svg,
+	        path: path,
+	        trail: trailPath
+	    };
+	};
+	
+	Shape.prototype._initializeSvg = function _initializeSvg(svg, opts) {
+	    svg.setAttribute('viewBox', '0 0 100 100');
+	};
+	
+	Shape.prototype._createPath = function _createPath(opts) {
+	    var pathString = this._pathString(opts);
+	    return this._createPathElement(pathString, opts);
+	};
+	
+	Shape.prototype._createTrail = function _createTrail(opts) {
+	    // Create path string with original passed options
+	    var pathString = this._trailString(opts);
+	
+	    // Prevent modifying original
+	    var newOpts = utils.extend({}, opts);
+	
+	    // Defaults for parameters which modify trail path
+	    if (!newOpts.trailColor) {
+	        newOpts.trailColor = '#eee';
+	    }
+	    if (!newOpts.trailWidth) {
+	        newOpts.trailWidth = newOpts.strokeWidth;
+	    }
+	
+	    newOpts.color = newOpts.trailColor;
+	    newOpts.strokeWidth = newOpts.trailWidth;
+	
+	    // When trail path is set, fill must be set for it instead of the
+	    // actual path to prevent trail stroke from clipping
+	    newOpts.fill = null;
+	
+	    return this._createPathElement(pathString, newOpts);
+	};
+	
+	Shape.prototype._createPathElement = function _createPathElement(pathString, opts) {
+	    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+	    path.setAttribute('d', pathString);
+	    path.setAttribute('stroke', opts.color);
+	    path.setAttribute('stroke-width', opts.strokeWidth);
+	
+	    if (opts.fill) {
+	        path.setAttribute('fill', opts.fill);
+	    } else {
+	        path.setAttribute('fill-opacity', '0');
+	    }
+	
+	    return path;
+	};
+	
+	Shape.prototype._createTextContainer = function _createTextContainer(opts, container) {
+	    var textContainer = document.createElement('div');
+	    textContainer.className = opts.text.className;
+	
+	    var textStyle = opts.text.style;
+	    if (textStyle) {
+	        if (opts.text.autoStyleContainer) {
+	            container.style.position = 'relative';
+	        }
+	
+	        utils.setStyles(textContainer, textStyle);
+	        // Default text color to progress bar's color
+	        if (!textStyle.color) {
+	            textContainer.style.color = opts.color;
+	        }
+	    }
+	
+	    this._initializeTextContainer(opts, container, textContainer);
+	    return textContainer;
+	};
+	
+	// Give custom shapes possibility to modify text element
+	Shape.prototype._initializeTextContainer = function(opts, container, element) {
+	    // By default, no-op
+	    // Custom shapes should respect API options, such as text.style
+	};
+	
+	Shape.prototype._pathString = function _pathString(opts) {
+	    throw new Error('Override this function for each progress bar');
+	};
+	
+	Shape.prototype._trailString = function _trailString(opts) {
+	    throw new Error('Override this function for each progress bar');
+	};
+	
+	Shape.prototype._warnContainerAspectRatio = function _warnContainerAspectRatio(container) {
+	    if (!this.containerAspectRatio) {
+	        return;
+	    }
+	
+	    var computedStyle = window.getComputedStyle(container, null);
+	    var width = parseFloat(computedStyle.getPropertyValue('width'), 10);
+	    var height = parseFloat(computedStyle.getPropertyValue('height'), 10);
+	    if (!utils.floatEquals(this.containerAspectRatio, width / height)) {
+	        console.warn(
+	            'Incorrect aspect ratio of container',
+	            '#' + container.id,
+	            'detected:',
+	            computedStyle.getPropertyValue('width') + '(width)',
+	            '/',
+	            computedStyle.getPropertyValue('height') + '(height)',
+	            '=',
+	            width / height
+	        );
+	
+	        console.warn(
+	            'Aspect ratio of should be',
+	            this.containerAspectRatio
+	        );
+	    }
+	};
+	
+	module.exports = Shape;
+
+
+/***/ },
+/* 621 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Lower level API to animate any kind of svg path
+	
+	var Tweenable = __webpack_require__(622);
+	var utils = __webpack_require__(623);
+	
+	var EASING_ALIASES = {
+	    easeIn: 'easeInCubic',
+	    easeOut: 'easeOutCubic',
+	    easeInOut: 'easeInOutCubic'
+	};
+	
+	var Path = function Path(path, opts) {
+	    // Throw a better error if not initialized with `new` keyword
+	    if (!(this instanceof Path)) {
+	        throw new Error('Constructor was called without new keyword');
+	    }
+	
+	    // Default parameters for animation
+	    opts = utils.extend({
+	        duration: 800,
+	        easing: 'linear',
+	        from: {},
+	        to: {},
+	        step: function() {}
+	    }, opts);
+	
+	    var element;
+	    if (utils.isString(path)) {
+	        element = document.querySelector(path);
+	    } else {
+	        element = path;
+	    }
+	
+	    // Reveal .path as public attribute
+	    this.path = element;
+	    this._opts = opts;
+	    this._tweenable = null;
+	
+	    // Set up the starting positions
+	    var length = this.path.getTotalLength();
+	    this.path.style.strokeDasharray = length + ' ' + length;
+	    this.set(0);
+	};
+	
+	Path.prototype.value = function value() {
+	    var offset = this._getComputedDashOffset();
+	    var length = this.path.getTotalLength();
+	
+	    var progress = 1 - offset / length;
+	    // Round number to prevent returning very small number like 1e-30, which
+	    // is practically 0
+	    return parseFloat(progress.toFixed(6), 10);
+	};
+	
+	Path.prototype.set = function set(progress) {
+	    this.stop();
+	
+	    this.path.style.strokeDashoffset = this._progressToOffset(progress);
+	
+	    var step = this._opts.step;
+	    if (utils.isFunction(step)) {
+	        var easing = this._easing(this._opts.easing);
+	        var values = this._calculateTo(progress, easing);
+	        var reference = this._opts.shape || this;
+	        step(values, reference, this._opts.attachment);
+	    }
+	};
+	
+	Path.prototype.stop = function stop() {
+	    this._stopTween();
+	    this.path.style.strokeDashoffset = this._getComputedDashOffset();
+	};
+	
+	// Method introduced here:
+	// http://jakearchibald.com/2013/animated-line-drawing-svg/
+	Path.prototype.animate = function animate(progress, opts, cb) {
+	    opts = opts || {};
+	
+	    if (utils.isFunction(opts)) {
+	        cb = opts;
+	        opts = {};
+	    }
+	
+	    var passedOpts = utils.extend({}, opts);
+	
+	    // Copy default opts to new object so defaults are not modified
+	    var defaultOpts = utils.extend({}, this._opts);
+	    opts = utils.extend(defaultOpts, opts);
+	
+	    var shiftyEasing = this._easing(opts.easing);
+	    var values = this._resolveFromAndTo(progress, shiftyEasing, passedOpts);
+	
+	    this.stop();
+	
+	    // Trigger a layout so styles are calculated & the browser
+	    // picks up the starting position before animating
+	    this.path.getBoundingClientRect();
+	
+	    var offset = this._getComputedDashOffset();
+	    var newOffset = this._progressToOffset(progress);
+	
+	    var self = this;
+	    this._tweenable = new Tweenable();
+	    this._tweenable.tween({
+	        from: utils.extend({ offset: offset }, values.from),
+	        to: utils.extend({ offset: newOffset }, values.to),
+	        duration: opts.duration,
+	        easing: shiftyEasing,
+	        step: function(state) {
+	            self.path.style.strokeDashoffset = state.offset;
+	            var reference = opts.shape || self;
+	            opts.step(state, reference, opts.attachment);
+	        },
+	        finish: function(state) {
+	            if (utils.isFunction(cb)) {
+	                cb();
+	            }
+	        }
+	    });
+	};
+	
+	Path.prototype._getComputedDashOffset = function _getComputedDashOffset() {
+	    var computedStyle = window.getComputedStyle(this.path, null);
+	    return parseFloat(computedStyle.getPropertyValue('stroke-dashoffset'), 10);
+	};
+	
+	Path.prototype._progressToOffset = function _progressToOffset(progress) {
+	    var length = this.path.getTotalLength();
+	    return length - progress * length;
+	};
+	
+	// Resolves from and to values for animation.
+	Path.prototype._resolveFromAndTo = function _resolveFromAndTo(progress, easing, opts) {
+	    if (opts.from && opts.to) {
+	        return {
+	            from: opts.from,
+	            to: opts.to
+	        };
+	    }
+	
+	    return {
+	        from: this._calculateFrom(easing),
+	        to: this._calculateTo(progress, easing)
+	    };
+	};
+	
+	// Calculate `from` values from options passed at initialization
+	Path.prototype._calculateFrom = function _calculateFrom(easing) {
+	    return Tweenable.interpolate(this._opts.from, this._opts.to, this.value(), easing);
+	};
+	
+	// Calculate `to` values from options passed at initialization
+	Path.prototype._calculateTo = function _calculateTo(progress, easing) {
+	    return Tweenable.interpolate(this._opts.from, this._opts.to, progress, easing);
+	};
+	
+	Path.prototype._stopTween = function _stopTween() {
+	    if (this._tweenable !== null) {
+	        this._tweenable.stop();
+	        this._tweenable = null;
+	    }
+	};
+	
+	Path.prototype._easing = function _easing(easing) {
+	    if (EASING_ALIASES.hasOwnProperty(easing)) {
+	        return EASING_ALIASES[easing];
+	    }
+	
+	    return easing;
+	};
+	
+	module.exports = Path;
+
+
+/***/ },
+/* 622 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* shifty - v1.5.3 - 2016-10-03 - http://jeremyckahn.github.io/shifty */
+	;(function () {
+	  var root = this || Function('return this')();
+	
+	/**
+	 * Shifty Core
+	 * By Jeremy Kahn - jeremyckahn@gmail.com
+	 */
+	
+	var Tweenable = (function () {
+	
+	  'use strict';
+	
+	  // Aliases that get defined later in this function
+	  var formula;
+	
+	  // CONSTANTS
+	  var DEFAULT_SCHEDULE_FUNCTION;
+	  var DEFAULT_EASING = 'linear';
+	  var DEFAULT_DURATION = 500;
+	  var UPDATE_TIME = 1000 / 60;
+	
+	  var _now = Date.now
+	       ? Date.now
+	       : function () {return +new Date();};
+	
+	  var now = typeof SHIFTY_DEBUG_NOW !== 'undefined' ? SHIFTY_DEBUG_NOW : _now;
+	
+	  if (typeof window !== 'undefined') {
+	    // requestAnimationFrame() shim by Paul Irish (modified for Shifty)
+	    // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+	    DEFAULT_SCHEDULE_FUNCTION = window.requestAnimationFrame
+	       || window.webkitRequestAnimationFrame
+	       || window.oRequestAnimationFrame
+	       || window.msRequestAnimationFrame
+	       || (window.mozCancelRequestAnimationFrame
+	       && window.mozRequestAnimationFrame)
+	       || setTimeout;
+	  } else {
+	    DEFAULT_SCHEDULE_FUNCTION = setTimeout;
+	  }
+	
+	  function noop () {
+	    // NOOP!
+	  }
+	
+	  /**
+	   * Handy shortcut for doing a for-in loop. This is not a "normal" each
+	   * function, it is optimized for Shifty.  The iterator function only receives
+	   * the property name, not the value.
+	   * @param {Object} obj
+	   * @param {Function(string)} fn
+	   * @private
+	   */
+	  function each (obj, fn) {
+	    var key;
+	    for (key in obj) {
+	      if (Object.hasOwnProperty.call(obj, key)) {
+	        fn(key);
+	      }
+	    }
+	  }
+	
+	  /**
+	   * Perform a shallow copy of Object properties.
+	   * @param {Object} targetObject The object to copy into
+	   * @param {Object} srcObject The object to copy from
+	   * @return {Object} A reference to the augmented `targetObj` Object
+	   * @private
+	   */
+	  function shallowCopy (targetObj, srcObj) {
+	    each(srcObj, function (prop) {
+	      targetObj[prop] = srcObj[prop];
+	    });
+	
+	    return targetObj;
+	  }
+	
+	  /**
+	   * Copies each property from src onto target, but only if the property to
+	   * copy to target is undefined.
+	   * @param {Object} target Missing properties in this Object are filled in
+	   * @param {Object} src
+	   * @private
+	   */
+	  function defaults (target, src) {
+	    each(src, function (prop) {
+	      if (typeof target[prop] === 'undefined') {
+	        target[prop] = src[prop];
+	      }
+	    });
+	  }
+	
+	  /**
+	   * Calculates the interpolated tween values of an Object for a given
+	   * timestamp.
+	   * @param {Number} forPosition The position to compute the state for.
+	   * @param {Object} currentState Current state properties.
+	   * @param {Object} originalState: The original state properties the Object is
+	   * tweening from.
+	   * @param {Object} targetState: The destination state properties the Object
+	   * is tweening to.
+	   * @param {number} duration: The length of the tween in milliseconds.
+	   * @param {number} timestamp: The UNIX epoch time at which the tween began.
+	   * @param {Object} easing: This Object's keys must correspond to the keys in
+	   * targetState.
+	   * @private
+	   */
+	  function tweenProps (forPosition, currentState, originalState, targetState,
+	    duration, timestamp, easing) {
+	    var normalizedPosition =
+	        forPosition < timestamp ? 0 : (forPosition - timestamp) / duration;
+	
+	
+	    var prop;
+	    var easingObjectProp;
+	    var easingFn;
+	    for (prop in currentState) {
+	      if (currentState.hasOwnProperty(prop)) {
+	        easingObjectProp = easing[prop];
+	        easingFn = typeof easingObjectProp === 'function'
+	          ? easingObjectProp
+	          : formula[easingObjectProp];
+	
+	        currentState[prop] = tweenProp(
+	          originalState[prop],
+	          targetState[prop],
+	          easingFn,
+	          normalizedPosition
+	        );
+	      }
+	    }
+	
+	    return currentState;
+	  }
+	
+	  /**
+	   * Tweens a single property.
+	   * @param {number} start The value that the tween started from.
+	   * @param {number} end The value that the tween should end at.
+	   * @param {Function} easingFunc The easing curve to apply to the tween.
+	   * @param {number} position The normalized position (between 0.0 and 1.0) to
+	   * calculate the midpoint of 'start' and 'end' against.
+	   * @return {number} The tweened value.
+	   * @private
+	   */
+	  function tweenProp (start, end, easingFunc, position) {
+	    return start + (end - start) * easingFunc(position);
+	  }
+	
+	  /**
+	   * Applies a filter to Tweenable instance.
+	   * @param {Tweenable} tweenable The `Tweenable` instance to call the filter
+	   * upon.
+	   * @param {String} filterName The name of the filter to apply.
+	   * @private
+	   */
+	  function applyFilter (tweenable, filterName) {
+	    var filters = Tweenable.prototype.filter;
+	    var args = tweenable._filterArgs;
+	
+	    each(filters, function (name) {
+	      if (typeof filters[name][filterName] !== 'undefined') {
+	        filters[name][filterName].apply(tweenable, args);
+	      }
+	    });
+	  }
+	
+	  var timeoutHandler_endTime;
+	  var timeoutHandler_currentTime;
+	  var timeoutHandler_isEnded;
+	  var timeoutHandler_offset;
+	  /**
+	   * Handles the update logic for one step of a tween.
+	   * @param {Tweenable} tweenable
+	   * @param {number} timestamp
+	   * @param {number} delay
+	   * @param {number} duration
+	   * @param {Object} currentState
+	   * @param {Object} originalState
+	   * @param {Object} targetState
+	   * @param {Object} easing
+	   * @param {Function(Object, *, number)} step
+	   * @param {Function(Function,number)}} schedule
+	   * @param {number=} opt_currentTimeOverride Needed for accurate timestamp in
+	   * Tweenable#seek.
+	   * @private
+	   */
+	  function timeoutHandler (tweenable, timestamp, delay, duration, currentState,
+	    originalState, targetState, easing, step, schedule,
+	    opt_currentTimeOverride) {
+	
+	    timeoutHandler_endTime = timestamp + delay + duration;
+	
+	    timeoutHandler_currentTime =
+	    Math.min(opt_currentTimeOverride || now(), timeoutHandler_endTime);
+	
+	    timeoutHandler_isEnded =
+	      timeoutHandler_currentTime >= timeoutHandler_endTime;
+	
+	    timeoutHandler_offset = duration - (
+	      timeoutHandler_endTime - timeoutHandler_currentTime);
+	
+	    if (tweenable.isPlaying()) {
+	      if (timeoutHandler_isEnded) {
+	        step(targetState, tweenable._attachment, timeoutHandler_offset);
+	        tweenable.stop(true);
+	      } else {
+	        tweenable._scheduleId =
+	          schedule(tweenable._timeoutHandler, UPDATE_TIME);
+	
+	        applyFilter(tweenable, 'beforeTween');
+	
+	        // If the animation has not yet reached the start point (e.g., there was
+	        // delay that has not yet completed), just interpolate the starting
+	        // position of the tween.
+	        if (timeoutHandler_currentTime < (timestamp + delay)) {
+	          tweenProps(1, currentState, originalState, targetState, 1, 1, easing);
+	        } else {
+	          tweenProps(timeoutHandler_currentTime, currentState, originalState,
+	            targetState, duration, timestamp + delay, easing);
+	        }
+	
+	        applyFilter(tweenable, 'afterTween');
+	
+	        step(currentState, tweenable._attachment, timeoutHandler_offset);
+	      }
+	    }
+	  }
+	
+	
+	  /**
+	   * Creates a usable easing Object from a string, a function or another easing
+	   * Object.  If `easing` is an Object, then this function clones it and fills
+	   * in the missing properties with `"linear"`.
+	   * @param {Object.<string|Function>} fromTweenParams
+	   * @param {Object|string|Function} easing
+	   * @return {Object.<string|Function>}
+	   * @private
+	   */
+	  function composeEasingObject (fromTweenParams, easing) {
+	    var composedEasing = {};
+	    var typeofEasing = typeof easing;
+	
+	    if (typeofEasing === 'string' || typeofEasing === 'function') {
+	      each(fromTweenParams, function (prop) {
+	        composedEasing[prop] = easing;
+	      });
+	    } else {
+	      each(fromTweenParams, function (prop) {
+	        if (!composedEasing[prop]) {
+	          composedEasing[prop] = easing[prop] || DEFAULT_EASING;
+	        }
+	      });
+	    }
+	
+	    return composedEasing;
+	  }
+	
+	  /**
+	   * Tweenable constructor.
+	   * @class Tweenable
+	   * @param {Object=} opt_initialState The values that the initial tween should
+	   * start at if a `from` object is not provided to `{{#crossLink
+	   * "Tweenable/tween:method"}}{{/crossLink}}` or `{{#crossLink
+	   * "Tweenable/setConfig:method"}}{{/crossLink}}`.
+	   * @param {Object=} opt_config Configuration object to be passed to
+	   * `{{#crossLink "Tweenable/setConfig:method"}}{{/crossLink}}`.
+	   * @module Tweenable
+	   * @constructor
+	   */
+	  function Tweenable (opt_initialState, opt_config) {
+	    this._currentState = opt_initialState || {};
+	    this._configured = false;
+	    this._scheduleFunction = DEFAULT_SCHEDULE_FUNCTION;
+	
+	    // To prevent unnecessary calls to setConfig do not set default
+	    // configuration here.  Only set default configuration immediately before
+	    // tweening if none has been set.
+	    if (typeof opt_config !== 'undefined') {
+	      this.setConfig(opt_config);
+	    }
+	  }
+	
+	  /**
+	   * Configure and start a tween.
+	   * @method tween
+	   * @param {Object=} opt_config Configuration object to be passed to
+	   * `{{#crossLink "Tweenable/setConfig:method"}}{{/crossLink}}`.
+	   * @chainable
+	   */
+	  Tweenable.prototype.tween = function (opt_config) {
+	    if (this._isTweening) {
+	      return this;
+	    }
+	
+	    // Only set default config if no configuration has been set previously and
+	    // none is provided now.
+	    if (opt_config !== undefined || !this._configured) {
+	      this.setConfig(opt_config);
+	    }
+	
+	    this._timestamp = now();
+	    this._start(this.get(), this._attachment);
+	    return this.resume();
+	  };
+	
+	  /**
+	   * Configure a tween that will start at some point in the future.
+	   *
+	   * @method setConfig
+	   * @param {Object} config The following values are valid:
+	   * - __from__ (_Object=_): Starting position.  If omitted, `{{#crossLink
+	   *   "Tweenable/get:method"}}get(){{/crossLink}}` is used.
+	   * - __to__ (_Object=_): Ending position.
+	   * - __duration__ (_number=_): How many milliseconds to animate for.
+	   * - __delay__ (_delay=_): How many milliseconds to wait before starting the
+	   *   tween.
+	   * - __start__ (_Function(Object, *)_): Function to execute when the tween
+	   *   begins.  Receives the state of the tween as the first parameter and
+	   *   `attachment` as the second parameter.
+	   * - __step__ (_Function(Object, *, number)_): Function to execute on every
+	   *   tick.  Receives `{{#crossLink
+	   *   "Tweenable/get:method"}}get(){{/crossLink}}` as the first parameter,
+	   *   `attachment` as the second parameter, and the time elapsed since the
+	   *   start of the tween as the third. This function is not called on the
+	   *   final step of the animation, but `finish` is.
+	   * - __finish__ (_Function(Object, *)_): Function to execute upon tween
+	   *   completion.  Receives the state of the tween as the first parameter and
+	   *   `attachment` as the second parameter.
+	   * - __easing__ (_Object.<string|Function>|string|Function=_): Easing curve
+	   *   name(s) or function(s) to use for the tween.
+	   * - __attachment__ (_*_): Cached value that is passed to the
+	   *   `step`/`start`/`finish` methods.
+	   * @chainable
+	   */
+	  Tweenable.prototype.setConfig = function (config) {
+	    config = config || {};
+	    this._configured = true;
+	
+	    // Attach something to this Tweenable instance (e.g.: a DOM element, an
+	    // object, a string, etc.);
+	    this._attachment = config.attachment;
+	
+	    // Init the internal state
+	    this._pausedAtTime = null;
+	    this._scheduleId = null;
+	    this._delay = config.delay || 0;
+	    this._start = config.start || noop;
+	    this._step = config.step || noop;
+	    this._finish = config.finish || noop;
+	    this._duration = config.duration || DEFAULT_DURATION;
+	    this._currentState = shallowCopy({}, config.from) || this.get();
+	    this._originalState = this.get();
+	    this._targetState = shallowCopy({}, config.to) || this.get();
+	
+	    var self = this;
+	    this._timeoutHandler = function () {
+	      timeoutHandler(self,
+	        self._timestamp,
+	        self._delay,
+	        self._duration,
+	        self._currentState,
+	        self._originalState,
+	        self._targetState,
+	        self._easing,
+	        self._step,
+	        self._scheduleFunction
+	      );
+	    };
+	
+	    // Aliases used below
+	    var currentState = this._currentState;
+	    var targetState = this._targetState;
+	
+	    // Ensure that there is always something to tween to.
+	    defaults(targetState, currentState);
+	
+	    this._easing = composeEasingObject(
+	      currentState, config.easing || DEFAULT_EASING);
+	
+	    this._filterArgs =
+	      [currentState, this._originalState, targetState, this._easing];
+	
+	    applyFilter(this, 'tweenCreated');
+	    return this;
+	  };
+	
+	  /**
+	   * @method get
+	   * @return {Object} The current state.
+	   */
+	  Tweenable.prototype.get = function () {
+	    return shallowCopy({}, this._currentState);
+	  };
+	
+	  /**
+	   * @method set
+	   * @param {Object} state The current state.
+	   */
+	  Tweenable.prototype.set = function (state) {
+	    this._currentState = state;
+	  };
+	
+	  /**
+	   * Pause a tween.  Paused tweens can be resumed from the point at which they
+	   * were paused.  This is different from `{{#crossLink
+	   * "Tweenable/stop:method"}}{{/crossLink}}`, as that method
+	   * causes a tween to start over when it is resumed.
+	   * @method pause
+	   * @chainable
+	   */
+	  Tweenable.prototype.pause = function () {
+	    this._pausedAtTime = now();
+	    this._isPaused = true;
+	    return this;
+	  };
+	
+	  /**
+	   * Resume a paused tween.
+	   * @method resume
+	   * @chainable
+	   */
+	  Tweenable.prototype.resume = function () {
+	    if (this._isPaused) {
+	      this._timestamp += now() - this._pausedAtTime;
+	    }
+	
+	    this._isPaused = false;
+	    this._isTweening = true;
+	
+	    this._timeoutHandler();
+	
+	    return this;
+	  };
+	
+	  /**
+	   * Move the state of the animation to a specific point in the tween's
+	   * timeline.  If the animation is not running, this will cause the `step`
+	   * handlers to be called.
+	   * @method seek
+	   * @param {millisecond} millisecond The millisecond of the animation to seek
+	   * to.  This must not be less than `0`.
+	   * @chainable
+	   */
+	  Tweenable.prototype.seek = function (millisecond) {
+	    millisecond = Math.max(millisecond, 0);
+	    var currentTime = now();
+	
+	    if ((this._timestamp + millisecond) === 0) {
+	      return this;
+	    }
+	
+	    this._timestamp = currentTime - millisecond;
+	
+	    if (!this.isPlaying()) {
+	      this._isTweening = true;
+	      this._isPaused = false;
+	
+	      // If the animation is not running, call timeoutHandler to make sure that
+	      // any step handlers are run.
+	      timeoutHandler(this,
+	        this._timestamp,
+	        this._delay,
+	        this._duration,
+	        this._currentState,
+	        this._originalState,
+	        this._targetState,
+	        this._easing,
+	        this._step,
+	        this._scheduleFunction,
+	        currentTime
+	      );
+	
+	      this.pause();
+	    }
+	
+	    return this;
+	  };
+	
+	  /**
+	   * Stops and cancels a tween.
+	   * @param {boolean=} gotoEnd If `false` or omitted, the tween just stops at
+	   * its current state, and the `finish` handler is not invoked.  If `true`,
+	   * the tweened object's values are instantly set to the target values, and
+	   * `finish` is invoked.
+	   * @method stop
+	   * @chainable
+	   */
+	  Tweenable.prototype.stop = function (gotoEnd) {
+	    this._isTweening = false;
+	    this._isPaused = false;
+	    this._timeoutHandler = noop;
+	
+	    (root.cancelAnimationFrame            ||
+	    root.webkitCancelAnimationFrame     ||
+	    root.oCancelAnimationFrame          ||
+	    root.msCancelAnimationFrame         ||
+	    root.mozCancelRequestAnimationFrame ||
+	    root.clearTimeout)(this._scheduleId);
+	
+	    if (gotoEnd) {
+	      applyFilter(this, 'beforeTween');
+	      tweenProps(
+	        1,
+	        this._currentState,
+	        this._originalState,
+	        this._targetState,
+	        1,
+	        0,
+	        this._easing
+	      );
+	      applyFilter(this, 'afterTween');
+	      applyFilter(this, 'afterTweenEnd');
+	      this._finish.call(this, this._currentState, this._attachment);
+	    }
+	
+	    return this;
+	  };
+	
+	  /**
+	   * @method isPlaying
+	   * @return {boolean} Whether or not a tween is running.
+	   */
+	  Tweenable.prototype.isPlaying = function () {
+	    return this._isTweening && !this._isPaused;
+	  };
+	
+	  /**
+	   * Set a custom schedule function.
+	   *
+	   * If a custom function is not set,
+	   * [`requestAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame)
+	   * is used if available, otherwise
+	   * [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/Window.setTimeout)
+	   * is used.
+	   * @method setScheduleFunction
+	   * @param {Function(Function,number)} scheduleFunction The function to be
+	   * used to schedule the next frame to be rendered.
+	   */
+	  Tweenable.prototype.setScheduleFunction = function (scheduleFunction) {
+	    this._scheduleFunction = scheduleFunction;
+	  };
+	
+	  /**
+	   * `delete` all "own" properties.  Call this when the `Tweenable` instance
+	   * is no longer needed to free memory.
+	   * @method dispose
+	   */
+	  Tweenable.prototype.dispose = function () {
+	    var prop;
+	    for (prop in this) {
+	      if (this.hasOwnProperty(prop)) {
+	        delete this[prop];
+	      }
+	    }
+	  };
+	
+	  /**
+	   * Filters are used for transforming the properties of a tween at various
+	   * points in a Tweenable's life cycle.  See the README for more info on this.
+	   * @private
+	   */
+	  Tweenable.prototype.filter = {};
+	
+	  /**
+	   * This object contains all of the tweens available to Shifty.  It is
+	   * extensible - simply attach properties to the `Tweenable.prototype.formula`
+	   * Object following the same format as `linear`.
+	   *
+	   * `pos` should be a normalized `number` (between 0 and 1).
+	   * @property formula
+	   * @type {Object(function)}
+	   */
+	  Tweenable.prototype.formula = {
+	    linear: function (pos) {
+	      return pos;
+	    }
+	  };
+	
+	  formula = Tweenable.prototype.formula;
+	
+	  shallowCopy(Tweenable, {
+	    'now': now
+	    ,'each': each
+	    ,'tweenProps': tweenProps
+	    ,'tweenProp': tweenProp
+	    ,'applyFilter': applyFilter
+	    ,'shallowCopy': shallowCopy
+	    ,'defaults': defaults
+	    ,'composeEasingObject': composeEasingObject
+	  });
+	
+	  // `root` is provided in the intro/outro files.
+	
+	  // A hook used for unit testing.
+	  if (typeof SHIFTY_DEBUG_NOW === 'function') {
+	    root.timeoutHandler = timeoutHandler;
+	  }
+	
+	  // Bootstrap Tweenable appropriately for the environment.
+	  if (true) {
+	    // CommonJS
+	    module.exports = Tweenable;
+	  } else if (typeof define === 'function' && define.amd) {
+	    // AMD
+	    define(function () {return Tweenable;});
+	  } else if (typeof root.Tweenable === 'undefined') {
+	    // Browser: Make `Tweenable` globally accessible.
+	    root.Tweenable = Tweenable;
+	  }
+	
+	  return Tweenable;
+	
+	} ());
+	
+	/*!
+	 * All equations are adapted from Thomas Fuchs'
+	 * [Scripty2](https://github.com/madrobby/scripty2/blob/master/src/effects/transitions/penner.js).
+	 *
+	 * Based on Easing Equations (c) 2003 [Robert
+	 * Penner](http://www.robertpenner.com/), all rights reserved. This work is
+	 * [subject to terms](http://www.robertpenner.com/easing_terms_of_use.html).
+	 */
+	
+	/*!
+	 *  TERMS OF USE - EASING EQUATIONS
+	 *  Open source under the BSD License.
+	 *  Easing Equations (c) 2003 Robert Penner, all rights reserved.
+	 */
+	
+	;(function () {
+	
+	  Tweenable.shallowCopy(Tweenable.prototype.formula, {
+	    easeInQuad: function (pos) {
+	      return Math.pow(pos, 2);
+	    },
+	
+	    easeOutQuad: function (pos) {
+	      return -(Math.pow((pos - 1), 2) - 1);
+	    },
+	
+	    easeInOutQuad: function (pos) {
+	      if ((pos /= 0.5) < 1) {return 0.5 * Math.pow(pos,2);}
+	      return -0.5 * ((pos -= 2) * pos - 2);
+	    },
+	
+	    easeInCubic: function (pos) {
+	      return Math.pow(pos, 3);
+	    },
+	
+	    easeOutCubic: function (pos) {
+	      return (Math.pow((pos - 1), 3) + 1);
+	    },
+	
+	    easeInOutCubic: function (pos) {
+	      if ((pos /= 0.5) < 1) {return 0.5 * Math.pow(pos,3);}
+	      return 0.5 * (Math.pow((pos - 2),3) + 2);
+	    },
+	
+	    easeInQuart: function (pos) {
+	      return Math.pow(pos, 4);
+	    },
+	
+	    easeOutQuart: function (pos) {
+	      return -(Math.pow((pos - 1), 4) - 1);
+	    },
+	
+	    easeInOutQuart: function (pos) {
+	      if ((pos /= 0.5) < 1) {return 0.5 * Math.pow(pos,4);}
+	      return -0.5 * ((pos -= 2) * Math.pow(pos,3) - 2);
+	    },
+	
+	    easeInQuint: function (pos) {
+	      return Math.pow(pos, 5);
+	    },
+	
+	    easeOutQuint: function (pos) {
+	      return (Math.pow((pos - 1), 5) + 1);
+	    },
+	
+	    easeInOutQuint: function (pos) {
+	      if ((pos /= 0.5) < 1) {return 0.5 * Math.pow(pos,5);}
+	      return 0.5 * (Math.pow((pos - 2),5) + 2);
+	    },
+	
+	    easeInSine: function (pos) {
+	      return -Math.cos(pos * (Math.PI / 2)) + 1;
+	    },
+	
+	    easeOutSine: function (pos) {
+	      return Math.sin(pos * (Math.PI / 2));
+	    },
+	
+	    easeInOutSine: function (pos) {
+	      return (-0.5 * (Math.cos(Math.PI * pos) - 1));
+	    },
+	
+	    easeInExpo: function (pos) {
+	      return (pos === 0) ? 0 : Math.pow(2, 10 * (pos - 1));
+	    },
+	
+	    easeOutExpo: function (pos) {
+	      return (pos === 1) ? 1 : -Math.pow(2, -10 * pos) + 1;
+	    },
+	
+	    easeInOutExpo: function (pos) {
+	      if (pos === 0) {return 0;}
+	      if (pos === 1) {return 1;}
+	      if ((pos /= 0.5) < 1) {return 0.5 * Math.pow(2,10 * (pos - 1));}
+	      return 0.5 * (-Math.pow(2, -10 * --pos) + 2);
+	    },
+	
+	    easeInCirc: function (pos) {
+	      return -(Math.sqrt(1 - (pos * pos)) - 1);
+	    },
+	
+	    easeOutCirc: function (pos) {
+	      return Math.sqrt(1 - Math.pow((pos - 1), 2));
+	    },
+	
+	    easeInOutCirc: function (pos) {
+	      if ((pos /= 0.5) < 1) {return -0.5 * (Math.sqrt(1 - pos * pos) - 1);}
+	      return 0.5 * (Math.sqrt(1 - (pos -= 2) * pos) + 1);
+	    },
+	
+	    easeOutBounce: function (pos) {
+	      if ((pos) < (1 / 2.75)) {
+	        return (7.5625 * pos * pos);
+	      } else if (pos < (2 / 2.75)) {
+	        return (7.5625 * (pos -= (1.5 / 2.75)) * pos + 0.75);
+	      } else if (pos < (2.5 / 2.75)) {
+	        return (7.5625 * (pos -= (2.25 / 2.75)) * pos + 0.9375);
+	      } else {
+	        return (7.5625 * (pos -= (2.625 / 2.75)) * pos + 0.984375);
+	      }
+	    },
+	
+	    easeInBack: function (pos) {
+	      var s = 1.70158;
+	      return (pos) * pos * ((s + 1) * pos - s);
+	    },
+	
+	    easeOutBack: function (pos) {
+	      var s = 1.70158;
+	      return (pos = pos - 1) * pos * ((s + 1) * pos + s) + 1;
+	    },
+	
+	    easeInOutBack: function (pos) {
+	      var s = 1.70158;
+	      if ((pos /= 0.5) < 1) {
+	        return 0.5 * (pos * pos * (((s *= (1.525)) + 1) * pos - s));
+	      }
+	      return 0.5 * ((pos -= 2) * pos * (((s *= (1.525)) + 1) * pos + s) + 2);
+	    },
+	
+	    elastic: function (pos) {
+	      // jshint maxlen:90
+	      return -1 * Math.pow(4,-8 * pos) * Math.sin((pos * 6 - 1) * (2 * Math.PI) / 2) + 1;
+	    },
+	
+	    swingFromTo: function (pos) {
+	      var s = 1.70158;
+	      return ((pos /= 0.5) < 1) ?
+	          0.5 * (pos * pos * (((s *= (1.525)) + 1) * pos - s)) :
+	          0.5 * ((pos -= 2) * pos * (((s *= (1.525)) + 1) * pos + s) + 2);
+	    },
+	
+	    swingFrom: function (pos) {
+	      var s = 1.70158;
+	      return pos * pos * ((s + 1) * pos - s);
+	    },
+	
+	    swingTo: function (pos) {
+	      var s = 1.70158;
+	      return (pos -= 1) * pos * ((s + 1) * pos + s) + 1;
+	    },
+	
+	    bounce: function (pos) {
+	      if (pos < (1 / 2.75)) {
+	        return (7.5625 * pos * pos);
+	      } else if (pos < (2 / 2.75)) {
+	        return (7.5625 * (pos -= (1.5 / 2.75)) * pos + 0.75);
+	      } else if (pos < (2.5 / 2.75)) {
+	        return (7.5625 * (pos -= (2.25 / 2.75)) * pos + 0.9375);
+	      } else {
+	        return (7.5625 * (pos -= (2.625 / 2.75)) * pos + 0.984375);
+	      }
+	    },
+	
+	    bouncePast: function (pos) {
+	      if (pos < (1 / 2.75)) {
+	        return (7.5625 * pos * pos);
+	      } else if (pos < (2 / 2.75)) {
+	        return 2 - (7.5625 * (pos -= (1.5 / 2.75)) * pos + 0.75);
+	      } else if (pos < (2.5 / 2.75)) {
+	        return 2 - (7.5625 * (pos -= (2.25 / 2.75)) * pos + 0.9375);
+	      } else {
+	        return 2 - (7.5625 * (pos -= (2.625 / 2.75)) * pos + 0.984375);
+	      }
+	    },
+	
+	    easeFromTo: function (pos) {
+	      if ((pos /= 0.5) < 1) {return 0.5 * Math.pow(pos,4);}
+	      return -0.5 * ((pos -= 2) * Math.pow(pos,3) - 2);
+	    },
+	
+	    easeFrom: function (pos) {
+	      return Math.pow(pos,4);
+	    },
+	
+	    easeTo: function (pos) {
+	      return Math.pow(pos,0.25);
+	    }
+	  });
+	
+	}());
+	
+	// jshint maxlen:100
+	/**
+	 * The Bezier magic in this file is adapted/copied almost wholesale from
+	 * [Scripty2](https://github.com/madrobby/scripty2/blob/master/src/effects/transitions/cubic-bezier.js),
+	 * which was adapted from Apple code (which probably came from
+	 * [here](http://opensource.apple.com/source/WebCore/WebCore-955.66/platform/graphics/UnitBezier.h)).
+	 * Special thanks to Apple and Thomas Fuchs for much of this code.
+	 */
+	
+	/**
+	 *  Copyright (c) 2006 Apple Computer, Inc. All rights reserved.
+	 *
+	 *  Redistribution and use in source and binary forms, with or without
+	 *  modification, are permitted provided that the following conditions are met:
+	 *
+	 *  1. Redistributions of source code must retain the above copyright notice,
+	 *  this list of conditions and the following disclaimer.
+	 *
+	 *  2. Redistributions in binary form must reproduce the above copyright notice,
+	 *  this list of conditions and the following disclaimer in the documentation
+	 *  and/or other materials provided with the distribution.
+	 *
+	 *  3. Neither the name of the copyright holder(s) nor the names of any
+	 *  contributors may be used to endorse or promote products derived from
+	 *  this software without specific prior written permission.
+	 *
+	 *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	 *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	 *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+	 *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+	 *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+	 *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	 *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	 *  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	 *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	 *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	 *  POSSIBILITY OF SUCH DAMAGE.
+	 */
+	;(function () {
+	  // port of webkit cubic bezier handling by http://www.netzgesta.de/dev/
+	  function cubicBezierAtTime(t,p1x,p1y,p2x,p2y,duration) {
+	    var ax = 0,bx = 0,cx = 0,ay = 0,by = 0,cy = 0;
+	    function sampleCurveX(t) {
+	      return ((ax * t + bx) * t + cx) * t;
+	    }
+	    function sampleCurveY(t) {
+	      return ((ay * t + by) * t + cy) * t;
+	    }
+	    function sampleCurveDerivativeX(t) {
+	      return (3.0 * ax * t + 2.0 * bx) * t + cx;
+	    }
+	    function solveEpsilon(duration) {
+	      return 1.0 / (200.0 * duration);
+	    }
+	    function solve(x,epsilon) {
+	      return sampleCurveY(solveCurveX(x, epsilon));
+	    }
+	    function fabs(n) {
+	      if (n >= 0) {
+	        return n;
+	      } else {
+	        return 0 - n;
+	      }
+	    }
+	    function solveCurveX(x, epsilon) {
+	      var t0,t1,t2,x2,d2,i;
+	      for (t2 = x, i = 0; i < 8; i++) {
+	        x2 = sampleCurveX(t2) - x;
+	        if (fabs(x2) < epsilon) {
+	          return t2;
+	        }
+	        d2 = sampleCurveDerivativeX(t2);
+	        if (fabs(d2) < 1e-6) {
+	          break;
+	        }
+	        t2 = t2 - x2 / d2;
+	      }
+	      t0 = 0.0;
+	      t1 = 1.0;
+	      t2 = x;
+	      if (t2 < t0) {
+	        return t0;
+	      }
+	      if (t2 > t1) {
+	        return t1;
+	      }
+	      while (t0 < t1) {
+	        x2 = sampleCurveX(t2);
+	        if (fabs(x2 - x) < epsilon) {
+	          return t2;
+	        }
+	        if (x > x2) {
+	          t0 = t2;
+	        }else {
+	          t1 = t2;
+	        }
+	        t2 = (t1 - t0) * 0.5 + t0;
+	      }
+	      return t2; // Failure.
+	    }
+	    cx = 3.0 * p1x;
+	    bx = 3.0 * (p2x - p1x) - cx;
+	    ax = 1.0 - cx - bx;
+	    cy = 3.0 * p1y;
+	    by = 3.0 * (p2y - p1y) - cy;
+	    ay = 1.0 - cy - by;
+	    return solve(t, solveEpsilon(duration));
+	  }
+	  /**
+	   *  getCubicBezierTransition(x1, y1, x2, y2) -> Function
+	   *
+	   *  Generates a transition easing function that is compatible
+	   *  with WebKit's CSS transitions `-webkit-transition-timing-function`
+	   *  CSS property.
+	   *
+	   *  The W3C has more information about CSS3 transition timing functions:
+	   *  http://www.w3.org/TR/css3-transitions/#transition-timing-function_tag
+	   *
+	   *  @param {number} x1
+	   *  @param {number} y1
+	   *  @param {number} x2
+	   *  @param {number} y2
+	   *  @return {function}
+	   *  @private
+	   */
+	  function getCubicBezierTransition (x1, y1, x2, y2) {
+	    return function (pos) {
+	      return cubicBezierAtTime(pos,x1,y1,x2,y2,1);
+	    };
+	  }
+	  // End ported code
+	
+	  /**
+	   * Create a Bezier easing function and attach it to `{{#crossLink
+	   * "Tweenable/formula:property"}}Tweenable#formula{{/crossLink}}`.  This
+	   * function gives you total control over the easing curve.  Matthew Lein's
+	   * [Ceaser](http://matthewlein.com/ceaser/) is a useful tool for visualizing
+	   * the curves you can make with this function.
+	   * @method setBezierFunction
+	   * @param {string} name The name of the easing curve.  Overwrites the old
+	   * easing function on `{{#crossLink
+	   * "Tweenable/formula:property"}}Tweenable#formula{{/crossLink}}` if it
+	   * exists.
+	   * @param {number} x1
+	   * @param {number} y1
+	   * @param {number} x2
+	   * @param {number} y2
+	   * @return {function} The easing function that was attached to
+	   * Tweenable.prototype.formula.
+	   */
+	  Tweenable.setBezierFunction = function (name, x1, y1, x2, y2) {
+	    var cubicBezierTransition = getCubicBezierTransition(x1, y1, x2, y2);
+	    cubicBezierTransition.displayName = name;
+	    cubicBezierTransition.x1 = x1;
+	    cubicBezierTransition.y1 = y1;
+	    cubicBezierTransition.x2 = x2;
+	    cubicBezierTransition.y2 = y2;
+	
+	    return Tweenable.prototype.formula[name] = cubicBezierTransition;
+	  };
+	
+	
+	  /**
+	   * `delete` an easing function from `{{#crossLink
+	   * "Tweenable/formula:property"}}Tweenable#formula{{/crossLink}}`.  Be
+	   * careful with this method, as it `delete`s whatever easing formula matches
+	   * `name` (which means you can delete standard Shifty easing functions).
+	   * @method unsetBezierFunction
+	   * @param {string} name The name of the easing function to delete.
+	   * @return {function}
+	   */
+	  Tweenable.unsetBezierFunction = function (name) {
+	    delete Tweenable.prototype.formula[name];
+	  };
+	
+	})();
+	
+	;(function () {
+	
+	  function getInterpolatedValues (
+	    from, current, targetState, position, easing, delay) {
+	    return Tweenable.tweenProps(
+	      position, current, from, targetState, 1, delay, easing);
+	  }
+	
+	  // Fake a Tweenable and patch some internals.  This approach allows us to
+	  // skip uneccessary processing and object recreation, cutting down on garbage
+	  // collection pauses.
+	  var mockTweenable = new Tweenable();
+	  mockTweenable._filterArgs = [];
+	
+	  /**
+	   * Compute the midpoint of two Objects.  This method effectively calculates a
+	   * specific frame of animation that `{{#crossLink
+	   * "Tweenable/tween:method"}}{{/crossLink}}` does many times over the course
+	   * of a full tween.
+	   *
+	   *     var interpolatedValues = Tweenable.interpolate({
+	   *       width: '100px',
+	   *       opacity: 0,
+	   *       color: '#fff'
+	   *     }, {
+	   *       width: '200px',
+	   *       opacity: 1,
+	   *       color: '#000'
+	   *     }, 0.5);
+	   *
+	   *     console.log(interpolatedValues);
+	   *     // {opacity: 0.5, width: "150px", color: "rgb(127,127,127)"}
+	   *
+	   * @static
+	   * @method interpolate
+	   * @param {Object} from The starting values to tween from.
+	   * @param {Object} targetState The ending values to tween to.
+	   * @param {number} position The normalized position value (between `0.0` and
+	   * `1.0`) to interpolate the values between `from` and `to` for.  `from`
+	   * represents `0` and `to` represents `1`.
+	   * @param {Object.<string|Function>|string|Function} easing The easing
+	   * curve(s) to calculate the midpoint against.  You can reference any easing
+	   * function attached to `Tweenable.prototype.formula`, or provide the easing
+	   * function(s) directly.  If omitted, this defaults to "linear".
+	   * @param {number=} opt_delay Optional delay to pad the beginning of the
+	   * interpolated tween with.  This increases the range of `position` from (`0`
+	   * through `1`) to (`0` through `1 + opt_delay`).  So, a delay of `0.5` would
+	   * increase all valid values of `position` to numbers between `0` and `1.5`.
+	   * @return {Object}
+	   */
+	  Tweenable.interpolate = function (
+	    from, targetState, position, easing, opt_delay) {
+	
+	    var current = Tweenable.shallowCopy({}, from);
+	    var delay = opt_delay || 0;
+	    var easingObject = Tweenable.composeEasingObject(
+	      from, easing || 'linear');
+	
+	    mockTweenable.set({});
+	
+	    // Alias and reuse the _filterArgs array instead of recreating it.
+	    var filterArgs = mockTweenable._filterArgs;
+	    filterArgs.length = 0;
+	    filterArgs[0] = current;
+	    filterArgs[1] = from;
+	    filterArgs[2] = targetState;
+	    filterArgs[3] = easingObject;
+	
+	    // Any defined value transformation must be applied
+	    Tweenable.applyFilter(mockTweenable, 'tweenCreated');
+	    Tweenable.applyFilter(mockTweenable, 'beforeTween');
+	
+	    var interpolatedValues = getInterpolatedValues(
+	      from, current, targetState, position, easingObject, delay);
+	
+	    // Transform values back into their original format
+	    Tweenable.applyFilter(mockTweenable, 'afterTween');
+	
+	    return interpolatedValues;
+	  };
+	
+	}());
+	
+	/**
+	 * This module adds string interpolation support to Shifty.
+	 *
+	 * The Token extension allows Shifty to tween numbers inside of strings.  Among
+	 * other things, this allows you to animate CSS properties.  For example, you
+	 * can do this:
+	 *
+	 *     var tweenable = new Tweenable();
+	 *     tweenable.tween({
+	 *       from: { transform: 'translateX(45px)' },
+	 *       to: { transform: 'translateX(90xp)' }
+	 *     });
+	 *
+	 * `translateX(45)` will be tweened to `translateX(90)`.  To demonstrate:
+	 *
+	 *     var tweenable = new Tweenable();
+	 *     tweenable.tween({
+	 *       from: { transform: 'translateX(45px)' },
+	 *       to: { transform: 'translateX(90px)' },
+	 *       step: function (state) {
+	 *         console.log(state.transform);
+	 *       }
+	 *     });
+	 *
+	 * The above snippet will log something like this in the console:
+	 *
+	 *     translateX(60.3px)
+	 *     ...
+	 *     translateX(76.05px)
+	 *     ...
+	 *     translateX(90px)
+	 *
+	 * Another use for this is animating colors:
+	 *
+	 *     var tweenable = new Tweenable();
+	 *     tweenable.tween({
+	 *       from: { color: 'rgb(0,255,0)' },
+	 *       to: { color: 'rgb(255,0,255)' },
+	 *       step: function (state) {
+	 *         console.log(state.color);
+	 *       }
+	 *     });
+	 *
+	 * The above snippet will log something like this:
+	 *
+	 *     rgb(84,170,84)
+	 *     ...
+	 *     rgb(170,84,170)
+	 *     ...
+	 *     rgb(255,0,255)
+	 *
+	 * This extension also supports hexadecimal colors, in both long (`#ff00ff`)
+	 * and short (`#f0f`) forms.  Be aware that hexadecimal input values will be
+	 * converted into the equivalent RGB output values.  This is done to optimize
+	 * for performance.
+	 *
+	 *     var tweenable = new Tweenable();
+	 *     tweenable.tween({
+	 *       from: { color: '#0f0' },
+	 *       to: { color: '#f0f' },
+	 *       step: function (state) {
+	 *         console.log(state.color);
+	 *       }
+	 *     });
+	 *
+	 * This snippet will generate the same output as the one before it because
+	 * equivalent values were supplied (just in hexadecimal form rather than RGB):
+	 *
+	 *     rgb(84,170,84)
+	 *     ...
+	 *     rgb(170,84,170)
+	 *     ...
+	 *     rgb(255,0,255)
+	 *
+	 * ## Easing support
+	 *
+	 * Easing works somewhat differently in the Token extension.  This is because
+	 * some CSS properties have multiple values in them, and you might need to
+	 * tween each value along its own easing curve.  A basic example:
+	 *
+	 *     var tweenable = new Tweenable();
+	 *     tweenable.tween({
+	 *       from: { transform: 'translateX(0px) translateY(0px)' },
+	 *       to: { transform:   'translateX(100px) translateY(100px)' },
+	 *       easing: { transform: 'easeInQuad' },
+	 *       step: function (state) {
+	 *         console.log(state.transform);
+	 *       }
+	 *     });
+	 *
+	 * The above snippet will create values like this:
+	 *
+	 *     translateX(11.56px) translateY(11.56px)
+	 *     ...
+	 *     translateX(46.24px) translateY(46.24px)
+	 *     ...
+	 *     translateX(100px) translateY(100px)
+	 *
+	 * In this case, the values for `translateX` and `translateY` are always the
+	 * same for each step of the tween, because they have the same start and end
+	 * points and both use the same easing curve.  We can also tween `translateX`
+	 * and `translateY` along independent curves:
+	 *
+	 *     var tweenable = new Tweenable();
+	 *     tweenable.tween({
+	 *       from: { transform: 'translateX(0px) translateY(0px)' },
+	 *       to: { transform:   'translateX(100px) translateY(100px)' },
+	 *       easing: { transform: 'easeInQuad bounce' },
+	 *       step: function (state) {
+	 *         console.log(state.transform);
+	 *       }
+	 *     });
+	 *
+	 * The above snippet will create values like this:
+	 *
+	 *     translateX(10.89px) translateY(82.35px)
+	 *     ...
+	 *     translateX(44.89px) translateY(86.73px)
+	 *     ...
+	 *     translateX(100px) translateY(100px)
+	 *
+	 * `translateX` and `translateY` are not in sync anymore, because `easeInQuad`
+	 * was specified for `translateX` and `bounce` for `translateY`.  Mixing and
+	 * matching easing curves can make for some interesting motion in your
+	 * animations.
+	 *
+	 * The order of the space-separated easing curves correspond the token values
+	 * they apply to.  If there are more token values than easing curves listed,
+	 * the last easing curve listed is used.
+	 * @submodule Tweenable.token
+	 */
+	
+	// token function is defined above only so that dox-foundation sees it as
+	// documentation and renders it.  It is never used, and is optimized away at
+	// build time.
+	
+	;(function (Tweenable) {
+	
+	  /**
+	   * @typedef {{
+	   *   formatString: string
+	   *   chunkNames: Array.<string>
+	   * }}
+	   * @private
+	   */
+	  var formatManifest;
+	
+	  // CONSTANTS
+	
+	  var R_NUMBER_COMPONENT = /(\d|\-|\.)/;
+	  var R_FORMAT_CHUNKS = /([^\-0-9\.]+)/g;
+	  var R_UNFORMATTED_VALUES = /[0-9.\-]+/g;
+	  var R_RGB = new RegExp(
+	    'rgb\\(' + R_UNFORMATTED_VALUES.source +
+	    (/,\s*/.source) + R_UNFORMATTED_VALUES.source +
+	    (/,\s*/.source) + R_UNFORMATTED_VALUES.source + '\\)', 'g');
+	  var R_RGB_PREFIX = /^.*\(/;
+	  var R_HEX = /#([0-9]|[a-f]){3,6}/gi;
+	  var VALUE_PLACEHOLDER = 'VAL';
+	
+	  // HELPERS
+	
+	  /**
+	   * @param {Array.number} rawValues
+	   * @param {string} prefix
+	   *
+	   * @return {Array.<string>}
+	   * @private
+	   */
+	  function getFormatChunksFrom (rawValues, prefix) {
+	    var accumulator = [];
+	
+	    var rawValuesLength = rawValues.length;
+	    var i;
+	
+	    for (i = 0; i < rawValuesLength; i++) {
+	      accumulator.push('_' + prefix + '_' + i);
+	    }
+	
+	    return accumulator;
+	  }
+	
+	  /**
+	   * @param {string} formattedString
+	   *
+	   * @return {string}
+	   * @private
+	   */
+	  function getFormatStringFrom (formattedString) {
+	    var chunks = formattedString.match(R_FORMAT_CHUNKS);
+	
+	    if (!chunks) {
+	      // chunks will be null if there were no tokens to parse in
+	      // formattedString (for example, if formattedString is '2').  Coerce
+	      // chunks to be useful here.
+	      chunks = ['', ''];
+	
+	      // If there is only one chunk, assume that the string is a number
+	      // followed by a token...
+	      // NOTE: This may be an unwise assumption.
+	    } else if (chunks.length === 1 ||
+	      // ...or if the string starts with a number component (".", "-", or a
+	      // digit)...
+	    formattedString.charAt(0).match(R_NUMBER_COMPONENT)) {
+	      // ...prepend an empty string here to make sure that the formatted number
+	      // is properly replaced by VALUE_PLACEHOLDER
+	      chunks.unshift('');
+	    }
+	
+	    return chunks.join(VALUE_PLACEHOLDER);
+	  }
+	
+	  /**
+	   * Convert all hex color values within a string to an rgb string.
+	   *
+	   * @param {Object} stateObject
+	   *
+	   * @return {Object} The modified obj
+	   * @private
+	   */
+	  function sanitizeObjectForHexProps (stateObject) {
+	    Tweenable.each(stateObject, function (prop) {
+	      var currentProp = stateObject[prop];
+	
+	      if (typeof currentProp === 'string' && currentProp.match(R_HEX)) {
+	        stateObject[prop] = sanitizeHexChunksToRGB(currentProp);
+	      }
+	    });
+	  }
+	
+	  /**
+	   * @param {string} str
+	   *
+	   * @return {string}
+	   * @private
+	   */
+	  function  sanitizeHexChunksToRGB (str) {
+	    return filterStringChunks(R_HEX, str, convertHexToRGB);
+	  }
+	
+	  /**
+	   * @param {string} hexString
+	   *
+	   * @return {string}
+	   * @private
+	   */
+	  function convertHexToRGB (hexString) {
+	    var rgbArr = hexToRGBArray(hexString);
+	    return 'rgb(' + rgbArr[0] + ',' + rgbArr[1] + ',' + rgbArr[2] + ')';
+	  }
+	
+	  var hexToRGBArray_returnArray = [];
+	  /**
+	   * Convert a hexadecimal string to an array with three items, one each for
+	   * the red, blue, and green decimal values.
+	   *
+	   * @param {string} hex A hexadecimal string.
+	   *
+	   * @returns {Array.<number>} The converted Array of RGB values if `hex` is a
+	   * valid string, or an Array of three 0's.
+	   * @private
+	   */
+	  function hexToRGBArray (hex) {
+	
+	    hex = hex.replace(/#/, '');
+	
+	    // If the string is a shorthand three digit hex notation, normalize it to
+	    // the standard six digit notation
+	    if (hex.length === 3) {
+	      hex = hex.split('');
+	      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+	    }
+	
+	    hexToRGBArray_returnArray[0] = hexToDec(hex.substr(0, 2));
+	    hexToRGBArray_returnArray[1] = hexToDec(hex.substr(2, 2));
+	    hexToRGBArray_returnArray[2] = hexToDec(hex.substr(4, 2));
+	
+	    return hexToRGBArray_returnArray;
+	  }
+	
+	  /**
+	   * Convert a base-16 number to base-10.
+	   *
+	   * @param {Number|String} hex The value to convert
+	   *
+	   * @returns {Number} The base-10 equivalent of `hex`.
+	   * @private
+	   */
+	  function hexToDec (hex) {
+	    return parseInt(hex, 16);
+	  }
+	
+	  /**
+	   * Runs a filter operation on all chunks of a string that match a RegExp
+	   *
+	   * @param {RegExp} pattern
+	   * @param {string} unfilteredString
+	   * @param {function(string)} filter
+	   *
+	   * @return {string}
+	   * @private
+	   */
+	  function filterStringChunks (pattern, unfilteredString, filter) {
+	    var pattenMatches = unfilteredString.match(pattern);
+	    var filteredString = unfilteredString.replace(pattern, VALUE_PLACEHOLDER);
+	
+	    if (pattenMatches) {
+	      var pattenMatchesLength = pattenMatches.length;
+	      var currentChunk;
+	
+	      for (var i = 0; i < pattenMatchesLength; i++) {
+	        currentChunk = pattenMatches.shift();
+	        filteredString = filteredString.replace(
+	          VALUE_PLACEHOLDER, filter(currentChunk));
+	      }
+	    }
+	
+	    return filteredString;
+	  }
+	
+	  /**
+	   * Check for floating point values within rgb strings and rounds them.
+	   *
+	   * @param {string} formattedString
+	   *
+	   * @return {string}
+	   * @private
+	   */
+	  function sanitizeRGBChunks (formattedString) {
+	    return filterStringChunks(R_RGB, formattedString, sanitizeRGBChunk);
+	  }
+	
+	  /**
+	   * @param {string} rgbChunk
+	   *
+	   * @return {string}
+	   * @private
+	   */
+	  function sanitizeRGBChunk (rgbChunk) {
+	    var numbers = rgbChunk.match(R_UNFORMATTED_VALUES);
+	    var numbersLength = numbers.length;
+	    var sanitizedString = rgbChunk.match(R_RGB_PREFIX)[0];
+	
+	    for (var i = 0; i < numbersLength; i++) {
+	      sanitizedString += parseInt(numbers[i], 10) + ',';
+	    }
+	
+	    sanitizedString = sanitizedString.slice(0, -1) + ')';
+	
+	    return sanitizedString;
+	  }
+	
+	  /**
+	   * @param {Object} stateObject
+	   *
+	   * @return {Object} An Object of formatManifests that correspond to
+	   * the string properties of stateObject
+	   * @private
+	   */
+	  function getFormatManifests (stateObject) {
+	    var manifestAccumulator = {};
+	
+	    Tweenable.each(stateObject, function (prop) {
+	      var currentProp = stateObject[prop];
+	
+	      if (typeof currentProp === 'string') {
+	        var rawValues = getValuesFrom(currentProp);
+	
+	        manifestAccumulator[prop] = {
+	          'formatString': getFormatStringFrom(currentProp)
+	          ,'chunkNames': getFormatChunksFrom(rawValues, prop)
+	        };
+	      }
+	    });
+	
+	    return manifestAccumulator;
+	  }
+	
+	  /**
+	   * @param {Object} stateObject
+	   * @param {Object} formatManifests
+	   * @private
+	   */
+	  function expandFormattedProperties (stateObject, formatManifests) {
+	    Tweenable.each(formatManifests, function (prop) {
+	      var currentProp = stateObject[prop];
+	      var rawValues = getValuesFrom(currentProp);
+	      var rawValuesLength = rawValues.length;
+	
+	      for (var i = 0; i < rawValuesLength; i++) {
+	        stateObject[formatManifests[prop].chunkNames[i]] = +rawValues[i];
+	      }
+	
+	      delete stateObject[prop];
+	    });
+	  }
+	
+	  /**
+	   * @param {Object} stateObject
+	   * @param {Object} formatManifests
+	   * @private
+	   */
+	  function collapseFormattedProperties (stateObject, formatManifests) {
+	    Tweenable.each(formatManifests, function (prop) {
+	      var currentProp = stateObject[prop];
+	      var formatChunks = extractPropertyChunks(
+	        stateObject, formatManifests[prop].chunkNames);
+	      var valuesList = getValuesList(
+	        formatChunks, formatManifests[prop].chunkNames);
+	      currentProp = getFormattedValues(
+	        formatManifests[prop].formatString, valuesList);
+	      stateObject[prop] = sanitizeRGBChunks(currentProp);
+	    });
+	  }
+	
+	  /**
+	   * @param {Object} stateObject
+	   * @param {Array.<string>} chunkNames
+	   *
+	   * @return {Object} The extracted value chunks.
+	   * @private
+	   */
+	  function extractPropertyChunks (stateObject, chunkNames) {
+	    var extractedValues = {};
+	    var currentChunkName, chunkNamesLength = chunkNames.length;
+	
+	    for (var i = 0; i < chunkNamesLength; i++) {
+	      currentChunkName = chunkNames[i];
+	      extractedValues[currentChunkName] = stateObject[currentChunkName];
+	      delete stateObject[currentChunkName];
+	    }
+	
+	    return extractedValues;
+	  }
+	
+	  var getValuesList_accumulator = [];
+	  /**
+	   * @param {Object} stateObject
+	   * @param {Array.<string>} chunkNames
+	   *
+	   * @return {Array.<number>}
+	   * @private
+	   */
+	  function getValuesList (stateObject, chunkNames) {
+	    getValuesList_accumulator.length = 0;
+	    var chunkNamesLength = chunkNames.length;
+	
+	    for (var i = 0; i < chunkNamesLength; i++) {
+	      getValuesList_accumulator.push(stateObject[chunkNames[i]]);
+	    }
+	
+	    return getValuesList_accumulator;
+	  }
+	
+	  /**
+	   * @param {string} formatString
+	   * @param {Array.<number>} rawValues
+	   *
+	   * @return {string}
+	   * @private
+	   */
+	  function getFormattedValues (formatString, rawValues) {
+	    var formattedValueString = formatString;
+	    var rawValuesLength = rawValues.length;
+	
+	    for (var i = 0; i < rawValuesLength; i++) {
+	      formattedValueString = formattedValueString.replace(
+	        VALUE_PLACEHOLDER, +rawValues[i].toFixed(4));
+	    }
+	
+	    return formattedValueString;
+	  }
+	
+	  /**
+	   * Note: It's the duty of the caller to convert the Array elements of the
+	   * return value into numbers.  This is a performance optimization.
+	   *
+	   * @param {string} formattedString
+	   *
+	   * @return {Array.<string>|null}
+	   * @private
+	   */
+	  function getValuesFrom (formattedString) {
+	    return formattedString.match(R_UNFORMATTED_VALUES);
+	  }
+	
+	  /**
+	   * @param {Object} easingObject
+	   * @param {Object} tokenData
+	   * @private
+	   */
+	  function expandEasingObject (easingObject, tokenData) {
+	    Tweenable.each(tokenData, function (prop) {
+	      var currentProp = tokenData[prop];
+	      var chunkNames = currentProp.chunkNames;
+	      var chunkLength = chunkNames.length;
+	
+	      var easing = easingObject[prop];
+	      var i;
+	
+	      if (typeof easing === 'string') {
+	        var easingChunks = easing.split(' ');
+	        var lastEasingChunk = easingChunks[easingChunks.length - 1];
+	
+	        for (i = 0; i < chunkLength; i++) {
+	          easingObject[chunkNames[i]] = easingChunks[i] || lastEasingChunk;
+	        }
+	
+	      } else {
+	        for (i = 0; i < chunkLength; i++) {
+	          easingObject[chunkNames[i]] = easing;
+	        }
+	      }
+	
+	      delete easingObject[prop];
+	    });
+	  }
+	
+	  /**
+	   * @param {Object} easingObject
+	   * @param {Object} tokenData
+	   * @private
+	   */
+	  function collapseEasingObject (easingObject, tokenData) {
+	    Tweenable.each(tokenData, function (prop) {
+	      var currentProp = tokenData[prop];
+	      var chunkNames = currentProp.chunkNames;
+	      var chunkLength = chunkNames.length;
+	
+	      var firstEasing = easingObject[chunkNames[0]];
+	      var typeofEasings = typeof firstEasing;
+	
+	      if (typeofEasings === 'string') {
+	        var composedEasingString = '';
+	
+	        for (var i = 0; i < chunkLength; i++) {
+	          composedEasingString += ' ' + easingObject[chunkNames[i]];
+	          delete easingObject[chunkNames[i]];
+	        }
+	
+	        easingObject[prop] = composedEasingString.substr(1);
+	      } else {
+	        easingObject[prop] = firstEasing;
+	      }
+	    });
+	  }
+	
+	  Tweenable.prototype.filter.token = {
+	    'tweenCreated': function (currentState, fromState, toState, easingObject) {
+	      sanitizeObjectForHexProps(currentState);
+	      sanitizeObjectForHexProps(fromState);
+	      sanitizeObjectForHexProps(toState);
+	      this._tokenData = getFormatManifests(currentState);
+	    },
+	
+	    'beforeTween': function (currentState, fromState, toState, easingObject) {
+	      expandEasingObject(easingObject, this._tokenData);
+	      expandFormattedProperties(currentState, this._tokenData);
+	      expandFormattedProperties(fromState, this._tokenData);
+	      expandFormattedProperties(toState, this._tokenData);
+	    },
+	
+	    'afterTween': function (currentState, fromState, toState, easingObject) {
+	      collapseFormattedProperties(currentState, this._tokenData);
+	      collapseFormattedProperties(fromState, this._tokenData);
+	      collapseFormattedProperties(toState, this._tokenData);
+	      collapseEasingObject(easingObject, this._tokenData);
+	    }
+	  };
+	
+	} (Tweenable));
+	
+	}).call(null);
+
+
+/***/ },
+/* 623 */
+/***/ function(module, exports) {
+
+	// Utility functions
+	
+	var PREFIXES = 'Webkit Moz O ms'.split(' ');
+	var FLOAT_COMPARISON_EPSILON = 0.001;
+	
+	// Copy all attributes from source object to destination object.
+	// destination object is mutated.
+	function extend(destination, source, recursive) {
+	    destination = destination || {};
+	    source = source || {};
+	    recursive = recursive || false;
+	
+	    for (var attrName in source) {
+	        if (source.hasOwnProperty(attrName)) {
+	            var destVal = destination[attrName];
+	            var sourceVal = source[attrName];
+	            if (recursive && isObject(destVal) && isObject(sourceVal)) {
+	                destination[attrName] = extend(destVal, sourceVal, recursive);
+	            } else {
+	                destination[attrName] = sourceVal;
+	            }
+	        }
+	    }
+	
+	    return destination;
+	}
+	
+	// Renders templates with given variables. Variables must be surrounded with
+	// braces without any spaces, e.g. {variable}
+	// All instances of variable placeholders will be replaced with given content
+	// Example:
+	// render('Hello, {message}!', {message: 'world'})
+	function render(template, vars) {
+	    var rendered = template;
+	
+	    for (var key in vars) {
+	        if (vars.hasOwnProperty(key)) {
+	            var val = vars[key];
+	            var regExpString = '\\{' + key + '\\}';
+	            var regExp = new RegExp(regExpString, 'g');
+	
+	            rendered = rendered.replace(regExp, val);
+	        }
+	    }
+	
+	    return rendered;
+	}
+	
+	function setStyle(element, style, value) {
+	    var elStyle = element.style;  // cache for performance
+	
+	    for (var i = 0; i < PREFIXES.length; ++i) {
+	        var prefix = PREFIXES[i];
+	        elStyle[prefix + capitalize(style)] = value;
+	    }
+	
+	    elStyle[style] = value;
+	}
+	
+	function setStyles(element, styles) {
+	    forEachObject(styles, function(styleValue, styleName) {
+	        // Allow disabling some individual styles by setting them
+	        // to null or undefined
+	        if (styleValue === null || styleValue === undefined) {
+	            return;
+	        }
+	
+	        // If style's value is {prefix: true, value: '50%'},
+	        // Set also browser prefixed styles
+	        if (isObject(styleValue) && styleValue.prefix === true) {
+	            setStyle(element, styleName, styleValue.value);
+	        } else {
+	            element.style[styleName] = styleValue;
+	        }
+	    });
+	}
+	
+	function capitalize(text) {
+	    return text.charAt(0).toUpperCase() + text.slice(1);
+	}
+	
+	function isString(obj) {
+	    return typeof obj === 'string' || obj instanceof String;
+	}
+	
+	function isFunction(obj) {
+	    return typeof obj === 'function';
+	}
+	
+	function isArray(obj) {
+	    return Object.prototype.toString.call(obj) === '[object Array]';
+	}
+	
+	// Returns true if `obj` is object as in {a: 1, b: 2}, not if it's function or
+	// array
+	function isObject(obj) {
+	    if (isArray(obj)) {
+	        return false;
+	    }
+	
+	    var type = typeof obj;
+	    return type === 'object' && !!obj;
+	}
+	
+	function forEachObject(object, callback) {
+	    for (var key in object) {
+	        if (object.hasOwnProperty(key)) {
+	            var val = object[key];
+	            callback(val, key);
+	        }
+	    }
+	}
+	
+	function floatEquals(a, b) {
+	    return Math.abs(a - b) < FLOAT_COMPARISON_EPSILON;
+	}
+	
+	// https://coderwall.com/p/nygghw/don-t-use-innerhtml-to-empty-dom-elements
+	function removeChildren(el) {
+	    while (el.firstChild) {
+	        el.removeChild(el.firstChild);
+	    }
+	}
+	
+	module.exports = {
+	    extend: extend,
+	    render: render,
+	    setStyle: setStyle,
+	    setStyles: setStyles,
+	    capitalize: capitalize,
+	    isString: isString,
+	    isFunction: isFunction,
+	    isObject: isObject,
+	    forEachObject: forEachObject,
+	    floatEquals: floatEquals,
+	    removeChildren: removeChildren
+	};
+
+
+/***/ },
+/* 624 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Circle shaped progress bar
+	
+	var Shape = __webpack_require__(620);
+	var utils = __webpack_require__(623);
+	
+	var Circle = function Circle(container, options) {
+	    // Use two arcs to form a circle
+	    // See this answer http://stackoverflow.com/a/10477334/1446092
+	    this._pathTemplate =
+	        'M 50,50 m 0,-{radius}' +
+	        ' a {radius},{radius} 0 1 1 0,{2radius}' +
+	        ' a {radius},{radius} 0 1 1 0,-{2radius}';
+	
+	    this.containerAspectRatio = 1;
+	
+	    Shape.apply(this, arguments);
+	};
+	
+	Circle.prototype = new Shape();
+	Circle.prototype.constructor = Circle;
+	
+	Circle.prototype._pathString = function _pathString(opts) {
+	    var widthOfWider = opts.strokeWidth;
+	    if (opts.trailWidth && opts.trailWidth > opts.strokeWidth) {
+	        widthOfWider = opts.trailWidth;
+	    }
+	
+	    var r = 50 - widthOfWider / 2;
+	
+	    return utils.render(this._pathTemplate, {
+	        radius: r,
+	        '2radius': r * 2
+	    });
+	};
+	
+	Circle.prototype._trailString = function _trailString(opts) {
+	    return this._pathString(opts);
+	};
+	
+	module.exports = Circle;
+
+
+/***/ },
+/* 625 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Semi-SemiCircle shaped progress bar
+	
+	var Shape = __webpack_require__(620);
+	var Circle = __webpack_require__(624);
+	var utils = __webpack_require__(623);
+	
+	var SemiCircle = function SemiCircle(container, options) {
+	    // Use one arc to form a SemiCircle
+	    // See this answer http://stackoverflow.com/a/10477334/1446092
+	    this._pathTemplate =
+	        'M 50,50 m -{radius},0' +
+	        ' a {radius},{radius} 0 1 1 {2radius},0';
+	
+	    this.containerAspectRatio = 2;
+	
+	    Shape.apply(this, arguments);
+	};
+	
+	SemiCircle.prototype = new Shape();
+	SemiCircle.prototype.constructor = SemiCircle;
+	
+	SemiCircle.prototype._initializeSvg = function _initializeSvg(svg, opts) {
+	    svg.setAttribute('viewBox', '0 0 100 50');
+	};
+	
+	SemiCircle.prototype._initializeTextContainer = function _initializeTextContainer(
+	    opts,
+	    container,
+	    textContainer
+	) {
+	    if (opts.text.style) {
+	        // Reset top style
+	        textContainer.style.top = 'auto';
+	        textContainer.style.bottom = '0';
+	
+	        if (opts.text.alignToBottom) {
+	            utils.setStyle(textContainer, 'transform', 'translate(-50%, 0)');
+	        } else {
+	            utils.setStyle(textContainer, 'transform', 'translate(-50%, 50%)');
+	        }
+	    }
+	};
+	
+	// Share functionality with Circle, just have different path
+	SemiCircle.prototype._pathString = Circle.prototype._pathString;
+	SemiCircle.prototype._trailString = Circle.prototype._trailString;
+	
+	module.exports = SemiCircle;
+
+
+/***/ },
+/* 626 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68314,9 +73467,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _CanvasUtils = __webpack_require__(430);
+	var _CanvasUtils = __webpack_require__(436);
 	
-	var _reactColor = __webpack_require__(431);
+	var _reactColor = __webpack_require__(437);
 	
 	var _reactRedux = __webpack_require__(251);
 	
@@ -68432,12 +73585,12 @@
 	exports.default = CanvasViewOnly;
 
 /***/ },
-/* 611 */
+/* 627 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _require = __webpack_require__(612);
+	var _require = __webpack_require__(628);
 	
 	var CopyToClipboard = _require.CopyToClipboard;
 	
@@ -68446,7 +73599,7 @@
 	//# sourceMappingURL=index.js.map
 
 /***/ },
-/* 612 */
+/* 628 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68462,7 +73615,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _copyToClipboard = __webpack_require__(613);
+	var _copyToClipboard = __webpack_require__(629);
 	
 	var _copyToClipboard2 = _interopRequireDefault(_copyToClipboard);
 	
@@ -68519,12 +73672,12 @@
 	//# sourceMappingURL=Component.js.map
 
 /***/ },
-/* 613 */
+/* 629 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var deselectCurrent = __webpack_require__(614);
+	var deselectCurrent = __webpack_require__(630);
 	
 	var defaultMessage = 'Copy to clipboard: #{key}, Enter';
 	
@@ -68605,7 +73758,7 @@
 
 
 /***/ },
-/* 614 */
+/* 630 */
 /***/ function(module, exports) {
 
 	
@@ -68650,16 +73803,285 @@
 
 
 /***/ },
-/* 615 */
+/* 631 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	Object.defineProperty(exports, "__esModule", {
+			value: true
+	});
+	
+	var _createClass = function () {
+			function defineProperties(target, props) {
+					for (var i = 0; i < props.length; i++) {
+							var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+					}
+			}return function (Constructor, protoProps, staticProps) {
+					if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+			};
+	}();
+	
+	var _react = __webpack_require__(2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(251);
+	
+	var _reactRouterRedux = __webpack_require__(182);
+	
+	var _reactRouter = __webpack_require__(188);
+	
+	var _Popover = __webpack_require__(406);
+	
+	var _Popover2 = _interopRequireDefault(_Popover);
+	
+	var _Register = __webpack_require__(266);
+	
+	var _Register2 = _interopRequireDefault(_Register);
+	
+	var _Login = __webpack_require__(263);
+	
+	var _Login2 = _interopRequireDefault(_Login);
+	
+	function _interopRequireDefault(obj) {
+			return obj && obj.__esModule ? obj : { default: obj };
+	}
+	
+	function _classCallCheck(instance, Constructor) {
+			if (!(instance instanceof Constructor)) {
+					throw new TypeError("Cannot call a class as a function");
+			}
+	}
+	
+	function _possibleConstructorReturn(self, call) {
+			if (!self) {
+					throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+			}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+	}
+	
+	function _inherits(subClass, superClass) {
+			if (typeof superClass !== "function" && superClass !== null) {
+					throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+			}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	}
+	
+	var Home = function (_Component) {
+			_inherits(Home, _Component);
+	
+			function Home(props) {
+					_classCallCheck(this, Home);
+	
+					var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props));
+	
+					_this.state = {
+							loggingIn: false,
+							signingUp: false
+					};
+					return _this;
+			}
+	
+			_createClass(Home, [{
+					key: 'componentDidMount',
+					value: function componentDidMount() {
+							if (this.props.authStatus) {
+									this.props.dispatch((0, _reactRouterRedux.push)('/game'));
+							}
+					}
+			}, {
+					key: 'openLogin',
+					value: function openLogin() {
+							this.setState({ loggingIn: true });
+					}
+			}, {
+					key: 'closeLogin',
+					value: function closeLogin() {
+							this.setState({ loggingIn: false });
+					}
+			}, {
+					key: 'openSignup',
+					value: function openSignup() {
+							this.setState({ signingUp: true });
+					}
+			}, {
+					key: 'closeSignup',
+					value: function closeSignup() {
+							this.setState({ signingUp: false });
+					}
+			}, {
+					key: 'render',
+					value: function render() {
+							var _this2 = this;
+	
+							return _react2.default.createElement('div', { className: 'container backgroundImg', style: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: '.9', backgroundSize: 'cover' } }, _react2.default.createElement('div', { className: 'popoverContainer', style: { color: 'white', textAlign: 'center' } }, _react2.default.createElement('button', { className: 'myButton-transparent', style: { marginBottom: '20px', position: 'relative' }, onClick: function onClick() {
+											return _this2.openSignup();
+									} }, 'Sign Up'), _react2.default.createElement('br', null), 'or', _react2.default.createElement('br', null), _react2.default.createElement('button', { className: 'myButton-transparent', style: { marginTop: '20px', position: 'relative' }, onClick: function onClick() {
+											return _this2.props.dispatch((0, _reactRouterRedux.push)('/game'));
+									} }, 'Play')), _react2.default.createElement('ul', { style: { position: 'absolute', left: 0, top: 0, width: '100%' } }, _react2.default.createElement('li', null, _react2.default.createElement('a', { style: {}, onClick: function onClick() {
+											return _this2.openLogin();
+									} }, 'Log in'))), _react2.default.createElement(_Popover2.default, { close: function close() {
+											return _this2.closeSignup();
+									}, isOpen: this.state.signingUp }, _react2.default.createElement(_Register2.default, { close: function close() {
+											return _this2.closeSignup();
+									} })), _react2.default.createElement(_Popover2.default, { close: function close() {
+											return _this2.closeLogin();
+									}, isOpen: this.state.loggingIn }, _react2.default.createElement(_Login2.default, { close: function close() {
+											return _this2.closeLogin();
+									} })));
+					}
+			}]);
+	
+			return Home;
+	}(_react.Component);
+	
+	var mapStateToProps = function mapStateToProps(state) {
+			return {
+					authStatus: state.root.auth.status
+			};
+	};
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Home);
+
+/***/ },
+/* 632 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _extends = Object.assign || function (target) {
+		for (var i = 1; i < arguments.length; i++) {
+			var source = arguments[i];for (var key in source) {
+				if (Object.prototype.hasOwnProperty.call(source, key)) {
+					target[key] = source[key];
+				}
+			}
+		}return target;
+	};
+	
+	var _createClass = function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+		};
+	}();
+	
+	var _react = __webpack_require__(2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _actions = __webpack_require__(260);
+	
+	var _reactRedux = __webpack_require__(251);
+	
+	var _reactNotification = __webpack_require__(267);
+	
+	var _reactRouterRedux = __webpack_require__(182);
+	
+	function _interopRequireDefault(obj) {
+		return obj && obj.__esModule ? obj : { default: obj };
+	}
+	
+	function _classCallCheck(instance, Constructor) {
+		if (!(instance instanceof Constructor)) {
+			throw new TypeError("Cannot call a class as a function");
+		}
+	}
+	
+	function _possibleConstructorReturn(self, call) {
+		if (!self) {
+			throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+		}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+	}
+	
+	function _inherits(subClass, superClass) {
+		if (typeof superClass !== "function" && superClass !== null) {
+			throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	}
+	
+	var Container = function (_Component) {
+		_inherits(Container, _Component);
+	
+		function Container() {
+			_classCallCheck(this, Container);
+	
+			return _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).apply(this, arguments));
+		}
+	
+		_createClass(Container, [{
+			key: 'render',
+			value: function render() {
+				var _this2 = this;
+	
+				return _react2.default.createElement('div', { className: 'container' }, _react2.default.createElement(_reactNotification.NotificationStack, {
+					notifications: this.props.notifications.toArray(),
+					onDismiss: function onDismiss(notification) {
+						return _this2.props.dispatch((0, _actions.dismissNotification)(notification));
+					},
+					barStyleFactory: function barStyleFactory(ind, style) {
+						return _extends({}, style, {
+							fontFamily: 'Lato',
+							background: '#ffad90',
+							borderWidth: '0px',
+							height: '30px',
+							color: 'white',
+							borderRadius: '0px',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							top: 2 + ind * 5 + 'rem',
+							opacity: 0,
+							boxShadow: '',
+							right: '-100%',
+							left: ''
+						});
+					},
+					activeBarStyleFactory: function activeBarStyleFactory(ind, style) {
+						return _extends({}, style, {
+							left: '',
+							right: '0px',
+							top: 2 + ind * 5 + 'rem',
+							opacity: 1
+						});
+					}
+				}), this.props.children);
+			}
+		}]);
+	
+		return Container;
+	}(_react.Component);
+	
+	var mapStateToProps = function mapStateToProps(state) {
+		return {
+			notifications: state.root.notifications,
+			authStatus: state.root.auth.status
+		};
+	};
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Container);
+
+/***/ },
+/* 633 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(616);
+	var content = __webpack_require__(634);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(618)(content, {});
+	var update = __webpack_require__(637)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -68676,21 +74098,21 @@
 	}
 
 /***/ },
-/* 616 */
+/* 634 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(617)();
+	exports = module.exports = __webpack_require__(635)();
 	// imports
 	
 	
 	// module
-	exports.push([module.id, "html {\r\n    font-weight: 300;\r\n    -webkit-font-smoothing: antialiased;\r\n}\r\n\r\na>span {\r\n    text-decoration: none;\r\n    color:inherit;\r\n}\r\n\r\na { text-decoration: none; color: #33A1DE;}\r\na:visited { text-decoration: none; color: #33A1DE; }\r\na:hover { text-decoration: underline; }\r\na:focus { text-decoration: none; }\r\na:active { text-decoration: none; color: inherit;}\r\n\r\n#sidebar>a {\r\n    color:inherit;\r\n    text-decoration: none;\r\n}\r\n\r\nhtml, body {\r\n    height: 100%;\r\n    margin: 0;\r\n    color:#464646;\r\n    font-family: 'Lato', sans-serif;\r\n    padding: 0;\r\n    overflow-x: hidden;\r\n}\r\n\r\n.notification-bar {\r\n    z-index: 2;\r\n}\r\n\r\n.notification-bar-message {\r\n    line-height: 60px;\r\n    vertical-align: middle;\r\n    text-align: center;\r\n}\r\n\r\n\r\n.myButton {\r\n    background-color:#dbdbdb;\r\n    -moz-border-radius:3px;\r\n    -webkit-border-radius:3px;\r\n    border-radius:3px;\r\n    border: none;\r\n    display:inline-block;\r\n    color:#ffffff;\r\n    font-size:20px;\r\n    padding:12px 20px;\r\n    text-decoration:none;\r\n    font-weight: bold;\r\n    position: absolute;\r\n    right: 0px;\r\n    pointer-events: none;\r\n}\r\n.myButton.active {\r\n    pointer-events: auto;\r\n    cursor:pointer;\r\n    background-color:#44c767;\r\n}\r\n.myButton.active:hover {\r\n    -moz-box-shadow: inset 0 -2px 0 #009900;\r\n    -webkit-box-shadow: inset 0 -2px  #009900;\r\n    box-shadow: inset 0 -2px  #009900;\r\n}\r\n.myButton.active:focus {\r\n    outline: 0;\r\n    -moz-box-shadow: inset 0 2px  #009900;\r\n    -webkit-box-shadow: inset 0 2px  #009900;\r\n    box-shadow: inset 0 2px  #009900;\r\n}\r\n\r\n\r\n#app{\r\n    height: 100%;\r\n    margin: 0;\r\n    padding: 0;\r\n}\r\n\r\n#loginPopout {\r\n    background:#000;\r\n    opacity:0.5;\r\n    position:fixed; /* important to use fixed, not absolute */\r\n    top:0;\r\n    left:0;\r\n    width:100%;\r\n    height:100%;\r\n    z-index:9999;\r\n}\r\n\r\n.popoverContainer {\r\n    position: absolute;\r\n    width: 35%;\r\n    height: 50%;\r\n    top:0;\r\n    bottom: 0;\r\n    left: 0;\r\n    right: 0;\r\n    text-align: left;\r\n    margin: auto;\r\n}\r\n\r\n.centerIcon {\r\n    display: inline-block;\r\n    width: 100%;\r\n    font-size: 200%;\r\n}\r\n\r\n.rooms {\r\n    flex: 1;\r\n    overflow: auto;\r\n}\r\n\r\n    .room {\r\n        border-left: 1px solid rgba(255, 255, 255, 0);\r\n        border-right: 1px solid rgba(255, 255, 255, 0);\r\n        color:#464646;\r\n        width:100%;\r\n        height: 140px;\r\n        display:block;\r\n        position: relative;\r\n        box-sizing: border-box;\r\n        z-index: 1;\r\n    }\r\n\r\n\r\n    .room:hover {\r\n        position:relative;\r\n        background: red;\r\n        border-radius: 3px;\r\n        border: 1px solid rgba(30, 144, 255, .2);\r\n        background: rgba(30, 144, 255, .1);\r\n        text-decoration: none;\r\n        z-index:2;\r\n    }\r\n\r\n\r\n.closeModal {\r\n    -webkit-user-select: none;\r\n    position: absolute;\r\n    top: 40px;\r\n    right: 40px;\r\n    width: 60px;\r\n    height: 60px;\r\n    border-radius: 50%;\r\n    cursor: pointer;\r\n    color: #e4e4e4;\r\n}\r\n\r\n    .closeModal:hover {\r\n        background: #e4e4e4;\r\n        color:#262626;\r\n    }\r\n\r\n    .closeModal:focus {\r\n        outline: 0;\r\n        background: #D39B46;\r\n        color: white;\r\n        opacity: .6;\r\n    }\r\n\r\n    .closeModal>i {\r\n        font-size: 300%;\r\n    }\r\n\r\n.whiteboard {\r\n    -webkit-user-select: none;\r\n    overflow: hidden;\r\n    display:inline-block;\r\n    width: calc(80% - 240px);\r\n    height:99%;\r\n    margin:0;\r\n    padding:0;\r\n    position:absolute;\r\n}\r\n\r\n    .canvasContainer {\r\n        width:100%;\r\n        height:100%;\r\n        text-align: center;\r\n    }\r\n\r\n    canvas {\r\n        width:100%;\r\n        height:100%;\r\n    }\r\n\r\n    .artistOptions {\r\n        width:100%;\r\n        height:100%;\r\n    }\r\n\r\n    .editOptions {\r\n        border-top: 1px solid #DEDEDE;\r\n        width:100%;\r\n        height: 50px;\r\n        line-height: 50px;\r\n        position: absolute;\r\n        bottom:0px;\r\n        left:0;\r\n        right:0;\r\n        margin: 0 auto 0 auto;\r\n        display: flex;\r\n    }\r\n\r\n        .option {\r\n            cursor: pointer;\r\n            float:left;\r\n            line-height: inherit;\r\n            color: #2f2c2f;\r\n            font-size: 30px;\r\n            transition: font-size 0.5s ease;\r\n            padding: 0 10px 0 10px;\r\n            margin: 0 auto 0 auto;\r\n        }\r\n\r\n        .option:hover {\r\n            color: #FF8669;\r\n        }\r\n\r\n        #startGame {\r\n            line-height: 60px;\r\n            color: #e0e0e0;\r\n            position:absolute;\r\n            font-size: 200%;\r\n            top:40%;\r\n            right:50%;\r\n            opacity: .5;\r\n        }\r\n\r\n        .active #startGame  {\r\n            cursor: pointer;\r\n            color:#F79F66;\r\n        }\r\n\r\n        .active #startGame:hover {\r\n            opacity: 1;\r\n            color: #FF8669;\r\n        }\r\n\r\n.canvasMessage {\r\n    pointer-events: none;\r\n    width: 600px;\r\n    height: 100px;\r\n    position: absolute;\r\n    margin-left: auto;\r\n    margin-right: auto;\r\n    left: 0;\r\n    right: 0;\r\n    top:0;\r\n}\r\n\r\n.timer {\r\n    font-size: 250%;\r\n}\r\n\r\n.word {\r\n    pointer-events: none;\r\n    display: inline-block;\r\n    margin: 0 auto 0 auto;\r\n    position: absolute; \r\n    left: 50%;\r\n    bottom:50px;\r\n    font-size: 250%;\r\n}\r\n\r\n.word>span {\r\n    pointer-events: none;\r\n    position: relative; \r\n    left: -50%;\r\n}\r\n\r\n.spectatorMessage {\r\n    display:flex;\r\n    position: absolute;\r\n    left: 0; \r\n    right: 0; \r\n    margin-left: auto; \r\n    margin-right: auto; \r\n    width: 400px;\r\n}\r\n\r\n.brushOptions {\r\n    position: absolute;\r\n    top:30px;\r\n    left:30px;\r\n}\r\n\r\n    .colorCircle {\r\n        cursor: pointer;\r\n        border-radius: 50%;\r\n    }\r\n\r\n    .cover {\r\n        position: fixed;\r\n        top:0;\r\n        left:0;\r\n        bottom:0;\r\n        right: 0;\r\n    }\r\n\r\n\r\n.spinner {\r\n    text-align: center;\r\n    width:100%;\r\n    height: 100%;\r\n}\r\n\r\n.spinner>i, .spinner>span {\r\n    position:relative;\r\n    top: calc(50% - 10px);\r\n}\r\n\r\n.container {\r\n    height:100%;\r\n    width:100%;\r\n}\r\n\r\n    #message-section {\r\n        float: right;\r\n        display: flex;\r\n        flex-flow: column;\r\n        height: 100%;\r\n        width: 20%;\r\n    }\r\n        \r\n        .message-list {\r\n            flex: 1 1 auto;\r\n            direction:rtl; \r\n            overflow-y: scroll;\r\n            overflow-x: hidden;\r\n            display:flex;\r\n            flex-flow: column;\r\n        }\r\n\r\n                .messageListHeader {\r\n                    margin-top: auto;\r\n                    width: 100%;\r\n                }\r\n                .message {\r\n                    flex: 0 0 auto;\r\n                    width:100%;\r\n                    padding-top:2px;\r\n                    padding-bottom: 4px;\r\n                    white-space: nowrap;\r\n                    direction: ltr; \r\n                }\r\n\r\n                .message:hover {\r\n                    background:#f1f1f1;\r\n                }\r\n\r\n                    .leftMessage {\r\n                        width: 20px;\r\n                        height: 100%;\r\n                        display: inline-block;\r\n                    }\r\n\r\n                    .innerMessage {\r\n                        white-space:normal;\r\n                        display: inline-block;\r\n                        word-wrap: break-word;\r\n                        width:90%;\r\n                        padding-right: 10px;\r\n                    }\r\n\r\n                        .authorName {\r\n                            font-weight: 800;\r\n                        }\r\n\r\n                        .messageTime {\r\n                            font-size: 80%;\r\n                            color:#767676;\r\n                        }\r\n\r\n        #msg-send {\r\n            flex: 0 1 60px;\r\n            width: 100%;\r\n            height: 60px;\r\n        }\r\n\r\n            .message-composer {\r\n                font-family: 'Lato', sans-serif;\r\n                font-size: 102%;\r\n                border: 2px solid #dddddd;\r\n                height: 20px;\r\n                width: 85%;\r\n                outline: none;\r\n                margin:auto;\r\n                border-radius: 4px;\r\n                resize:none;\r\n                padding-right: 10px;\r\n                padding-top: 8px;\r\n                padding-bottom: 7px;\r\n                padding-left: 10px;\r\n                margin-right: auto;\r\n                margin-left: 25px;\r\n                margin-top: 15px;\r\n                margin-bottom: auto;\r\n            }\r\n\r\n            .message-composer:focus {\r\n                border-color: #1E90FF;\r\n            }\r\n\r\n            .message-composer:hover {\r\n                border-color: #1E90FF;\r\n            }\r\n\r\n    #sidebar {\r\n        cursor: default;\r\n        float:left;\r\n        height: 100%;\r\n        width:240px;\r\n        color:#DEDEDE;\r\n        background:#2f2c2f;\r\n        font-weight: 400;\r\n        -webkit-touch-callout: none; /* iOS Safari */\r\n        -webkit-user-select: none;   /* Chrome/Safari/Opera */\r\n        -moz-user-select: none;      /* Firefox */\r\n        -ms-user-select: none;       /* Internet Explorer/Edge */\r\n        user-select: none;\r\n        position: relative;\r\n    }\r\n\r\n        .channelInterfaceContainer {\r\n            position: absolute;\r\n            bottom:0;  /* position the top  edge of the element at the middle of the parent */\r\n            left: 50%; /* position the left edge of the element at the middle of the parent */\r\n            cursor: pointer;\r\n            transform: translateX(-50%);\r\n        }\r\n\r\n        .sidebarHeader {\r\n            margin-bottom: 20px;\r\n            height: 70px;\r\n            width: 100%;\r\n        }\r\n            .headerText {\r\n                color:white;\r\n                font-size: 110%;\r\n                font-weight: 900;\r\n                display: inline-block;\r\n                width: 75%;\r\n                margin-top: 15px;\r\n                margin-left: 15px;\r\n            }\r\n\r\n            .headerUsername {\r\n                font-size: 90%;\r\n                margin-top: 5px;\r\n                margin-left: 15px;\r\n            }\r\n\r\n        .sidebarHeader:hover {\r\n            color: white;\r\n            background:#252525;\r\n        }\r\n\r\n        .sidebarElementArea {\r\n            padding-right: 10px;\r\n        }\r\n\r\n        .copyLink {\r\n            border-bottom: 1px dotted;\r\n            cursor: pointer;\r\n        }\r\n\r\n        .copyLink:hover {\r\n            border-bottom: 1px solid;\r\n        }\r\n\r\n        .channelHeader {\r\n            padding-left: 15px;\r\n            font-weight: 900;\r\n            padding-bottom: 6px;\r\n        }\r\n\r\n            .channelHeaderText {\r\n                color:#DEDEDE;\r\n                opacity: .7;\r\n                display: inline-block;\r\n                width: 90%;\r\n                font-size: 78%;\r\n            }\r\n\r\n                .channelHeaderText:hover {\r\n                    opacity: 1;\r\n                }\r\n\r\n            .addChannel {\r\n                font-size: 85%;\r\n                opacity: .4;\r\n                color:#DEDEDE;\r\n                display: inline-block;\r\n                cursor: pointer;\r\n            }\r\n\r\n                .addChannel:hover {\r\n                    opacity: 1;\r\n                }\r\n\r\n        .sidebarElement {\r\n            padding-bottom: 4px;\r\n            padding-top: 2px;\r\n            display:block;\r\n            width:100%;\r\n            color:white;\r\n            border: 2px solid #2f2c2f;\r\n        }\r\n\r\n            .sidebarElement:hover {\r\n                background:#5C6380;\r\n                border: 2px solid #5C6380;\r\n            }\r\n\r\n            .sidebarElement.active:hover {\r\n                background:#5C6380;\r\n            }\r\n\r\n            .sidebarElement.active {\r\n                border: 2px solid #D39B46;\r\n            }\r\n\r\n        .sidebarElement>span>i {\r\n            opacity: .4;\r\n        }\r\n\r\n        #sidebar .sidebarElement >span {\r\n            padding-left: 15px;\r\n            color:#DEDEDE;\r\n            user-select: none;\r\n        }\r\n\r\n    .channelInterfaceContainer {\r\n        width: 100%;\r\n        text-align: center;\r\n    }\r\n\r\n    .channelInterfaceContainer:hover {\r\n        color: white;\r\n        background:#252525;\r\n    }\r\n\r\n/* Pretty Scrollbar */\r\n::-webkit-scrollbar {\r\n  width: 8px;\r\n  background-color: rgba(0, 0, 0, 0.04);\r\n  -webkit-border-radius: 100px;\r\n  border-radius: 100px;\r\n}\r\n\r\n::-webkit-scrollbar-thumb:vertical {\r\n  background: rgba(0,0,0,0.23);\r\n  -webkit-border-radius: 100px;\r\n  border-radius: 100px;\r\n}\r\n\r\n.redirect {\r\n    text-align: center;\r\n}\r\n.form-form {\r\n    align-items: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    text-align: center;\r\n}\r\n.form-wrapper {\r\n    display: flex;\r\n    margin-bottom: 0.5em;\r\n}\r\n\r\n.form-field {\r\n    flex: 1;\r\n}\r\n.form-field:not(:first-child) {\r\n    border-left: 0;\r\n}\r\n.form-field:not(:last-child) {\r\n    border-right: 0;\r\n}\r\n\r\n.form-item {\r\n    background-color: rgba(147, 128, 108, 0.1);\r\n    color: #666666;\r\n    font: inherit;\r\n    font-weight: normal;\r\n}\r\n.form-field,\r\n.form-item {\r\n    border: 1px solid rgba(147, 128, 108, 0.25);\r\n    padding: 0.5em 0.75em;\r\n}\r\n.form-field:first-child,\r\n.form-item:first-child {\r\n    border-radius: 2px 0 0 2px;\r\n}\r\n.form-field:last-child,\r\n.form-item:last-child {\r\n    border-radius: 0 2px 2px 0;\r\n}\r\n\r\n\r\n.sk-circle {\r\n    margin: 100px auto;\r\n    width: 40px;\r\n    height: 40px;\r\n    position: relative;\r\n}\r\n.sk-circle .sk-child {\r\n    width: 100%;\r\n    height: 100%;\r\n    position: absolute;\r\n    left: 0;\r\n    top: 0;\r\n}\r\n.sk-circle .sk-child:before {\r\n    content: '';\r\n    display: block;\r\n    margin: 0 auto;\r\n    width: 15%;\r\n    height: 15%;\r\n    background-color: #333;\r\n    border-radius: 100%;\r\n    -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;\r\n    animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;\r\n}\r\n.sk-circle .sk-circle2 {\r\n    -webkit-transform: rotate(30deg);\r\n    -ms-transform: rotate(30deg);\r\n    transform: rotate(30deg); }\r\n.sk-circle .sk-circle3 {\r\n    -webkit-transform: rotate(60deg);\r\n    -ms-transform: rotate(60deg);\r\n    transform: rotate(60deg); }\r\n.sk-circle .sk-circle4 {\r\n    -webkit-transform: rotate(90deg);\r\n    -ms-transform: rotate(90deg);\r\n    transform: rotate(90deg); }\r\n.sk-circle .sk-circle5 {\r\n    -webkit-transform: rotate(120deg);\r\n    -ms-transform: rotate(120deg);\r\n    transform: rotate(120deg); }\r\n.sk-circle .sk-circle6 {\r\n    -webkit-transform: rotate(150deg);\r\n    -ms-transform: rotate(150deg);\r\n    transform: rotate(150deg); }\r\n.sk-circle .sk-circle7 {\r\n    -webkit-transform: rotate(180deg);\r\n    -ms-transform: rotate(180deg);\r\n    transform: rotate(180deg); }\r\n.sk-circle .sk-circle8 {\r\n    -webkit-transform: rotate(210deg);\r\n    -ms-transform: rotate(210deg);\r\n    transform: rotate(210deg); }\r\n.sk-circle .sk-circle9 {\r\n    -webkit-transform: rotate(240deg);\r\n    -ms-transform: rotate(240deg);\r\n    transform: rotate(240deg); }\r\n.sk-circle .sk-circle10 {\r\n    -webkit-transform: rotate(270deg);\r\n    -ms-transform: rotate(270deg);\r\n    transform: rotate(270deg); }\r\n.sk-circle .sk-circle11 {\r\n    -webkit-transform: rotate(300deg);\r\n    -ms-transform: rotate(300deg);\r\n    transform: rotate(300deg); }\r\n.sk-circle .sk-circle12 {\r\n    -webkit-transform: rotate(330deg);\r\n    -ms-transform: rotate(330deg);\r\n    transform: rotate(330deg); }\r\n.sk-circle .sk-circle2:before {\r\n    -webkit-animation-delay: -1.1s;\r\n    animation-delay: -1.1s; }\r\n.sk-circle .sk-circle3:before {\r\n    -webkit-animation-delay: -1s;\r\n    animation-delay: -1s; }\r\n.sk-circle .sk-circle4:before {\r\n    -webkit-animation-delay: -0.9s;\r\n    animation-delay: -0.9s; }\r\n.sk-circle .sk-circle5:before {\r\n    -webkit-animation-delay: -0.8s;\r\n    animation-delay: -0.8s; }\r\n.sk-circle .sk-circle6:before {\r\n    -webkit-animation-delay: -0.7s;\r\n    animation-delay: -0.7s; }\r\n.sk-circle .sk-circle7:before {\r\n    -webkit-animation-delay: -0.6s;\r\n    animation-delay: -0.6s; }\r\n.sk-circle .sk-circle8:before {\r\n    -webkit-animation-delay: -0.5s;\r\n    animation-delay: -0.5s; }\r\n.sk-circle .sk-circle9:before {\r\n    -webkit-animation-delay: -0.4s;\r\n    animation-delay: -0.4s; }\r\n.sk-circle .sk-circle10:before {\r\n    -webkit-animation-delay: -0.3s;\r\n    animation-delay: -0.3s; }\r\n.sk-circle .sk-circle11:before {\r\n    -webkit-animation-delay: -0.2s;\r\n    animation-delay: -0.2s; }\r\n.sk-circle .sk-circle12:before {\r\n    -webkit-animation-delay: -0.1s;\r\n    animation-delay: -0.1s; }\r\n\r\n@-webkit-keyframes sk-circleBounceDelay {\r\n    0%, 80%, 100% {\r\n        -webkit-transform: scale(0);\r\n        transform: scale(0);\r\n    } 40% {\r\n        -webkit-transform: scale(1);\r\n        transform: scale(1);\r\n    }\r\n}\r\n\r\n@keyframes sk-circleBounceDelay {\r\n    0%, 80%, 100% {\r\n        -webkit-transform: scale(0);\r\n        transform: scale(0);\r\n    } 40% {\r\n        -webkit-transform: scale(1);\r\n        transform: scale(1);\r\n    }\r\n}\r\n", ""]);
+	exports.push([module.id, "html {\r\n  font-weight: 300;\r\n  -webkit-font-smoothing: antialiased;\r\n}\r\n\r\na>span {\r\n  text-decoration: none;\r\n  color:inherit;\r\n}\r\n\r\na { text-decoration: none; color: #33A1DE;}\r\na:visited { text-decoration: none; color: #33A1DE; }\r\na:hover { text-decoration: underline; }\r\na:focus { text-decoration: none; }\r\na:active { text-decoration: none; color: inherit;}\r\n\r\nbutton:focus {\r\n  outline: 0;\r\n}\r\n\r\n.backgroundImg {\r\n  background: url(" + __webpack_require__(636) + ") no-repeat center center fixed;\r\n}\r\n\r\n\r\nul {\r\n  list-style-type: none;\r\n  margin: 0;\r\n  padding: 0;\r\n  overflow: hidden;\r\n  z-index: 2;\r\n}\r\n\r\nli {\r\n  margin-right: 50px;\r\n  margin-top: 15px;\r\n  float: right;\r\n  cursor: pointer;\r\n}\r\n\r\nli a {\r\n  border: 2px solid white;\r\n  border-radius: 4px;\r\n  display: block;\r\n  color: white;\r\n  text-align: center;\r\n  padding: 8px 12px 10px 12px;\r\n  text-decoration: none;\r\n  opacity: .7;\r\n}\r\n\r\nli a:hover {\r\n  opacity: 1;\r\n  text-decoration: none;\r\n}\r\n\r\nli a:active {\r\n  color: white;\r\n}\r\n\r\n\r\n#sidebar>a {\r\n  color:inherit;\r\n  text-decoration: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n  margin: 0;\r\n  color:#464646;\r\n  font-family: 'Lato', sans-serif;\r\n  padding: 0;\r\n  overflow-x: hidden;\r\n}\r\n\r\n.notification-bar {\r\n  z-index: 2;\r\n}\r\n\r\n.notification-bar-message {\r\n  line-height: 60px;\r\n  vertical-align: middle;\r\n  text-align: center;\r\n}\r\n\r\n\r\n.myButton {\r\n  background-color:#dbdbdb;\r\n  -moz-border-radius:3px;\r\n  -webkit-border-radius:3px;\r\n  border-radius:3px;\r\n  border: none;\r\n  display:inline-block;\r\n  color:#ffffff;\r\n  font-size:20px;\r\n  padding:12px 20px;\r\n  text-decoration:none;\r\n  font-weight: bold;\r\n  position: absolute;\r\n  right: 0px;\r\n  pointer-events: none;\r\n}\r\n.myButton.active {\r\n  pointer-events: auto;\r\n  cursor:pointer;\r\n  background-color:#44c767;\r\n}\r\n.myButton.active:hover {\r\n  -moz-box-shadow: inset 0 -2px 0 #009900;\r\n  -webkit-box-shadow: inset 0 -2px  #009900;\r\n  box-shadow: inset 0 -2px  #009900;\r\n}\r\n.myButton.active:focus {\r\n  outline: 0;\r\n  -moz-box-shadow: inset 0 2px  #009900;\r\n  -webkit-box-shadow: inset 0 2px  #009900;\r\n  box-shadow: inset 0 2px  #009900;\r\n}\r\n\r\n\r\n.myButton-transparent {\r\n  cursor:pointer;\r\n  color: white;\r\n  opacity: .8;\r\n  background-color:#dbdbdb;\r\n  -moz-border-radius:3px;\r\n  -webkit-border-radius:3px;\r\n  border-radius:3px;\r\n  border: none;\r\n  display:inline-block;\r\n  background-color:#44c767;\r\n  font-size:20px;\r\n  padding:12px 20px;\r\n  text-decoration:none;\r\n  font-weight: bold;\r\n  position: absolute;\r\n  right: 0px;\r\n}\r\n\r\n\r\n.myButton-transparent:hover {\r\n  opacity: .6;\r\n}\r\n\r\n\r\n#app{\r\n  height: 100%;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n#loginPopout {\r\n  background:#000;\r\n  opacity:0.5;\r\n  position:fixed; /* important to use fixed, not absolute */\r\n  top:0;\r\n  left:0;\r\n  width:100%;\r\n  height:100%;\r\n  z-index:9999;\r\n}\r\n\r\n.popoverContainer {\r\n  position: absolute;\r\n  width: 35%;\r\n  height: 50%;\r\n  top:0;\r\n  bottom: 0;\r\n  left: 0;\r\n  right: 0;\r\n  text-align: left;\r\n  margin: auto;\r\n}\r\n\r\n.centerIcon {\r\n  display: inline-block;\r\n  width: 100%;\r\n  font-size: 200%;\r\n}\r\n\r\n.rooms {\r\n  flex: 1;\r\n  overflow: auto;\r\n}\r\n\r\n.room {\r\n  border-left: 1px solid rgba(255, 255, 255, 0);\r\n  border-right: 1px solid rgba(255, 255, 255, 0);\r\n  color:#464646;\r\n  width:100%;\r\n  height: 140px;\r\n  display:block;\r\n  position: relative;\r\n  box-sizing: border-box;\r\n  z-index: 1;\r\n}\r\n\r\n\r\n.room:hover {\r\n  position:relative;\r\n  background: red;\r\n  border-radius: 3px;\r\n  border: 1px solid rgba(30, 144, 255, .2);\r\n  background: rgba(30, 144, 255, .1);\r\n  text-decoration: none;\r\n  z-index:2;\r\n}\r\n\r\n\r\n.closeModal {\r\n  -webkit-user-select: none;\r\n  position: absolute;\r\n  top: 40px;\r\n  right: 40px;\r\n  width: 60px;\r\n  height: 60px;\r\n  border-radius: 50%;\r\n  cursor: pointer;\r\n  color: #e4e4e4;\r\n}\r\n\r\n.closeModal:hover {\r\n  background: #e4e4e4;\r\n  color:#262626;\r\n}\r\n\r\n.closeModal:focus {\r\n  outline: 0;\r\n  background: #D39B46;\r\n  color: white;\r\n  opacity: .6;\r\n}\r\n\r\n.closeModal>i {\r\n  font-size: 300%;\r\n}\r\n\r\n.whiteboard {\r\n  -webkit-user-select: none;\r\n  overflow: hidden;\r\n  display:inline-block;\r\n  width: calc(80% - 240px);\r\n  height:99%;\r\n  margin:0;\r\n  padding:0;\r\n  position:absolute;\r\n}\r\n\r\n.canvasContainer {\r\n  width:100%;\r\n  height:100%;\r\n  text-align: center;\r\n}\r\n\r\ncanvas {\r\n  width:100%;\r\n  height:100%;\r\n}\r\n\r\n.artistOptions {\r\n  width:100%;\r\n  height:100%;\r\n}\r\n\r\n.editOptions {\r\n  border-top: 1px solid #DEDEDE;\r\n  width:100%;\r\n  height: 50px;\r\n  line-height: 50px;\r\n  position: absolute;\r\n  bottom:0px;\r\n  left:0;\r\n  right:0;\r\n  margin: 0 auto 0 auto;\r\n  display: flex;\r\n}\r\n\r\n.option {\r\n  cursor: pointer;\r\n  float:left;\r\n  line-height: inherit;\r\n  color: #2f2c2f;\r\n  font-size: 30px;\r\n  transition: font-size 0.5s ease;\r\n  padding: 0 10px 0 10px;\r\n  margin: 0 auto 0 auto;\r\n}\r\n\r\n.option:hover {\r\n  color: #FF8669;\r\n}\r\n\r\n#startGame {\r\n  line-height: 60px;\r\n  color: #e0e0e0;\r\n  position:absolute;\r\n  font-size: 200%;\r\n  top:40%;\r\n  right:50%;\r\n  opacity: .5;\r\n}\r\n\r\n.active #startGame  {\r\n  cursor: pointer;\r\n  color:#F79F66;\r\n}\r\n\r\n.active #startGame:hover {\r\n  opacity: 1;\r\n  color: #FF8669;\r\n}\r\n\r\n.canvasMessage {\r\n  pointer-events: none;\r\n  width: 600px;\r\n  height: 100px;\r\n  position: absolute;\r\n  margin-left: auto;\r\n  margin-right: auto;\r\n  left: 0;\r\n  right: 0;\r\n  top:0;\r\n}\r\n\r\n.timer {\r\n  font-size: 250%;\r\n}\r\n\r\n.word {\r\n  pointer-events: none;\r\n  display: inline-block;\r\n  margin: 0 auto 0 auto;\r\n  position: absolute; \r\n  left: 50%;\r\n  bottom:50px;\r\n  font-size: 250%;\r\n}\r\n\r\n.word>span {\r\n  pointer-events: none;\r\n  position: relative; \r\n  left: -50%;\r\n}\r\n\r\n.spectatorMessage {\r\n  display:flex;\r\n  position: absolute;\r\n  left: 0; \r\n  right: 0; \r\n  margin-left: auto; \r\n  margin-right: auto; \r\n  width: 400px;\r\n}\r\n\r\n.brushOptions {\r\n  position: absolute;\r\n  top:30px;\r\n  left:30px;\r\n}\r\n\r\n.colorCircle {\r\n  cursor: pointer;\r\n  border-radius: 50%;\r\n}\r\n\r\n.cover {\r\n  position: fixed;\r\n  top:0;\r\n  left:0;\r\n  bottom:0;\r\n  right: 0;\r\n}\r\n\r\n\r\n.spinner {\r\n  text-align: center;\r\n  width:100%;\r\n  height: 100%;\r\n}\r\n\r\n.spinner>i, .spinner>span {\r\n  position:relative;\r\n  top: calc(50% - 10px);\r\n}\r\n\r\n.container {\r\n  height:100%;\r\n  width:100%;\r\n}\r\n\r\n#message-section {\r\n  float: right;\r\n  display: flex;\r\n  flex-flow: column;\r\n  height: 100%;\r\n  width: 20%;\r\n}\r\n\r\n.message-list {\r\n  flex: 1 1 auto;\r\n  direction:rtl; \r\n  overflow-y: scroll;\r\n  overflow-x: hidden;\r\n  display:flex;\r\n  flex-flow: column;\r\n}\r\n\r\n.messageListHeader {\r\n  margin-top: auto;\r\n  width: 100%;\r\n}\r\n.message {\r\n  flex: 0 0 auto;\r\n  width:100%;\r\n  padding-top:2px;\r\n  padding-bottom: 4px;\r\n  white-space: nowrap;\r\n  direction: ltr; \r\n}\r\n\r\n.message:hover {\r\n  background:#f1f1f1;\r\n}\r\n\r\n.leftMessage {\r\n  width: 20px;\r\n  height: 100%;\r\n  display: inline-block;\r\n}\r\n\r\n.innerMessage {\r\n  white-space:normal;\r\n  display: inline-block;\r\n  word-wrap: break-word;\r\n  width:90%;\r\n  padding-right: 10px;\r\n}\r\n\r\n.authorName {\r\n  font-weight: 800;\r\n}\r\n\r\n.messageTime {\r\n  font-size: 80%;\r\n  color:#767676;\r\n}\r\n\r\n#msg-send {\r\n  flex: 0 1 60px;\r\n  width: 100%;\r\n  height: 60px;\r\n}\r\n\r\n.message-composer {\r\n  font-family: 'Lato', sans-serif;\r\n  font-size: 102%;\r\n  border: 2px solid #dddddd;\r\n  height: 20px;\r\n  width: 85%;\r\n  outline: none;\r\n  margin:auto;\r\n  border-radius: 4px;\r\n  resize:none;\r\n  padding-right: 10px;\r\n  padding-top: 8px;\r\n  padding-bottom: 7px;\r\n  padding-left: 10px;\r\n  margin-right: auto;\r\n  margin-left: 25px;\r\n  margin-top: 15px;\r\n  margin-bottom: auto;\r\n}\r\n\r\n.message-composer:focus {\r\n  border-color: #1E90FF;\r\n}\r\n\r\n.message-composer:hover {\r\n  border-color: #1E90FF;\r\n}\r\n\r\n#sidebar {\r\n  cursor: default;\r\n  float:left;\r\n  height: 100%;\r\n  width:240px;\r\n  color:#DEDEDE;\r\n  background:#2f2c2f;\r\n  font-weight: 400;\r\n  -webkit-touch-callout: none; /* iOS Safari */\r\n  -webkit-user-select: none;   /* Chrome/Safari/Opera */\r\n  -moz-user-select: none;      /* Firefox */\r\n  -ms-user-select: none;       /* Internet Explorer/Edge */\r\n  user-select: none;\r\n  position: relative;\r\n}\r\n\r\n.channelInterfaceContainer {\r\n  position: absolute;\r\n  bottom:0;  /* position the top  edge of the element at the middle of the parent */\r\n  left: 50%; /* position the left edge of the element at the middle of the parent */\r\n  cursor: pointer;\r\n  transform: translateX(-50%);\r\n}\r\n\r\n.sidebarHeader {\r\n  margin-bottom: 20px;\r\n  height: 70px;\r\n  width: 100%;\r\n}\r\n.headerText {\r\n  color:white;\r\n  font-size: 110%;\r\n  font-weight: 900;\r\n  display: inline-block;\r\n  width: 75%;\r\n  margin-top: 15px;\r\n  margin-left: 15px;\r\n}\r\n\r\n.headerUsername {\r\n  font-size: 90%;\r\n  margin-top: 5px;\r\n  margin-left: 15px;\r\n}\r\n\r\n.sidebarHeader:hover {\r\n  color: white;\r\n  background:#252525;\r\n}\r\n\r\n.sidebarElementArea {\r\n  padding-right: 10px;\r\n}\r\n\r\n.copyLink {\r\n  border-bottom: 1px dotted;\r\n  cursor: pointer;\r\n}\r\n\r\n.copyLink:hover {\r\n  border-bottom: 1px solid;\r\n}\r\n\r\n.channelHeader {\r\n  padding-left: 15px;\r\n  font-weight: 900;\r\n  padding-bottom: 6px;\r\n}\r\n\r\n.channelHeaderText {\r\n  color:#DEDEDE;\r\n  opacity: .7;\r\n  display: inline-block;\r\n  width: 90%;\r\n  font-size: 78%;\r\n}\r\n\r\n.channelHeaderText:hover {\r\n  opacity: 1;\r\n}\r\n\r\n.addChannel {\r\n  font-size: 85%;\r\n  opacity: .4;\r\n  color:#DEDEDE;\r\n  display: inline-block;\r\n  cursor: pointer;\r\n}\r\n\r\n.addChannel:hover {\r\n  opacity: 1;\r\n}\r\n\r\n.sidebarElement {\r\n  padding-bottom: 4px;\r\n  padding-top: 2px;\r\n  display:block;\r\n  width:100%;\r\n  color:white;\r\n  border: 2px solid #2f2c2f;\r\n}\r\n\r\n.sidebarElement:hover {\r\n  background:#5C6380;\r\n  border: 2px solid #5C6380;\r\n}\r\n\r\n.sidebarElement.active:hover {\r\n  background:#5C6380;\r\n}\r\n\r\n.sidebarElement.active {\r\n  border: 2px solid #D39B46;\r\n}\r\n\r\n.sidebarElement>span>i {\r\n  opacity: .4;\r\n}\r\n\r\n#sidebar .sidebarElement >span {\r\n  padding-left: 15px;\r\n  color:#DEDEDE;\r\n  user-select: none;\r\n}\r\n\r\n.channelInterfaceContainer {\r\n  width: 100%;\r\n  text-align: center;\r\n}\r\n\r\n.channelInterfaceContainer:hover {\r\n  color: white;\r\n  background:#252525;\r\n}\r\n\r\n/* Pretty Scrollbar */\r\n::-webkit-scrollbar {\r\n  width: 8px;\r\n  background-color: rgba(0, 0, 0, 0.04);\r\n  -webkit-border-radius: 100px;\r\n  border-radius: 100px;\r\n}\r\n\r\n::-webkit-scrollbar-thumb:vertical {\r\n  background: rgba(0,0,0,0.23);\r\n  -webkit-border-radius: 100px;\r\n  border-radius: 100px;\r\n}\r\n\r\n.redirect {\r\n  text-align: center;\r\n}\r\n.form-form {\r\n  align-items: center;\r\n  display: flex;\r\n  flex-direction: column;\r\n  text-align: center;\r\n}\r\n.form-wrapper {\r\n  display: flex;\r\n  margin-bottom: 0.5em;\r\n}\r\n\r\n.form-field {\r\n  flex: 1;\r\n}\r\n.form-field:not(:first-child) {\r\n  border-left: 0;\r\n}\r\n.form-field:not(:last-child) {\r\n  border-right: 0;\r\n}\r\n\r\n.form-item {\r\n  background-color: rgba(147, 128, 108, 0.1);\r\n  color: #666666;\r\n  font: inherit;\r\n  font-weight: normal;\r\n}\r\n.form-field,\r\n.form-item {\r\n  border: 1px solid rgba(147, 128, 108, 0.25);\r\n  padding: 0.5em 0.75em;\r\n}\r\n.form-field:first-child,\r\n.form-item:first-child {\r\n  border-radius: 2px 0 0 2px;\r\n}\r\n.form-field:last-child,\r\n.form-item:last-child {\r\n  border-radius: 0 2px 2px 0;\r\n}\r\n\r\n\r\n.sk-circle {\r\n  margin: 100px auto;\r\n  width: 40px;\r\n  height: 40px;\r\n  position: relative;\r\n}\r\n.sk-circle .sk-child {\r\n  width: 100%;\r\n  height: 100%;\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n}\r\n.sk-circle .sk-child:before {\r\n  content: '';\r\n  display: block;\r\n  margin: 0 auto;\r\n  width: 15%;\r\n  height: 15%;\r\n  background-color: #333;\r\n  border-radius: 100%;\r\n  -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;\r\n  animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;\r\n}\r\n.sk-circle .sk-circle2 {\r\n  -webkit-transform: rotate(30deg);\r\n  -ms-transform: rotate(30deg);\r\n  transform: rotate(30deg); }\r\n  .sk-circle .sk-circle3 {\r\n    -webkit-transform: rotate(60deg);\r\n    -ms-transform: rotate(60deg);\r\n    transform: rotate(60deg); }\r\n    .sk-circle .sk-circle4 {\r\n      -webkit-transform: rotate(90deg);\r\n      -ms-transform: rotate(90deg);\r\n      transform: rotate(90deg); }\r\n      .sk-circle .sk-circle5 {\r\n        -webkit-transform: rotate(120deg);\r\n        -ms-transform: rotate(120deg);\r\n        transform: rotate(120deg); }\r\n        .sk-circle .sk-circle6 {\r\n          -webkit-transform: rotate(150deg);\r\n          -ms-transform: rotate(150deg);\r\n          transform: rotate(150deg); }\r\n          .sk-circle .sk-circle7 {\r\n            -webkit-transform: rotate(180deg);\r\n            -ms-transform: rotate(180deg);\r\n            transform: rotate(180deg); }\r\n            .sk-circle .sk-circle8 {\r\n              -webkit-transform: rotate(210deg);\r\n              -ms-transform: rotate(210deg);\r\n              transform: rotate(210deg); }\r\n              .sk-circle .sk-circle9 {\r\n                -webkit-transform: rotate(240deg);\r\n                -ms-transform: rotate(240deg);\r\n                transform: rotate(240deg); }\r\n                .sk-circle .sk-circle10 {\r\n                  -webkit-transform: rotate(270deg);\r\n                  -ms-transform: rotate(270deg);\r\n                  transform: rotate(270deg); }\r\n                  .sk-circle .sk-circle11 {\r\n                    -webkit-transform: rotate(300deg);\r\n                    -ms-transform: rotate(300deg);\r\n                    transform: rotate(300deg); }\r\n                    .sk-circle .sk-circle12 {\r\n                      -webkit-transform: rotate(330deg);\r\n                      -ms-transform: rotate(330deg);\r\n                      transform: rotate(330deg); }\r\n                      .sk-circle .sk-circle2:before {\r\n                        -webkit-animation-delay: -1.1s;\r\n                        animation-delay: -1.1s; }\r\n                        .sk-circle .sk-circle3:before {\r\n                          -webkit-animation-delay: -1s;\r\n                          animation-delay: -1s; }\r\n                          .sk-circle .sk-circle4:before {\r\n                            -webkit-animation-delay: -0.9s;\r\n                            animation-delay: -0.9s; }\r\n                            .sk-circle .sk-circle5:before {\r\n                              -webkit-animation-delay: -0.8s;\r\n                              animation-delay: -0.8s; }\r\n                              .sk-circle .sk-circle6:before {\r\n                                -webkit-animation-delay: -0.7s;\r\n                                animation-delay: -0.7s; }\r\n                                .sk-circle .sk-circle7:before {\r\n                                  -webkit-animation-delay: -0.6s;\r\n                                  animation-delay: -0.6s; }\r\n                                  .sk-circle .sk-circle8:before {\r\n                                    -webkit-animation-delay: -0.5s;\r\n                                    animation-delay: -0.5s; }\r\n                                    .sk-circle .sk-circle9:before {\r\n                                      -webkit-animation-delay: -0.4s;\r\n                                      animation-delay: -0.4s; }\r\n                                      .sk-circle .sk-circle10:before {\r\n                                        -webkit-animation-delay: -0.3s;\r\n                                        animation-delay: -0.3s; }\r\n                                        .sk-circle .sk-circle11:before {\r\n                                          -webkit-animation-delay: -0.2s;\r\n                                          animation-delay: -0.2s; }\r\n                                          .sk-circle .sk-circle12:before {\r\n                                            -webkit-animation-delay: -0.1s;\r\n                                            animation-delay: -0.1s; }\r\n\r\n                                            @-webkit-keyframes sk-circleBounceDelay {\r\n                                              0%, 80%, 100% {\r\n                                                -webkit-transform: scale(0);\r\n                                                transform: scale(0);\r\n                                                } 40% {\r\n                                                  -webkit-transform: scale(1);\r\n                                                  transform: scale(1);\r\n                                                }\r\n                                              }\r\n\r\n                                              @keyframes sk-circleBounceDelay {\r\n                                                0%, 80%, 100% {\r\n                                                  -webkit-transform: scale(0);\r\n                                                  transform: scale(0);\r\n                                                  } 40% {\r\n                                                    -webkit-transform: scale(1);\r\n                                                    transform: scale(1);\r\n                                                  }\r\n                                                }\r\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 617 */
+/* 635 */
 /***/ function(module, exports) {
 
 	/*
@@ -68746,7 +74168,13 @@
 
 
 /***/ },
-/* 618 */
+/* 636 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "c5d0fde68dd42ed5e316b63f1806caad.jpg";
+
+/***/ },
+/* 637 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -68998,16 +74426,16 @@
 
 
 /***/ },
-/* 619 */
+/* 638 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(620);
+	var content = __webpack_require__(639);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(618)(content, {});
+	var update = __webpack_require__(637)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -69024,10 +74452,10 @@
 	}
 
 /***/ },
-/* 620 */
+/* 639 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(617)();
+	exports = module.exports = __webpack_require__(635)();
 	// imports
 	
 	
@@ -69038,7 +74466,47 @@
 
 
 /***/ },
-/* 621 */
+/* 640 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(641);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(637)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./timer.css", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./timer.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 641 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(635)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "#svg circle {\r\n  stroke-dashoffset: 100;\r\n  transition: stroke-dashoffset 1s linear;\r\n  stroke: red;\r\n  stroke-width: .25em;\r\n}\r\n#svg #bar {\r\n  stroke-width: .24em;\r\n  stroke: white;\r\n}\r\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 642 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	var overArg = __webpack_require__(__webpack_module_template_argument_0__);

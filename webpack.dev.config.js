@@ -6,7 +6,7 @@ module.exports = {
 
     entry: [
         './src/main',
-        'webpack-dev-server/client?http://localhost:3001',
+        'webpack-dev-server/client?http://localhost:3001/',
         'webpack/hot/only-dev-server'
     ],
 
@@ -27,7 +27,8 @@ module.exports = {
         loaders:[
             { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
             { test: /\.jsx$/, exclude: /node_modules/, loader: 'babel' , presets:[ 'es2015', 'react', 'stage-2' ] },
-            { test: /\.css$/, loader: 'style!css' }
+            { test: /\.css$/, loader: 'style!css' },
+            { test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/, loader: 'url-loader?limit=100000' }
         ]
     },
 

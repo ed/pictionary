@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ActionHistory, Mark, ClearCanvas } from '../utils/CanvasUtils';
 import { CompactPicker } from 'react-color';
 import { connect } from 'react-redux';
+import { Circle } from 'react-progressbar.js'
 
 
 class Canvas extends Component {
@@ -15,7 +16,8 @@ class Canvas extends Component {
       brushColor: "#C45100", 
       brushSize: 8, 
       guessers: [],
-      turnOver: false
+      turnOver: false,
+      timeLeft: 0
     };
     this.remakeCanvasRemote = () => null;
   }
@@ -45,6 +47,7 @@ class Canvas extends Component {
     key.unbind('ctrl + c');
     this.props.socket.off('turn over');
     this.props.socket.off('update canvas');
+    clearInterval(this.milliTick)
   }
 
   buildRemoteCanvas(canvasData) {
@@ -167,10 +170,19 @@ class Canvas extends Component {
         {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
         <div className="canvasMessage">
         {
-          !this.state.turnOver ?  <div className="timer"> {this.props.timeLeft} </div> 
+          !this.state.turnOver ?  
+          <div className="timer" style={{display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background:'white', left:0, right:0}}> 
+          <Circle
+                progress={this.props.timeLeft/this.props.timePerTurn}
+                options={{strokeWidth: 6, color: '#FF3232', text: { value: this.props.timeLeft, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} }, trailColor: '#eee', trailWidth: 4  }}
+                initialAnimate={true}
+                containerStyle={{ width: '80px', height: '80px' }}
+                containerClassName={'.progressbar'} /> 
+          </div> 
         : 
-          <div className="guesserDisplay"> The word was <span style={{fontWeight:'bold',color: 'orange'}}>{this.props.word}</span>! <br/>
-          <span> {this.state.guessers.length > 0 ? <span style={{fontWeight:'bold'}}>{this.state.guessers.join(', ')}</span> : 'No one'} guessed the word </span>
+          <div> The word was <span style={{fontWeight:'bold',color: 'orange'}}>{this.props.word}</span>! <br/>
+          <span> {this.state.guessers.length > 0 ? 
+            <span style={{fontWeight:'bold'}}>{ this.state.guessers.length === this.props.numPlayers - 1 ? 'everyone' : this.state.guessers.join(', ')}</span> : 'No one'} guessed the word!</span>
           </div> 
         }
         </div> 
@@ -192,6 +204,8 @@ const mapStateToProps = (state) => {
     let canIDraw = (state.root.user === state.root.room.game.artist);
     let isSpectating = !(state.root.user in state.root.room.game.players);
     return {
+        numPlayers: Object.keys(state.root.room.game.players).length,
+        timePerTurn: state.root.room.game.timePerTurn,
         word: state.root.room.game.word,
         artist: state.root.room.game.artist,
         timeLeft: state.root.room.game.timeLeft, 

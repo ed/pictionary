@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Login from './Login'
 import Register from './Register'
 import { NotificationStack } from 'react-notification'
+import Spinner from './Spinner'
 
 class Container extends Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class Container extends Component {
 	      {this.props.children}
       </div>
       :
-      null
+      <Spinner />
     )
   }
     

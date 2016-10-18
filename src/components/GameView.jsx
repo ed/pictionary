@@ -29,6 +29,7 @@ class GameView extends Component {
   fetchRoomData(room) {
     this.props.dispatch(fetchRoomData(room)).then((res) => {
       console.log(res)
+      console.log(room)
       if (!res.error) {
         this.props.socket.emit('join room', room);
       }
@@ -42,6 +43,7 @@ class GameView extends Component {
   }
 
   updateRoom(roomData) {
+    console.log(roomData)
     this.props.dispatch(updateRoom(roomData.curRoom));
     this.props.dispatch(setRooms(roomData.rooms));
     this.setState({

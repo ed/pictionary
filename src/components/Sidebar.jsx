@@ -67,9 +67,10 @@ class SideBar extends Component {
       <div className="channelInterfaceContainer">
         <i className="ion-navicon-round centerIcon" onClick={() => this.openBrowseRooms()}></i>
       </div>
-      <Popover close={() => this.closeCreateRooms()} isOpen={this.state.createRoomOpen}>
-        <CreateRoom close={() => this.closeCreateRooms()}/> 
-      </Popover>
+
+        <Popover close={() => this.closeCreateRooms()} isOpen={this.state.createRoomOpen}>
+          <CreateRoom close={() => this.closeCreateRooms()}/> 
+        </Popover>
 
       <Popover close={() => this.closeBrowseRooms()} isOpen={this.state.browseRoomsOpen}>
         <BrowseRooms close={() => this.closeBrowseRooms()} rooms={rooms}/> 
