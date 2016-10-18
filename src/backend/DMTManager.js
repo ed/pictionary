@@ -143,9 +143,9 @@ class DMT {
     this.endGame = endGame;
     this.curArtist = 0;
     this.curWord = 'NONE';
-    this.secondsPerTurn = 73;
+    this.secondsPerTurn = 60;
     this.numPlayers = players.length;
-    this.numRounds = 5;
+    this.numRounds = 2;
     this.curRound = 1;
     this.gameState = {...emptyGame};
   }
@@ -199,7 +199,8 @@ class DMT {
     clearTimeout(this.turnTimer);
 
     let guessers = this.playerOrder.filter((player) => this.players[player].pointsThisTurn > 0 && player !== this.currentArtist())
-    io.sockets.in(this.room).emit('turn over', guessers);
+    this.setState({turnStatus: 'finished'});
+    io.sockets.in(this.room).emit('update game', this.gameState);
     setTimeout(() => {
       this.curArtist++;
       if (this.curArtist >= this.numPlayers) {
@@ -219,16 +220,30 @@ class DMT {
     }
     this.gameState = {
       gameInProgress: true,
+      turnStatus: 'starting',
       players: this.players,
       word: this.curWord,
       artist: this.currentArtist(),
-      timeLeft: this.secondsPerTurn,
+      timeLeft: 5,
       totalRounds: this.numRounds,
       round: this.curRound,
       timePerTurn: this.secondsPerTurn
     };
     io.sockets.in(this.room).emit('update game', this.gameState);
-    this.turnTimer = setInterval(() => this.tickTurn(), 1000);
+    this.startTimer = setInterval(() => this.tickStart(), 1000);
+  }
+
+  tickStart() {
+    if (this.gameState['timeLeft'] > 0) {
+      this.gameState['timeLeft']--;
+      io.sockets.in(this.room).emit('update game', this.gameState);
+    }
+    else {
+      this.setState({turnStatus: 'drawing', timeLeft: this.secondsPerTurn});
+      io.sockets.in(this.room).emit('update game', this.gameState);
+      this.turnTimer = setInterval(() => this.tickTurn(), 1000);
+      clearInterval(this.startTimer);
+    }
   }
 
   tickTurn() {

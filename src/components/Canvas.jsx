@@ -15,8 +15,6 @@ class Canvas extends Component {
       canvasHeight: 0,
       brushColor: "#C45100", 
       brushSize: 8, 
-      guessers: [],
-      turnOver: false,
       timeLeft: 0
     };
     this.remakeCanvasRemote = () => null;
@@ -27,10 +25,6 @@ class Canvas extends Component {
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.actionHistory = new ActionHistory(this.clearCanvas);
     this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData));
-    this.props.socket.on('turn over', guessers => this.setState({
-      turnOver: true,
-      guessers
-    }));
     this.setCanvasSize();
     if (this.props.canvasData) {
       this.buildRemoteCanvas(this.props.canvasData);
@@ -146,7 +140,7 @@ class Canvas extends Component {
 
   render() {
     let { canIDraw, isSpectating } = this.props;
-    canIDraw = canIDraw && !this.state.turnOver;
+    canIDraw = canIDraw && this.props.turnStatus === 'drawing';
     return (
       <div className="canvasContainer">
         <canvas 
@@ -161,14 +155,19 @@ class Canvas extends Component {
         />
         {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
 
-        {!this.state.turnOver ? 
+        {this.props.turnStatus === 'drawing' ? 
           <div style={{position: 'absolute', top:0, right:'20px', width: '100px', height: '100px'}}>
-          <Timer progress={this.props.timeLeft/this.props.timePerTurn} timeLeft={this.props.timeLeft}/>
+          <Timer progress={this.props.timeLeft/this.props.timePerTurn} text={this.props.timeLeft}/>
           </div>
           : 
           null
         }
-        <CanvasMessage turnOver={this.state.turnover} guessers={this.state.guessers} canIDraw={canIDraw} {...this.props} />
+        {this.props.turnStatus === 'starting' ?
+        <div style={{position: 'absolute', top:'50%', right:'50%', width: '100px', height: '100px'}}>
+          <Timer containerStyle={{border:'4px solid red', borderRadius: '50%'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft} key={this.props.timeLeft}/>
+        </div>
+        : null}
+        <CanvasMessage turnStatus={this.props.turnStatus} guessers={this.props.guessers} canIDraw={canIDraw} {...this.props} />
         {canIDraw ? 
           <ArtistOptions 
           color={this.state.brushColor} 
@@ -184,10 +183,14 @@ class Canvas extends Component {
 }
 
 const mapStateToProps = (state) => {
-    let canIDraw = (state.root.user === state.root.room.game.artist);
-    let isSpectating = !(state.root.user in state.root.room.game.players);
+    let players = state.root.room.game.players;
+    let artist = state.root.room.game.artist;
+    let canIDraw = (state.root.user === artist);
+    let isSpectating = !(state.root.user in players);
     return {
-        numPlayers: Object.keys(state.root.room.game.players).length,
+        guessers: Object.keys(players).filter((player) => players[player].pointsThisTurn > 0 && player !== artist),
+        turnStatus: state.root.room.game.turnStatus,
+        numPlayers: Object.keys(players).length,
         timePerTurn: state.root.room.game.timePerTurn,
         word: state.root.room.game.word,
         artist: state.root.room.game.artist,
@@ -204,31 +207,31 @@ export default connect(
 )(Canvas)
 
 
-const CanvasMessage = ({ canIDraw, guessers, numPlayers, word, artist, turnOver }) => (
+const CanvasMessage = ({ canIDraw, guessers, numPlayers, word, artist, turnStatus }) => (
   <div className="canvasMessage">
   {
-    !turnOver ?
-    <div style={{pointerEvents: 'auto'}}>  
-    { canIDraw ? <span> your turn, <br/> your word is <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span> </span> 
+    turnStatus === 'drawing' || turnStatus === 'starting' ?
+      <div style={{pointerEvents: 'auto'}}>  
+      { canIDraw ? <span> your turn, <br/> your word is <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span> </span> 
+      : 
+      <span > <span style={{fontWeight:'bold',color: 'orange'}}>{artist}</span> is drawing {turnStatus === 'starting' ? 'next' : <span> <br/> guess the word using the chat </span> } </span> }
+      </div>
     : 
-    <span > <span style={{fontWeight:'bold',color: 'orange'}}>{artist}</span> is drawing, <br/> guess the word! </span> }
-    </div>
-  : 
-    <div> The word was <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span>! <br/>
-    <span> { guessers.length > 0 ? 
-      <span style={{fontWeight:'bold'}}>{ guessers.length === numPlayers - 1 ? 'everyone' : guessers.join(', ')}</span> : 'No one'} guessed the word!</span>
-    </div> 
+      <div> The word was <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span> <br/>
+      <span> { guessers.length > 0 ? 
+        <span style={{fontWeight:'bold'}}>{ guessers.length === numPlayers - 1 ? 'everyone' : guessers.join(', ')}</span> : 'No one'} guessed the word!</span>
+      </div> 
   }
   </div> 
 )
 
-const Timer = ({ progress, timeLeft }) => (
+const Timer = ({ progress, text, strokeWidth=6, trailWidth=4, color="#FF3232", containerStyle}) => (
   <div className="timer" style={{display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background:'white', left:0, right:0}}> 
   <Circle
         progress={progress}
-        options={{strokeWidth: 6, color: '#FF3232', text: { value: timeLeft, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} }, trailColor: '#eee', trailWidth: 4  }}
+        options={{strokeWidth, color, text: { value: text, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} }, trailColor: '#eee', trailWidth }}
         initialAnimate={true}
-        containerStyle={{ width: '80px', height: '80px' }}
+        containerStyle={{ width: '80px', height: '80px', ...containerStyle }}
         containerClassName={'.progressbar'} />
   </div>
 )

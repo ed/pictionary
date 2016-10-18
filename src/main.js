@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import routes from '../routes';
 import './css/style.css';
 import './css/switch.css';
-import { OrderedSet } from 'immutable'
+import { OrderedSet } from 'immutable';
 
 let preloadedState = window.__PRELOADED_STATE__
 if (preloadedState !== undefined) {

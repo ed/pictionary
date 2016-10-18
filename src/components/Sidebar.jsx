@@ -64,6 +64,8 @@ class SideBar extends Component {
         </div>
         </CopyToClipboard>
         </div>
+
+      { this.props.gameInProgress ? <div style={{marginLeft: '15px', fontSize: '120%', marginTop: '20px'}}> Round {this.props.curRound}/{this.props.totalRounds} </div> : null }
       <div className="channelInterfaceContainer">
         <i className="ion-navicon-round centerIcon" onClick={() => this.openBrowseRooms()}></i>
       </div>
@@ -82,6 +84,8 @@ class SideBar extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    curRound: state.root.room.game.round,
+    totalRounds: state.root.room.game.totalRounds,
     user: state.root.user,
     clients: state.root.room.clients,
     gameInProgress: state.root.room.game.gameInProgress,
