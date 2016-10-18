@@ -15,11 +15,9 @@ class GameView extends Component {
       roomDataReceived: false,
       loggingIn: false,
     }
-    console.log('CONSTRUCTOR')
   }
 
   componentDidMount() {
-    console.log('CDM')
     this.props.socket.emit('add user', this.props.user)
     this.props.socket.on('update game', (game) => this.updateGame(game) );
     this.props.socket.on('update room', (roomData) => this.updateRoom(roomData) );

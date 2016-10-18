@@ -163,7 +163,7 @@ class Canvas extends Component {
         }
         {this.props.turnStatus === 'starting' ?
         <div style={{position: 'absolute', top:'50%', right:'50%', width: '100px', height: '100px'}}>
-          <Timer containerStyle={{border:'4px solid red', borderRadius: '50%'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft} key={this.props.timeLeft}/>
+          <Timer containerStyle={{border:'8px solid red', borderRadius: '50%'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft} key={this.props.timeLeft}/>
         </div>
         : null}
         <CanvasMessage turnStatus={this.props.turnStatus} guessers={this.props.guessers} canIDraw={canIDraw} {...this.props} />
@@ -224,11 +224,11 @@ const CanvasMessage = ({ canIDraw, guessers, numPlayers, word, artist, turnStatu
   </div> 
 )
 
-const Timer = ({ progress, text, strokeWidth=6, trailWidth=4, color="#FF3232", containerStyle}) => (
+const Timer = ({ progress, text, strokeWidth=10, trailWidth=10, color="#FF3232", containerStyle}) => (
   <div className="timer" style={{display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background:'white', left:0, right:0}}> 
   <Circle
         progress={progress}
-        options={{strokeWidth, color, text: { value: text, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} }, trailColor: '#eee', trailWidth }}
+        options={{strokeWidth, color, duration: 1000, text: { value: text, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} }, trailColor: '#D6D6D6', trailWidth }}
         initialAnimate={true}
         containerStyle={{ width: '80px', height: '80px', ...containerStyle }}
         containerClassName={'.progressbar'} />

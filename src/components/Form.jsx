@@ -47,8 +47,8 @@ class Form extends Component {
       <div style={{ fontSize: '200%'}}> {this.props.title}</div>
       <form className="form" onSubmit={this.go.bind(this)}>
       <input ref={(userField) => this.userField = userField} onChange={(e) => this.updateUsername(e)} spellCheck={false} className="message-composer" style={textBoxStyle} placeholder="username"/>
-      <input onChange={(e) => this.updatePassword(e)} spellCheck={false} className="message-composer" style={textBoxStyle} placeholder="password"/>
-      <button className="myButton active" style={{width: '100%', marginTop: '80px'}} type="submit">{this.props.title}</button>
+      <input onChange={(e) => this.updatePassword(e)} spellCheck={false} className="message-composer" style={textBoxStyle} type="password" placeholder="password"/>
+      <button className="myButton active" style={{width: '100%', marginTop: '70px'}} type="submit">{this.props.title}</button>
       </form>
       { sendingRequest ? <Spinner /> : null }
       </div>

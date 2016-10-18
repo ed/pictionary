@@ -55,7 +55,7 @@ class SideBar extends Component {
             :
             <div className="container">
             <PlayerHeader />
-            {clients.map( (player) => <Client key={player} name={player} isActive={player===artist}/>)}
+            {clients.map( (player) => <Client key={player} name={player}/>)}
             </div>
         }
         <CopyToClipboard text={document.URL} >
