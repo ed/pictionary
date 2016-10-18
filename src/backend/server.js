@@ -10,6 +10,9 @@ import configureStore from '../store'
  *   Run 'npm run build' to run production envioronment
  */
 
+var pg = require('pg');
+
+
 const assign = Object.assign
 const port = (process.env.PORT || 3000);
 const express = require('express');
@@ -29,13 +32,9 @@ var io = require('socket.io')(server);
 var roomManager = require('./roomManager')(app, io);
 
 
-let users = [];
-let currentID = 0;
-
-
 app.post('/signup', (req, res) => {
   const { username, password } = req.body;
-  utils.register(req, res, users, currentID++, username, password, (err, next) => {
+  utils.register(req, res, username, password, (err, next) => {
     if (err) {
       res.status(400).send(err)
     }
@@ -45,14 +44,13 @@ app.post('/signup', (req, res) => {
     		'Content-Type': 'text/plain',
       });
       res.end();
-      users.push(next.user);
     }
   })
 })
 
 app.post('/login', (req, res) => {
   const { username, password } = req.body
-  utils.login(req, res, username, password, users, (err, next) => {
+  utils.login(req, res, username, password, (err, next) => {
     if (err) {
       res.status(400).send(err)
     }
@@ -70,7 +68,7 @@ app.post('/login', (req, res) => {
 
 app.post('/logout', (req, res) => {
   try {
-    utils.cookieMonster(req.headers.cookie, users, (err, cb) => {
+    utils.cookieMonster(req.headers.cookie, (err, cb) => {
       cb.user.token = ''
     });
   }

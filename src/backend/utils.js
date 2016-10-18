@@ -1,6 +1,16 @@
 const auth = require('./auth')
-const uuid = require("node-uuid")
+const uuid = require('node-uuid')
 const assign = Object.assign
+
+var pg = require('pg');
+pg.defaults.ssl = true;
+console.log(process.env.DATABASE_URL)
+pg.connect({database: process.env.DATABASE_URL, ssl: true, port: process.env.PORT }, function(err, client) {
+  if (err) throw err;
+  console.log('Connected to postgres! Getting schemas...');
+
+});
+
 
 module.exports = {
   cookieMonster(cookies, users, next) {
@@ -30,15 +40,17 @@ module.exports = {
     }
   },
 
-  register(req, res, users, id, username, password, next) {
-    const user = users.find(u => u.username === username);
-    if (user) {
-      const error = new Error ('username already exists ')
-      next(error)
-    } else {
+  register(req, res, username, password, next) {
+    // const user = users.find(u => u.username === username);
+    // if (user) {
+    //   const error = new Error ('username already exists ')
+    //   next(error)
+    // } 
+    if (false);
+    else {
+      console.log(password)
       let obj = {
        username: username,
-       id: id,
        uid: uuid.v4(),
      }
      auth.hash(password, (err, cb) => {

@@ -5,7 +5,7 @@ module.exports = {
     const salt = crypto.randomBytes(32);
     crypto.pbkdf2(password, salt, 100000, 512, 'sha512', (err, key) => {
       if (err) cb(err);
-      cb(null, {key: key.toString('hex'), salt: salt});
+      cb(null, {key: key.toString('hex'), salt: salt.toString('hex')});
     });
   },
 

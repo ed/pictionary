@@ -104,8 +104,6 @@
 	
 	__webpack_require__(638);
 	
-	__webpack_require__(640);
-	
 	var _immutable = __webpack_require__(180);
 	
 	function _interopRequireDefault(obj) {
@@ -21154,7 +21152,7 @@
 
 /***/ },
 /* 169 */
-[642, 170],
+[640, 170],
 /* 170 */
 /***/ function(module, exports) {
 
@@ -34201,11 +34199,6 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'form-form' },
-	        _react2.default.createElement(
-	          'h1',
-	          null,
-	          'login form '
-	        ),
 	        _react2.default.createElement(_Form2.default, _extends({ title: 'Log in', onSubmit: this.login.bind(this) }, props))
 	      );
 	    }
@@ -34316,6 +34309,12 @@
 	        'div',
 	        { className: 'popoverContainer', style: { width: '400px', textAlign: 'center' } },
 	        _react2.default.createElement(
+	          'div',
+	          { style: { fontSize: '200%' } },
+	          ' ',
+	          this.props.title
+	        ),
+	        _react2.default.createElement(
 	          'form',
 	          { className: 'form', onSubmit: this.go.bind(this) },
 	          _react2.default.createElement('input', { ref: function ref(userField) {
@@ -34325,20 +34324,13 @@
 	            }, spellCheck: false, className: 'message-composer', style: textBoxStyle, placeholder: 'username' }),
 	          _react2.default.createElement('input', { onChange: function onChange(e) {
 	              return _this2.updatePassword(e);
-	            }, spellCheck: false, className: 'message-composer', style: textBoxStyle, placeholder: 'password' }),
+	            }, spellCheck: false, className: 'message-composer', style: textBoxStyle, type: 'password', placeholder: 'password' }),
 	          _react2.default.createElement(
 	            'button',
-	            { className: 'myButton active', style: { width: '100%', marginTop: '60px' }, type: 'submit' },
+	            { className: 'myButton active', style: { width: '100%', marginTop: '70px' }, type: 'submit' },
 	            this.props.title
 	          )
 	        ),
-	        error ? _react2.default.createElement(
-	          'p',
-	          { style: { color: '#F92D2A' } },
-	          ' ',
-	          error,
-	          ' '
-	        ) : null,
 	        sendingRequest ? _react2.default.createElement(_Spinner2.default, null) : null
 	      );
 	    }
@@ -34357,7 +34349,6 @@
 	
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
-	    error: state.root.error,
 	    sendingRequest: state.root.auth.sendingRequest
 	  };
 	};
@@ -34999,7 +34990,6 @@
 	      roomDataReceived: false,
 	      loggingIn: false
 	    };
-	    console.log('CONSTRUCTOR');
 	    return _this;
 	  }
 	
@@ -35008,7 +34998,6 @@
 	    value: function componentDidMount() {
 	      var _this2 = this;
 	
-	      console.log('CDM');
 	      this.props.socket.emit('add user', this.props.user);
 	      this.props.socket.on('update game', function (game) {
 	        return _this2.updateGame(game);
@@ -35024,8 +35013,6 @@
 	      var _this3 = this;
 	
 	      this.props.dispatch((0, _actions.fetchRoomData)(room)).then(function (res) {
-	        console.log(res);
-	        console.log(room);
 	        if (!res.error) {
 	          _this3.props.socket.emit('join room', room);
 	        }
@@ -35041,7 +35028,6 @@
 	  }, {
 	    key: 'updateRoom',
 	    value: function updateRoom(roomData) {
-	      console.log(roomData);
 	      this.props.dispatch((0, _actions.updateRoom)(roomData.curRoom));
 	      this.props.dispatch((0, _actions.setRooms)(roomData.rooms));
 	      this.setState({
@@ -35085,7 +35071,6 @@
 	}(_react.Component);
 	
 	var mapStateToProps = function mapStateToProps(state) {
-	  console.log(state);
 	  return {
 	    socket: state.root.socket,
 	    user: state.root.user
@@ -53915,7 +53900,7 @@
 	            { className: 'container' },
 	            _react2.default.createElement(PlayerHeader, null),
 	            clients.map(function (player) {
-	              return _react2.default.createElement(Client, { key: player, name: player, isActive: player === artist });
+	              return _react2.default.createElement(Client, { key: player, name: player });
 	            })
 	          ),
 	          _react2.default.createElement(
@@ -53936,6 +53921,15 @@
 	            )
 	          )
 	        ),
+	        this.props.gameInProgress ? _react2.default.createElement(
+	          'div',
+	          { style: { marginLeft: '15px', fontSize: '120%', marginTop: '20px' } },
+	          ' Round ',
+	          this.props.curRound,
+	          '/',
+	          this.props.totalRounds,
+	          ' '
+	        ) : null,
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'channelInterfaceContainer' },
@@ -53970,6 +53964,8 @@
 	
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
+	    curRound: state.root.room.game.round,
+	    totalRounds: state.root.room.game.totalRounds,
 	    user: state.root.user,
 	    clients: state.root.room.clients,
 	    gameInProgress: state.root.room.game.gameInProgress,
@@ -54387,7 +54383,7 @@
 	    key: 'handleClose',
 	    value: function handleClose() {
 	      this.setState({ active: false });
-	      setTimeout(this.props.close, 250);
+	      setTimeout(this.props.close, 150);
 	    }
 	  }, {
 	    key: 'fadeIn',
@@ -54400,7 +54396,6 @@
 	      var _this3 = this;
 	
 	      var opacity = this.state.active ? 1 : 0;
-	      console.log(opacity);
 	      return _react2.default.createElement(_reactModal2.default, {
 	        isOpen: this.props.isOpen,
 	        style: {
@@ -54421,7 +54416,7 @@
 	            textAlign: 'center',
 	            color: '#252525',
 	            opacity: opacity,
-	            transition: 'opacity .25s ease-in-out'
+	            transition: 'opacity .15s ease-in-out'
 	          }
 	        },
 	        onAfterOpen: function onAfterOpen() {
@@ -57481,6 +57476,7 @@
 	    value: function render() {
 	      var _this2 = this;
 	
+	      console.log(this.props.artist);
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'whiteboard' },
@@ -57530,6 +57526,8 @@
 	});
 	exports.ColorCircle = exports.CanvasButton = undefined;
 	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(2);
@@ -57566,8 +57564,6 @@
 	      canvasHeight: 0,
 	      brushColor: "#C45100",
 	      brushSize: 8,
-	      guessers: [],
-	      turnOver: false,
 	      timeLeft: 0
 	    };
 	    _this.remakeCanvasRemote = function () {
@@ -57589,36 +57585,16 @@
 	      this.props.socket.on('update canvas', function (canvasData) {
 	        return _this2.buildRemoteCanvas(canvasData);
 	      });
-	      this.props.socket.on('turn over', function (guessers) {
-	        return _this2.setState({
-	          turnOver: true,
-	          guessers: guessers
-	        });
-	      });
 	      this.setCanvasSize();
 	      if (this.props.canvasData) {
 	        this.buildRemoteCanvas(this.props.canvasData);
 	      }
-	
-	      key('ctrl + z', function () {
-	        return _this2.undo();
-	      });
-	      key('ctrl + y', function () {
-	        return _this2.redo();
-	      });
-	      key('ctrl + c', function () {
-	        return _this2.clear();
-	      });
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
-	      key.unbind('ctrl + z');
-	      key.unbind('ctrl + y');
-	      key.unbind('ctrl + c');
 	      this.props.socket.off('turn over');
 	      this.props.socket.off('update canvas');
-	      clearInterval(this.milliTick);
 	    }
 	  }, {
 	    key: 'buildRemoteCanvas',
@@ -57681,7 +57657,6 @@
 	      this.curMark = new _CanvasUtils.Mark(this.ctx, this.state.brushColor, this.state.brushSize, pos);
 	      this.curMark.startStroke();
 	      this.setState({ drawing: true });
-	      e.preventDefault();
 	    }
 	  }, {
 	    key: 'drawStroke',
@@ -57762,7 +57737,7 @@
 	      var canIDraw = _props.canIDraw;
 	      var isSpectating = _props.isSpectating;
 	
-	      canIDraw = canIDraw && !this.state.turnOver;
+	      canIDraw = canIDraw && this.props.turnStatus === 'drawing';
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'canvasContainer' },
@@ -57804,53 +57779,17 @@
 	            'you\'re just watching this one but you\'ll be able to play next round :)'
 	          )
 	        ) : null,
-	        _react2.default.createElement(
+	        this.props.turnStatus === 'drawing' ? _react2.default.createElement(
 	          'div',
-	          { className: 'canvasMessage' },
-	          !this.state.turnOver ? _react2.default.createElement(
-	            'div',
-	            { className: 'timer', style: { display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background: 'white', left: 0, right: 0 } },
-	            _react2.default.createElement(_reactProgressbar.Circle, {
-	              progress: this.props.timeLeft / this.props.timePerTurn,
-	              options: { strokeWidth: 6, color: '#FF3232', text: { value: this.props.timeLeft, style: { width: '60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%' } }, trailColor: '#eee', trailWidth: 4 },
-	              initialAnimate: true,
-	              containerStyle: { width: '80px', height: '80px' },
-	              containerClassName: '.progressbar' })
-	          ) : _react2.default.createElement(
-	            'div',
-	            null,
-	            ' The word was ',
-	            _react2.default.createElement(
-	              'span',
-	              { style: { fontWeight: 'bold', color: 'orange' } },
-	              this.props.word
-	            ),
-	            '! ',
-	            _react2.default.createElement('br', null),
-	            _react2.default.createElement(
-	              'span',
-	              null,
-	              ' ',
-	              this.state.guessers.length > 0 ? _react2.default.createElement(
-	                'span',
-	                { style: { fontWeight: 'bold' } },
-	                this.state.guessers.length === this.props.numPlayers - 1 ? 'everyone' : this.state.guessers.join(', ')
-	              ) : 'No one',
-	              ' guessed the word!'
-	            )
-	          )
-	        ),
-	        canIDraw ? _react2.default.createElement(
-	          'div',
-	          { className: 'word' },
-	          ' ',
-	          _react2.default.createElement(
-	            'span',
-	            null,
-	            this.props.word
-	          ),
-	          ' '
+	          { style: { position: 'absolute', top: 0, right: '20px', width: '100px', height: '100px' } },
+	          _react2.default.createElement(Timer, { progress: this.props.timeLeft / this.props.timePerTurn, text: this.props.timeLeft })
 	        ) : null,
+	        this.props.turnStatus === 'starting' ? _react2.default.createElement(
+	          'div',
+	          { style: { position: 'absolute', top: '50%', right: '50%', width: '100px', height: '100px' } },
+	          _react2.default.createElement(Timer, { containerStyle: { border: '8px solid red', borderRadius: '50%' }, color: 'white', strokeWidth: 50, trailWidth: 0, progress: 1, text: this.props.timeLeft, key: this.props.timeLeft })
+	        ) : null,
+	        _react2.default.createElement(CanvasMessage, _extends({ turnStatus: this.props.turnStatus, guessers: this.props.guessers, canIDraw: canIDraw }, this.props)),
 	        canIDraw ? _react2.default.createElement(ArtistOptions, {
 	          color: this.state.brushColor,
 	          radius: this.state.brushSize,
@@ -57874,10 +57813,16 @@
 	}(_react.Component);
 	
 	var mapStateToProps = function mapStateToProps(state) {
-	  var canIDraw = state.root.user === state.root.room.game.artist;
-	  var isSpectating = !(state.root.user in state.root.room.game.players);
+	  var players = state.root.room.game.players;
+	  var artist = state.root.room.game.artist;
+	  var canIDraw = state.root.user === artist;
+	  var isSpectating = !(state.root.user in players);
 	  return {
-	    numPlayers: Object.keys(state.root.room.game.players).length,
+	    guessers: Object.keys(players).filter(function (player) {
+	      return players[player].pointsThisTurn > 0 && player !== artist;
+	    }),
+	    turnStatus: state.root.room.game.turnStatus,
+	    numPlayers: Object.keys(players).length,
 	    timePerTurn: state.root.room.game.timePerTurn,
 	    word: state.root.room.game.word,
 	    artist: state.root.room.game.artist,
@@ -57891,6 +57836,99 @@
 	
 	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Canvas);
 	
+	
+	var CanvasMessage = function CanvasMessage(_ref) {
+	  var canIDraw = _ref.canIDraw;
+	  var guessers = _ref.guessers;
+	  var numPlayers = _ref.numPlayers;
+	  var word = _ref.word;
+	  var artist = _ref.artist;
+	  var turnStatus = _ref.turnStatus;
+	  return _react2.default.createElement(
+	    'div',
+	    { className: 'canvasMessage' },
+	    turnStatus === 'drawing' || turnStatus === 'starting' ? _react2.default.createElement(
+	      'div',
+	      { style: { pointerEvents: 'auto' } },
+	      canIDraw ? _react2.default.createElement(
+	        'span',
+	        null,
+	        ' your turn, ',
+	        _react2.default.createElement('br', null),
+	        ' your word is ',
+	        _react2.default.createElement(
+	          'span',
+	          { style: { fontWeight: 'bold', color: 'orange' } },
+	          word
+	        ),
+	        ' '
+	      ) : _react2.default.createElement(
+	        'span',
+	        null,
+	        ' ',
+	        _react2.default.createElement(
+	          'span',
+	          { style: { fontWeight: 'bold', color: 'orange' } },
+	          artist
+	        ),
+	        ' is drawing ',
+	        turnStatus === 'starting' ? 'next' : _react2.default.createElement(
+	          'span',
+	          null,
+	          ' ',
+	          _react2.default.createElement('br', null),
+	          ' guess the word using the chat '
+	        ),
+	        ' '
+	      )
+	    ) : _react2.default.createElement(
+	      'div',
+	      null,
+	      ' The word was ',
+	      _react2.default.createElement(
+	        'span',
+	        { style: { fontWeight: 'bold', color: 'orange' } },
+	        word
+	      ),
+	      ' ',
+	      _react2.default.createElement('br', null),
+	      _react2.default.createElement(
+	        'span',
+	        null,
+	        ' ',
+	        guessers.length > 0 ? _react2.default.createElement(
+	          'span',
+	          { style: { fontWeight: 'bold' } },
+	          guessers.length === numPlayers - 1 ? 'everyone' : guessers.join(', ')
+	        ) : 'No one',
+	        ' guessed the word!'
+	      )
+	    )
+	  );
+	};
+	
+	var Timer = function Timer(_ref2) {
+	  var progress = _ref2.progress;
+	  var text = _ref2.text;
+	  var _ref2$strokeWidth = _ref2.strokeWidth;
+	  var strokeWidth = _ref2$strokeWidth === undefined ? 10 : _ref2$strokeWidth;
+	  var _ref2$trailWidth = _ref2.trailWidth;
+	  var trailWidth = _ref2$trailWidth === undefined ? 10 : _ref2$trailWidth;
+	  var _ref2$color = _ref2.color;
+	  var color = _ref2$color === undefined ? "#FF3232" : _ref2$color;
+	  var containerStyle = _ref2.containerStyle;
+	  return _react2.default.createElement(
+	    'div',
+	    { className: 'timer', style: { display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background: 'white', left: 0, right: 0 } },
+	    _react2.default.createElement(_reactProgressbar.Circle, {
+	      progress: progress,
+	      options: { strokeWidth: strokeWidth, color: color, duration: 1000, text: { value: text, style: { width: '60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%' } }, trailColor: '#D6D6D6', trailWidth: trailWidth },
+	      initialAnimate: true,
+	      containerStyle: _extends({ width: '80px', height: '80px' }, containerStyle),
+	      containerClassName: '.progressbar' })
+	  );
+	};
+	
 	var ArtistOptions = function (_Component2) {
 	  _inherits(ArtistOptions, _Component2);
 	
@@ -57901,9 +57939,31 @@
 	  }
 	
 	  _createClass(ArtistOptions, [{
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      key.unbind('ctrl + z');
+	      key.unbind('ctrl + y');
+	      key.unbind('ctrl + c');
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this9 = this;
+	
+	      key('ctrl + z', function () {
+	        return _this9.props.undo();
+	      });
+	      key('ctrl + y', function () {
+	        return _this9.props.redo();
+	      });
+	      key('ctrl + c', function () {
+	        return _this9.props.clear();
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this9 = this;
+	      var _this10 = this;
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -57912,20 +57972,20 @@
 	          radius: this.props.radius + 10,
 	          color: this.props.color,
 	          onColorChange: function onColorChange(color) {
-	            return _this9.props.setBrushColor(color);
+	            return _this10.props.setBrushColor(color);
 	          }
 	        }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'editOptions' },
 	          _react2.default.createElement(CanvasButton, { id: 'clear', iconName: 'square-o', onClick: function onClick() {
-	              return _this9.props.clear();
+	              return _this10.props.clear();
 	            } }),
 	          _react2.default.createElement(CanvasButton, { id: 'undo', iconName: 'undo', onClick: function onClick() {
-	              return _this9.props.undo();
+	              return _this10.props.undo();
 	            } }),
 	          _react2.default.createElement(CanvasButton, { id: 'redo', iconName: 'repeat', onClick: function onClick() {
-	              return _this9.props.redo();
+	              return _this10.props.redo();
 	            } })
 	        )
 	      );
@@ -57935,11 +57995,11 @@
 	  return ArtistOptions;
 	}(_react.Component);
 	
-	var CanvasButton = exports.CanvasButton = function CanvasButton(_ref) {
-	  var children = _ref.children;
-	  var id = _ref.id;
-	  var onClick = _ref.onClick;
-	  var iconName = _ref.iconName;
+	var CanvasButton = exports.CanvasButton = function CanvasButton(_ref3) {
+	  var children = _ref3.children;
+	  var id = _ref3.id;
+	  var onClick = _ref3.onClick;
+	  var iconName = _ref3.iconName;
 	  return _react2.default.createElement(
 	    'div',
 	    { className: 'option ' + id, onClick: onClick },
@@ -57953,12 +58013,12 @@
 	  function ColorCircle(props) {
 	    _classCallCheck(this, ColorCircle);
 	
-	    var _this10 = _possibleConstructorReturn(this, (ColorCircle.__proto__ || Object.getPrototypeOf(ColorCircle)).call(this, props));
+	    var _this11 = _possibleConstructorReturn(this, (ColorCircle.__proto__ || Object.getPrototypeOf(ColorCircle)).call(this, props));
 	
-	    _this10.state = {
+	    _this11.state = {
 	      displayColorPicker: false
 	    };
-	    return _this10;
+	    return _this11;
 	  }
 	
 	  _createClass(ColorCircle, [{
@@ -57984,7 +58044,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this11 = this;
+	      var _this12 = this;
 	
 	      var circleStyle = {
 	        width: this.props.radius,
@@ -58005,19 +58065,19 @@
 	        'div',
 	        { className: 'brushOptions' },
 	        _react2.default.createElement('div', { className: 'colorCircle', onClick: function onClick() {
-	            return _this11.toggleColorPicker();
+	            return _this12.toggleColorPicker();
 	          }, style: circleStyle }),
 	        this.state.displayColorPicker ? _react2.default.createElement(
 	          'div',
 	          null,
 	          _react2.default.createElement('div', { className: 'cover', onClick: function onClick() {
-	              return _this11.hideColorPicker();
+	              return _this12.hideColorPicker();
 	            } }),
 	          _react2.default.createElement(_reactColor.CompactPicker, {
 	            className: 'colorPicker',
 	            color: this.props.color,
 	            onChange: function onChange(color) {
-	              return _this11.handleChange(color);
+	              return _this12.handleChange(color);
 	            }
 	          })
 	        ) : null
@@ -62159,7 +62219,7 @@
 
 /***/ },
 /* 553 */
-[642, 514],
+[640, 514],
 /* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -74106,7 +74166,7 @@
 	
 	
 	// module
-	exports.push([module.id, "html {\r\n  font-weight: 300;\r\n  -webkit-font-smoothing: antialiased;\r\n}\r\n\r\na>span {\r\n  text-decoration: none;\r\n  color:inherit;\r\n}\r\n\r\na { text-decoration: none; color: #33A1DE;}\r\na:visited { text-decoration: none; color: #33A1DE; }\r\na:hover { text-decoration: underline; }\r\na:focus { text-decoration: none; }\r\na:active { text-decoration: none; color: inherit;}\r\n\r\nbutton:focus {\r\n  outline: 0;\r\n}\r\n\r\n.backgroundImg {\r\n  background: url(" + __webpack_require__(636) + ") no-repeat center center fixed;\r\n}\r\n\r\n\r\nul {\r\n  list-style-type: none;\r\n  margin: 0;\r\n  padding: 0;\r\n  overflow: hidden;\r\n  z-index: 2;\r\n}\r\n\r\nli {\r\n  margin-right: 50px;\r\n  margin-top: 15px;\r\n  float: right;\r\n  cursor: pointer;\r\n}\r\n\r\nli a {\r\n  border: 2px solid white;\r\n  border-radius: 4px;\r\n  display: block;\r\n  color: white;\r\n  text-align: center;\r\n  padding: 8px 12px 10px 12px;\r\n  text-decoration: none;\r\n  opacity: .7;\r\n}\r\n\r\nli a:hover {\r\n  opacity: 1;\r\n  text-decoration: none;\r\n}\r\n\r\nli a:active {\r\n  color: white;\r\n}\r\n\r\n\r\n#sidebar>a {\r\n  color:inherit;\r\n  text-decoration: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n  margin: 0;\r\n  color:#464646;\r\n  font-family: 'Lato', sans-serif;\r\n  padding: 0;\r\n  overflow-x: hidden;\r\n}\r\n\r\n.notification-bar {\r\n  z-index: 2;\r\n}\r\n\r\n.notification-bar-message {\r\n  line-height: 60px;\r\n  vertical-align: middle;\r\n  text-align: center;\r\n}\r\n\r\n\r\n.myButton {\r\n  background-color:#dbdbdb;\r\n  -moz-border-radius:3px;\r\n  -webkit-border-radius:3px;\r\n  border-radius:3px;\r\n  border: none;\r\n  display:inline-block;\r\n  color:#ffffff;\r\n  font-size:20px;\r\n  padding:12px 20px;\r\n  text-decoration:none;\r\n  font-weight: bold;\r\n  position: absolute;\r\n  right: 0px;\r\n  pointer-events: none;\r\n}\r\n.myButton.active {\r\n  pointer-events: auto;\r\n  cursor:pointer;\r\n  background-color:#44c767;\r\n}\r\n.myButton.active:hover {\r\n  -moz-box-shadow: inset 0 -2px 0 #009900;\r\n  -webkit-box-shadow: inset 0 -2px  #009900;\r\n  box-shadow: inset 0 -2px  #009900;\r\n}\r\n.myButton.active:focus {\r\n  outline: 0;\r\n  -moz-box-shadow: inset 0 2px  #009900;\r\n  -webkit-box-shadow: inset 0 2px  #009900;\r\n  box-shadow: inset 0 2px  #009900;\r\n}\r\n\r\n\r\n.myButton-transparent {\r\n  cursor:pointer;\r\n  color: white;\r\n  opacity: .8;\r\n  background-color:#dbdbdb;\r\n  -moz-border-radius:3px;\r\n  -webkit-border-radius:3px;\r\n  border-radius:3px;\r\n  border: none;\r\n  display:inline-block;\r\n  background-color:#44c767;\r\n  font-size:20px;\r\n  padding:12px 20px;\r\n  text-decoration:none;\r\n  font-weight: bold;\r\n  position: absolute;\r\n  right: 0px;\r\n}\r\n\r\n\r\n.myButton-transparent:hover {\r\n  opacity: .6;\r\n}\r\n\r\n\r\n#app{\r\n  height: 100%;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n#loginPopout {\r\n  background:#000;\r\n  opacity:0.5;\r\n  position:fixed; /* important to use fixed, not absolute */\r\n  top:0;\r\n  left:0;\r\n  width:100%;\r\n  height:100%;\r\n  z-index:9999;\r\n}\r\n\r\n.popoverContainer {\r\n  position: absolute;\r\n  width: 35%;\r\n  height: 50%;\r\n  top:0;\r\n  bottom: 0;\r\n  left: 0;\r\n  right: 0;\r\n  text-align: left;\r\n  margin: auto;\r\n}\r\n\r\n.centerIcon {\r\n  display: inline-block;\r\n  width: 100%;\r\n  font-size: 200%;\r\n}\r\n\r\n.rooms {\r\n  flex: 1;\r\n  overflow: auto;\r\n}\r\n\r\n.room {\r\n  border-left: 1px solid rgba(255, 255, 255, 0);\r\n  border-right: 1px solid rgba(255, 255, 255, 0);\r\n  color:#464646;\r\n  width:100%;\r\n  height: 140px;\r\n  display:block;\r\n  position: relative;\r\n  box-sizing: border-box;\r\n  z-index: 1;\r\n}\r\n\r\n\r\n.room:hover {\r\n  position:relative;\r\n  background: red;\r\n  border-radius: 3px;\r\n  border: 1px solid rgba(30, 144, 255, .2);\r\n  background: rgba(30, 144, 255, .1);\r\n  text-decoration: none;\r\n  z-index:2;\r\n}\r\n\r\n\r\n.closeModal {\r\n  -webkit-user-select: none;\r\n  position: absolute;\r\n  top: 40px;\r\n  right: 40px;\r\n  width: 60px;\r\n  height: 60px;\r\n  border-radius: 50%;\r\n  cursor: pointer;\r\n  color: #e4e4e4;\r\n}\r\n\r\n.closeModal:hover {\r\n  background: #e4e4e4;\r\n  color:#262626;\r\n}\r\n\r\n.closeModal:focus {\r\n  outline: 0;\r\n  background: #D39B46;\r\n  color: white;\r\n  opacity: .6;\r\n}\r\n\r\n.closeModal>i {\r\n  font-size: 300%;\r\n}\r\n\r\n.whiteboard {\r\n  -webkit-user-select: none;\r\n  overflow: hidden;\r\n  display:inline-block;\r\n  width: calc(80% - 240px);\r\n  height:99%;\r\n  margin:0;\r\n  padding:0;\r\n  position:absolute;\r\n}\r\n\r\n.canvasContainer {\r\n  width:100%;\r\n  height:100%;\r\n  text-align: center;\r\n}\r\n\r\ncanvas {\r\n  width:100%;\r\n  height:100%;\r\n}\r\n\r\n.artistOptions {\r\n  width:100%;\r\n  height:100%;\r\n}\r\n\r\n.editOptions {\r\n  border-top: 1px solid #DEDEDE;\r\n  width:100%;\r\n  height: 50px;\r\n  line-height: 50px;\r\n  position: absolute;\r\n  bottom:0px;\r\n  left:0;\r\n  right:0;\r\n  margin: 0 auto 0 auto;\r\n  display: flex;\r\n}\r\n\r\n.option {\r\n  cursor: pointer;\r\n  float:left;\r\n  line-height: inherit;\r\n  color: #2f2c2f;\r\n  font-size: 30px;\r\n  transition: font-size 0.5s ease;\r\n  padding: 0 10px 0 10px;\r\n  margin: 0 auto 0 auto;\r\n}\r\n\r\n.option:hover {\r\n  color: #FF8669;\r\n}\r\n\r\n#startGame {\r\n  line-height: 60px;\r\n  color: #e0e0e0;\r\n  position:absolute;\r\n  font-size: 200%;\r\n  top:40%;\r\n  right:50%;\r\n  opacity: .5;\r\n}\r\n\r\n.active #startGame  {\r\n  cursor: pointer;\r\n  color:#F79F66;\r\n}\r\n\r\n.active #startGame:hover {\r\n  opacity: 1;\r\n  color: #FF8669;\r\n}\r\n\r\n.canvasMessage {\r\n  pointer-events: none;\r\n  width: 600px;\r\n  height: 100px;\r\n  position: absolute;\r\n  margin-left: auto;\r\n  margin-right: auto;\r\n  left: 0;\r\n  right: 0;\r\n  top:0;\r\n}\r\n\r\n.timer {\r\n  font-size: 250%;\r\n}\r\n\r\n.word {\r\n  pointer-events: none;\r\n  display: inline-block;\r\n  margin: 0 auto 0 auto;\r\n  position: absolute; \r\n  left: 50%;\r\n  bottom:50px;\r\n  font-size: 250%;\r\n}\r\n\r\n.word>span {\r\n  pointer-events: none;\r\n  position: relative; \r\n  left: -50%;\r\n}\r\n\r\n.spectatorMessage {\r\n  display:flex;\r\n  position: absolute;\r\n  left: 0; \r\n  right: 0; \r\n  margin-left: auto; \r\n  margin-right: auto; \r\n  width: 400px;\r\n}\r\n\r\n.brushOptions {\r\n  position: absolute;\r\n  top:30px;\r\n  left:30px;\r\n}\r\n\r\n.colorCircle {\r\n  cursor: pointer;\r\n  border-radius: 50%;\r\n}\r\n\r\n.cover {\r\n  position: fixed;\r\n  top:0;\r\n  left:0;\r\n  bottom:0;\r\n  right: 0;\r\n}\r\n\r\n\r\n.spinner {\r\n  text-align: center;\r\n  width:100%;\r\n  height: 100%;\r\n}\r\n\r\n.spinner>i, .spinner>span {\r\n  position:relative;\r\n  top: calc(50% - 10px);\r\n}\r\n\r\n.container {\r\n  height:100%;\r\n  width:100%;\r\n}\r\n\r\n#message-section {\r\n  float: right;\r\n  display: flex;\r\n  flex-flow: column;\r\n  height: 100%;\r\n  width: 20%;\r\n}\r\n\r\n.message-list {\r\n  flex: 1 1 auto;\r\n  direction:rtl; \r\n  overflow-y: scroll;\r\n  overflow-x: hidden;\r\n  display:flex;\r\n  flex-flow: column;\r\n}\r\n\r\n.messageListHeader {\r\n  margin-top: auto;\r\n  width: 100%;\r\n}\r\n.message {\r\n  flex: 0 0 auto;\r\n  width:100%;\r\n  padding-top:2px;\r\n  padding-bottom: 4px;\r\n  white-space: nowrap;\r\n  direction: ltr; \r\n}\r\n\r\n.message:hover {\r\n  background:#f1f1f1;\r\n}\r\n\r\n.leftMessage {\r\n  width: 20px;\r\n  height: 100%;\r\n  display: inline-block;\r\n}\r\n\r\n.innerMessage {\r\n  white-space:normal;\r\n  display: inline-block;\r\n  word-wrap: break-word;\r\n  width:90%;\r\n  padding-right: 10px;\r\n}\r\n\r\n.authorName {\r\n  font-weight: 800;\r\n}\r\n\r\n.messageTime {\r\n  font-size: 80%;\r\n  color:#767676;\r\n}\r\n\r\n#msg-send {\r\n  flex: 0 1 60px;\r\n  width: 100%;\r\n  height: 60px;\r\n}\r\n\r\n.message-composer {\r\n  font-family: 'Lato', sans-serif;\r\n  font-size: 102%;\r\n  border: 2px solid #dddddd;\r\n  height: 20px;\r\n  width: 85%;\r\n  outline: none;\r\n  margin:auto;\r\n  border-radius: 4px;\r\n  resize:none;\r\n  padding-right: 10px;\r\n  padding-top: 8px;\r\n  padding-bottom: 7px;\r\n  padding-left: 10px;\r\n  margin-right: auto;\r\n  margin-left: 25px;\r\n  margin-top: 15px;\r\n  margin-bottom: auto;\r\n}\r\n\r\n.message-composer:focus {\r\n  border-color: #1E90FF;\r\n}\r\n\r\n.message-composer:hover {\r\n  border-color: #1E90FF;\r\n}\r\n\r\n#sidebar {\r\n  cursor: default;\r\n  float:left;\r\n  height: 100%;\r\n  width:240px;\r\n  color:#DEDEDE;\r\n  background:#2f2c2f;\r\n  font-weight: 400;\r\n  -webkit-touch-callout: none; /* iOS Safari */\r\n  -webkit-user-select: none;   /* Chrome/Safari/Opera */\r\n  -moz-user-select: none;      /* Firefox */\r\n  -ms-user-select: none;       /* Internet Explorer/Edge */\r\n  user-select: none;\r\n  position: relative;\r\n}\r\n\r\n.channelInterfaceContainer {\r\n  position: absolute;\r\n  bottom:0;  /* position the top  edge of the element at the middle of the parent */\r\n  left: 50%; /* position the left edge of the element at the middle of the parent */\r\n  cursor: pointer;\r\n  transform: translateX(-50%);\r\n}\r\n\r\n.sidebarHeader {\r\n  margin-bottom: 20px;\r\n  height: 70px;\r\n  width: 100%;\r\n}\r\n.headerText {\r\n  color:white;\r\n  font-size: 110%;\r\n  font-weight: 900;\r\n  display: inline-block;\r\n  width: 75%;\r\n  margin-top: 15px;\r\n  margin-left: 15px;\r\n}\r\n\r\n.headerUsername {\r\n  font-size: 90%;\r\n  margin-top: 5px;\r\n  margin-left: 15px;\r\n}\r\n\r\n.sidebarHeader:hover {\r\n  color: white;\r\n  background:#252525;\r\n}\r\n\r\n.sidebarElementArea {\r\n  padding-right: 10px;\r\n}\r\n\r\n.copyLink {\r\n  border-bottom: 1px dotted;\r\n  cursor: pointer;\r\n}\r\n\r\n.copyLink:hover {\r\n  border-bottom: 1px solid;\r\n}\r\n\r\n.channelHeader {\r\n  padding-left: 15px;\r\n  font-weight: 900;\r\n  padding-bottom: 6px;\r\n}\r\n\r\n.channelHeaderText {\r\n  color:#DEDEDE;\r\n  opacity: .7;\r\n  display: inline-block;\r\n  width: 90%;\r\n  font-size: 78%;\r\n}\r\n\r\n.channelHeaderText:hover {\r\n  opacity: 1;\r\n}\r\n\r\n.addChannel {\r\n  font-size: 85%;\r\n  opacity: .4;\r\n  color:#DEDEDE;\r\n  display: inline-block;\r\n  cursor: pointer;\r\n}\r\n\r\n.addChannel:hover {\r\n  opacity: 1;\r\n}\r\n\r\n.sidebarElement {\r\n  padding-bottom: 4px;\r\n  padding-top: 2px;\r\n  display:block;\r\n  width:100%;\r\n  color:white;\r\n  border: 2px solid #2f2c2f;\r\n}\r\n\r\n.sidebarElement:hover {\r\n  background:#5C6380;\r\n  border: 2px solid #5C6380;\r\n}\r\n\r\n.sidebarElement.active:hover {\r\n  background:#5C6380;\r\n}\r\n\r\n.sidebarElement.active {\r\n  border: 2px solid #D39B46;\r\n}\r\n\r\n.sidebarElement>span>i {\r\n  opacity: .4;\r\n}\r\n\r\n#sidebar .sidebarElement >span {\r\n  padding-left: 15px;\r\n  color:#DEDEDE;\r\n  user-select: none;\r\n}\r\n\r\n.channelInterfaceContainer {\r\n  width: 100%;\r\n  text-align: center;\r\n}\r\n\r\n.channelInterfaceContainer:hover {\r\n  color: white;\r\n  background:#252525;\r\n}\r\n\r\n/* Pretty Scrollbar */\r\n::-webkit-scrollbar {\r\n  width: 8px;\r\n  background-color: rgba(0, 0, 0, 0.04);\r\n  -webkit-border-radius: 100px;\r\n  border-radius: 100px;\r\n}\r\n\r\n::-webkit-scrollbar-thumb:vertical {\r\n  background: rgba(0,0,0,0.23);\r\n  -webkit-border-radius: 100px;\r\n  border-radius: 100px;\r\n}\r\n\r\n.redirect {\r\n  text-align: center;\r\n}\r\n.form-form {\r\n  align-items: center;\r\n  display: flex;\r\n  flex-direction: column;\r\n  text-align: center;\r\n}\r\n.form-wrapper {\r\n  display: flex;\r\n  margin-bottom: 0.5em;\r\n}\r\n\r\n.form-field {\r\n  flex: 1;\r\n}\r\n.form-field:not(:first-child) {\r\n  border-left: 0;\r\n}\r\n.form-field:not(:last-child) {\r\n  border-right: 0;\r\n}\r\n\r\n.form-item {\r\n  background-color: rgba(147, 128, 108, 0.1);\r\n  color: #666666;\r\n  font: inherit;\r\n  font-weight: normal;\r\n}\r\n.form-field,\r\n.form-item {\r\n  border: 1px solid rgba(147, 128, 108, 0.25);\r\n  padding: 0.5em 0.75em;\r\n}\r\n.form-field:first-child,\r\n.form-item:first-child {\r\n  border-radius: 2px 0 0 2px;\r\n}\r\n.form-field:last-child,\r\n.form-item:last-child {\r\n  border-radius: 0 2px 2px 0;\r\n}\r\n\r\n\r\n.sk-circle {\r\n  margin: 100px auto;\r\n  width: 40px;\r\n  height: 40px;\r\n  position: relative;\r\n}\r\n.sk-circle .sk-child {\r\n  width: 100%;\r\n  height: 100%;\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n}\r\n.sk-circle .sk-child:before {\r\n  content: '';\r\n  display: block;\r\n  margin: 0 auto;\r\n  width: 15%;\r\n  height: 15%;\r\n  background-color: #333;\r\n  border-radius: 100%;\r\n  -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;\r\n  animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;\r\n}\r\n.sk-circle .sk-circle2 {\r\n  -webkit-transform: rotate(30deg);\r\n  -ms-transform: rotate(30deg);\r\n  transform: rotate(30deg); }\r\n  .sk-circle .sk-circle3 {\r\n    -webkit-transform: rotate(60deg);\r\n    -ms-transform: rotate(60deg);\r\n    transform: rotate(60deg); }\r\n    .sk-circle .sk-circle4 {\r\n      -webkit-transform: rotate(90deg);\r\n      -ms-transform: rotate(90deg);\r\n      transform: rotate(90deg); }\r\n      .sk-circle .sk-circle5 {\r\n        -webkit-transform: rotate(120deg);\r\n        -ms-transform: rotate(120deg);\r\n        transform: rotate(120deg); }\r\n        .sk-circle .sk-circle6 {\r\n          -webkit-transform: rotate(150deg);\r\n          -ms-transform: rotate(150deg);\r\n          transform: rotate(150deg); }\r\n          .sk-circle .sk-circle7 {\r\n            -webkit-transform: rotate(180deg);\r\n            -ms-transform: rotate(180deg);\r\n            transform: rotate(180deg); }\r\n            .sk-circle .sk-circle8 {\r\n              -webkit-transform: rotate(210deg);\r\n              -ms-transform: rotate(210deg);\r\n              transform: rotate(210deg); }\r\n              .sk-circle .sk-circle9 {\r\n                -webkit-transform: rotate(240deg);\r\n                -ms-transform: rotate(240deg);\r\n                transform: rotate(240deg); }\r\n                .sk-circle .sk-circle10 {\r\n                  -webkit-transform: rotate(270deg);\r\n                  -ms-transform: rotate(270deg);\r\n                  transform: rotate(270deg); }\r\n                  .sk-circle .sk-circle11 {\r\n                    -webkit-transform: rotate(300deg);\r\n                    -ms-transform: rotate(300deg);\r\n                    transform: rotate(300deg); }\r\n                    .sk-circle .sk-circle12 {\r\n                      -webkit-transform: rotate(330deg);\r\n                      -ms-transform: rotate(330deg);\r\n                      transform: rotate(330deg); }\r\n                      .sk-circle .sk-circle2:before {\r\n                        -webkit-animation-delay: -1.1s;\r\n                        animation-delay: -1.1s; }\r\n                        .sk-circle .sk-circle3:before {\r\n                          -webkit-animation-delay: -1s;\r\n                          animation-delay: -1s; }\r\n                          .sk-circle .sk-circle4:before {\r\n                            -webkit-animation-delay: -0.9s;\r\n                            animation-delay: -0.9s; }\r\n                            .sk-circle .sk-circle5:before {\r\n                              -webkit-animation-delay: -0.8s;\r\n                              animation-delay: -0.8s; }\r\n                              .sk-circle .sk-circle6:before {\r\n                                -webkit-animation-delay: -0.7s;\r\n                                animation-delay: -0.7s; }\r\n                                .sk-circle .sk-circle7:before {\r\n                                  -webkit-animation-delay: -0.6s;\r\n                                  animation-delay: -0.6s; }\r\n                                  .sk-circle .sk-circle8:before {\r\n                                    -webkit-animation-delay: -0.5s;\r\n                                    animation-delay: -0.5s; }\r\n                                    .sk-circle .sk-circle9:before {\r\n                                      -webkit-animation-delay: -0.4s;\r\n                                      animation-delay: -0.4s; }\r\n                                      .sk-circle .sk-circle10:before {\r\n                                        -webkit-animation-delay: -0.3s;\r\n                                        animation-delay: -0.3s; }\r\n                                        .sk-circle .sk-circle11:before {\r\n                                          -webkit-animation-delay: -0.2s;\r\n                                          animation-delay: -0.2s; }\r\n                                          .sk-circle .sk-circle12:before {\r\n                                            -webkit-animation-delay: -0.1s;\r\n                                            animation-delay: -0.1s; }\r\n\r\n                                            @-webkit-keyframes sk-circleBounceDelay {\r\n                                              0%, 80%, 100% {\r\n                                                -webkit-transform: scale(0);\r\n                                                transform: scale(0);\r\n                                                } 40% {\r\n                                                  -webkit-transform: scale(1);\r\n                                                  transform: scale(1);\r\n                                                }\r\n                                              }\r\n\r\n                                              @keyframes sk-circleBounceDelay {\r\n                                                0%, 80%, 100% {\r\n                                                  -webkit-transform: scale(0);\r\n                                                  transform: scale(0);\r\n                                                  } 40% {\r\n                                                    -webkit-transform: scale(1);\r\n                                                    transform: scale(1);\r\n                                                  }\r\n                                                }\r\n", ""]);
+	exports.push([module.id, "html {\r\n  font-weight: 300;\r\n  -webkit-font-smoothing: antialiased;\r\n}\r\n\r\na>span {\r\n  text-decoration: none;\r\n  color:inherit;\r\n}\r\n\r\na { text-decoration: none; color: #33A1DE;}\r\na:visited { text-decoration: none; color: #33A1DE; }\r\na:hover { text-decoration: underline; }\r\na:focus { text-decoration: none; }\r\na:active { text-decoration: none; color: inherit;}\r\n\r\nbutton:focus {\r\n  outline: 0;\r\n}\r\n\r\n.backgroundImg {\r\n  background: url(" + __webpack_require__(636) + ") no-repeat center center fixed;\r\n}\r\n\r\n\r\nul {\r\n  list-style-type: none;\r\n  margin: 0;\r\n  padding: 0;\r\n  overflow: hidden;\r\n  z-index: 2;\r\n}\r\n\r\nli {\r\n  margin-right: 50px;\r\n  margin-top: 15px;\r\n  float: right;\r\n  cursor: pointer;\r\n}\r\n\r\nli a {\r\n  border: 2px solid white;\r\n  border-radius: 4px;\r\n  display: block;\r\n  color: white;\r\n  text-align: center;\r\n  padding: 8px 12px 10px 12px;\r\n  text-decoration: none;\r\n  opacity: .7;\r\n}\r\n\r\nli a:hover {\r\n  opacity: 1;\r\n  text-decoration: none;\r\n}\r\n\r\nli a:active {\r\n  color: white;\r\n}\r\n\r\n\r\n#sidebar>a {\r\n  color:inherit;\r\n  text-decoration: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n  margin: 0;\r\n  color:#464646;\r\n  font-family: 'Lato', sans-serif;\r\n  padding: 0;\r\n  overflow-x: hidden;\r\n}\r\n\r\n.notification-bar {\r\n  z-index: 2;\r\n}\r\n\r\n.notification-bar-message {\r\n  line-height: 60px;\r\n  vertical-align: middle;\r\n  text-align: center;\r\n}\r\n\r\n\r\n.myButton {\r\n  background-color:#dbdbdb;\r\n  -moz-border-radius:3px;\r\n  -webkit-border-radius:3px;\r\n  border-radius:3px;\r\n  border: none;\r\n  display:inline-block;\r\n  color:#ffffff;\r\n  font-size:20px;\r\n  padding:12px 20px;\r\n  text-decoration:none;\r\n  font-weight: bold;\r\n  position: absolute;\r\n  right: 0px;\r\n  pointer-events: none;\r\n}\r\n.myButton.active {\r\n  pointer-events: auto;\r\n  cursor:pointer;\r\n  background-color:#44c767;\r\n}\r\n.myButton.active:hover {\r\n  -moz-box-shadow: inset 0 -2px 0 #009900;\r\n  -webkit-box-shadow: inset 0 -2px  #009900;\r\n  box-shadow: inset 0 -2px  #009900;\r\n}\r\n.myButton.active:focus {\r\n  outline: 0;\r\n  -moz-box-shadow: inset 0 2px  #009900;\r\n  -webkit-box-shadow: inset 0 2px  #009900;\r\n  box-shadow: inset 0 2px  #009900;\r\n}\r\n\r\n\r\n.myButton-transparent {\r\n  cursor:pointer;\r\n  color: white;\r\n  opacity: .8;\r\n  background-color:#dbdbdb;\r\n  -moz-border-radius:3px;\r\n  -webkit-border-radius:3px;\r\n  border-radius:3px;\r\n  border: none;\r\n  display:inline-block;\r\n  background-color:#44c767;\r\n  font-size:20px;\r\n  padding:12px 20px;\r\n  text-decoration:none;\r\n  font-weight: bold;\r\n  position: absolute;\r\n  right: 0px;\r\n}\r\n\r\n\r\n.myButton-transparent:hover {\r\n  opacity: .6;\r\n}\r\n\r\n\r\n#app{\r\n  height: 100%;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n#loginPopout {\r\n  background:#000;\r\n  opacity:0.5;\r\n  position:fixed; /* important to use fixed, not absolute */\r\n  top:0;\r\n  left:0;\r\n  width:100%;\r\n  height:100%;\r\n  z-index:9999;\r\n}\r\n\r\n.popoverContainer {\r\n  position: absolute;\r\n  width: 35%;\r\n  height: 50%;\r\n  top:0;\r\n  bottom: 0;\r\n  left: 0;\r\n  right: 0;\r\n  text-align: left;\r\n  margin: auto;\r\n}\r\n\r\n.centerIcon {\r\n  display: inline-block;\r\n  width: 100%;\r\n  font-size: 200%;\r\n}\r\n\r\n.rooms {\r\n  flex: 1;\r\n  overflow: auto;\r\n}\r\n\r\n.room {\r\n  border-left: 1px solid rgba(255, 255, 255, 0);\r\n  border-right: 1px solid rgba(255, 255, 255, 0);\r\n  color:#464646;\r\n  width:100%;\r\n  height: 140px;\r\n  display:block;\r\n  position: relative;\r\n  box-sizing: border-box;\r\n  z-index: 1;\r\n}\r\n\r\n\r\n.room:hover {\r\n  position:relative;\r\n  background: red;\r\n  border-radius: 3px;\r\n  border: 1px solid rgba(30, 144, 255, .2);\r\n  background: rgba(30, 144, 255, .1);\r\n  text-decoration: none;\r\n  z-index:2;\r\n}\r\n\r\n\r\n.closeModal {\r\n  -webkit-user-select: none;\r\n  position: absolute;\r\n  top: 40px;\r\n  right: 40px;\r\n  width: 60px;\r\n  height: 60px;\r\n  border-radius: 50%;\r\n  cursor: pointer;\r\n  color: #e4e4e4;\r\n}\r\n\r\n.closeModal:hover {\r\n  background: #e4e4e4;\r\n  color:#262626;\r\n}\r\n\r\n.closeModal:focus {\r\n  outline: 0;\r\n  background: #D39B46;\r\n  color: white;\r\n  opacity: .6;\r\n}\r\n\r\n.closeModal>i {\r\n  font-size: 300%;\r\n}\r\n\r\n.whiteboard {\r\n  -webkit-user-select: none;\r\n  overflow: hidden;\r\n  display:inline-block;\r\n  width: calc(80% - 240px);\r\n  height:99%;\r\n  margin:0;\r\n  padding:0;\r\n  position:absolute;\r\n}\r\n\r\n.canvasContainer {\r\n  width:100%;\r\n  height:100%;\r\n  text-align: center;\r\n}\r\n\r\ncanvas {\r\n  width:100%;\r\n  height:100%;\r\n}\r\n\r\n.artistOptions {\r\n  width:100%;\r\n  height:100%;\r\n}\r\n\r\n.editOptions {\r\n  border-top: 1px solid #DEDEDE;\r\n  width:100%;\r\n  height: 50px;\r\n  line-height: 50px;\r\n  position: absolute;\r\n  bottom:0px;\r\n  left:0;\r\n  right:0;\r\n  margin: 0 auto 0 auto;\r\n  display: flex;\r\n}\r\n\r\n.option {\r\n  cursor: pointer;\r\n  float:left;\r\n  line-height: inherit;\r\n  color: #2f2c2f;\r\n  font-size: 30px;\r\n  transition: font-size 0.5s ease;\r\n  padding: 0 10px 0 10px;\r\n  margin: 0 auto 0 auto;\r\n}\r\n\r\n.option:hover {\r\n  color: #FF8669;\r\n}\r\n\r\n#startGame {\r\n  line-height: 60px;\r\n  color: #e0e0e0;\r\n  position:absolute;\r\n  font-size: 200%;\r\n  top:40%;\r\n  right:50%;\r\n  opacity: .5;\r\n}\r\n\r\n.active #startGame  {\r\n  cursor: pointer;\r\n  color:#F79F66;\r\n}\r\n\r\n.active #startGame:hover {\r\n  opacity: 1;\r\n  color: #FF8669;\r\n}\r\n\r\n.canvasMessage {\r\n  font-size: 200%;\r\n  pointer-events: none;\r\n  width: 600px;\r\n  height: 100px;\r\n  position: absolute;\r\n  margin-left: auto;\r\n  margin-right: auto;\r\n  left: 0;\r\n  right: 0;\r\n  top:0;\r\n}\r\n\r\n.timer {\r\n  font-size: 250%;\r\n}\r\n\r\n.word {\r\n  pointer-events: none;\r\n  display: inline-block;\r\n  margin: 0 auto 0 auto;\r\n  position: absolute; \r\n  left: 50%;\r\n  bottom:50px;\r\n  font-size: 250%;\r\n}\r\n\r\n.word>span {\r\n  pointer-events: none;\r\n  position: relative; \r\n  left: -50%;\r\n}\r\n\r\n.spectatorMessage {\r\n  display:flex;\r\n  position: absolute;\r\n  left: 0; \r\n  right: 0; \r\n  margin-left: auto; \r\n  margin-right: auto; \r\n  width: 400px;\r\n}\r\n\r\n.brushOptions {\r\n  position: absolute;\r\n  top:30px;\r\n  left:30px;\r\n}\r\n\r\n.colorCircle {\r\n  cursor: pointer;\r\n  border-radius: 50%;\r\n}\r\n\r\n.cover {\r\n  position: fixed;\r\n  top:0;\r\n  left:0;\r\n  bottom:0;\r\n  right: 0;\r\n}\r\n\r\n\r\n.spinner {\r\n  text-align: center;\r\n  width:100%;\r\n  height: 100%;\r\n}\r\n\r\n.spinner>i, .spinner>span {\r\n  position:relative;\r\n  top: calc(50% - 10px);\r\n}\r\n\r\n.container {\r\n  height:100%;\r\n  width:100%;\r\n}\r\n\r\n#message-section {\r\n  float: right;\r\n  display: flex;\r\n  flex-flow: column;\r\n  height: 100%;\r\n  width: 20%;\r\n}\r\n\r\n.message-list {\r\n  flex: 1 1 auto;\r\n  direction:rtl; \r\n  overflow-y: scroll;\r\n  overflow-x: hidden;\r\n  display:flex;\r\n  flex-flow: column;\r\n}\r\n\r\n.messageListHeader {\r\n  margin-top: auto;\r\n  width: 100%;\r\n}\r\n.message {\r\n  flex: 0 0 auto;\r\n  width:100%;\r\n  padding-top:2px;\r\n  padding-bottom: 4px;\r\n  white-space: nowrap;\r\n  direction: ltr; \r\n}\r\n\r\n.message:hover {\r\n  background:#f1f1f1;\r\n}\r\n\r\n.leftMessage {\r\n  width: 20px;\r\n  height: 100%;\r\n  display: inline-block;\r\n}\r\n\r\n.innerMessage {\r\n  white-space:normal;\r\n  display: inline-block;\r\n  word-wrap: break-word;\r\n  width:90%;\r\n  padding-right: 10px;\r\n}\r\n\r\n.authorName {\r\n  font-weight: 800;\r\n}\r\n\r\n.messageTime {\r\n  font-size: 80%;\r\n  color:#767676;\r\n}\r\n\r\n#msg-send {\r\n  flex: 0 1 60px;\r\n  width: 100%;\r\n  height: 60px;\r\n}\r\n\r\n.message-composer {\r\n  font-family: 'Lato', sans-serif;\r\n  font-size: 102%;\r\n  border: 2px solid #dddddd;\r\n  height: 20px;\r\n  width: 85%;\r\n  outline: none;\r\n  margin:auto;\r\n  border-radius: 4px;\r\n  resize:none;\r\n  padding-right: 10px;\r\n  padding-top: 8px;\r\n  padding-bottom: 7px;\r\n  padding-left: 10px;\r\n  margin-right: auto;\r\n  margin-left: 25px;\r\n  margin-top: 15px;\r\n  margin-bottom: auto;\r\n}\r\n\r\n.message-composer:focus {\r\n  border-color: #1E90FF;\r\n}\r\n\r\n.message-composer:hover {\r\n  border-color: #1E90FF;\r\n}\r\n\r\n#sidebar {\r\n  cursor: default;\r\n  float:left;\r\n  height: 100%;\r\n  width:240px;\r\n  color:#DEDEDE;\r\n  background:#2f2c2f;\r\n  font-weight: 400;\r\n  -webkit-touch-callout: none; /* iOS Safari */\r\n  -webkit-user-select: none;   /* Chrome/Safari/Opera */\r\n  -moz-user-select: none;      /* Firefox */\r\n  -ms-user-select: none;       /* Internet Explorer/Edge */\r\n  user-select: none;\r\n  position: relative;\r\n}\r\n\r\n.channelInterfaceContainer {\r\n  position: absolute;\r\n  bottom:0;  /* position the top  edge of the element at the middle of the parent */\r\n  left: 50%; /* position the left edge of the element at the middle of the parent */\r\n  cursor: pointer;\r\n  transform: translateX(-50%);\r\n}\r\n\r\n.sidebarHeader {\r\n  margin-bottom: 20px;\r\n  height: 70px;\r\n  width: 100%;\r\n}\r\n.headerText {\r\n  color:white;\r\n  font-size: 110%;\r\n  font-weight: 900;\r\n  display: inline-block;\r\n  width: 75%;\r\n  margin-top: 15px;\r\n  margin-left: 15px;\r\n}\r\n\r\n.headerUsername {\r\n  font-size: 90%;\r\n  margin-top: 5px;\r\n  margin-left: 15px;\r\n}\r\n\r\n.sidebarHeader:hover {\r\n  color: white;\r\n  background:#252525;\r\n}\r\n\r\n.sidebarElementArea {\r\n  padding-right: 10px;\r\n}\r\n\r\n.copyLink {\r\n  border-bottom: 1px dotted;\r\n  cursor: pointer;\r\n}\r\n\r\n.copyLink:hover {\r\n  border-bottom: 1px solid;\r\n}\r\n\r\n.channelHeader {\r\n  padding-left: 15px;\r\n  font-weight: 900;\r\n  padding-bottom: 6px;\r\n}\r\n\r\n.channelHeaderText {\r\n  color:#DEDEDE;\r\n  opacity: .7;\r\n  display: inline-block;\r\n  width: 90%;\r\n  font-size: 78%;\r\n}\r\n\r\n.channelHeaderText:hover {\r\n  opacity: 1;\r\n}\r\n\r\n.addChannel {\r\n  font-size: 85%;\r\n  opacity: .4;\r\n  color:#DEDEDE;\r\n  display: inline-block;\r\n  cursor: pointer;\r\n}\r\n\r\n.addChannel:hover {\r\n  opacity: 1;\r\n}\r\n\r\n.sidebarElement {\r\n  padding-bottom: 4px;\r\n  padding-top: 2px;\r\n  display:block;\r\n  width:100%;\r\n  color:white;\r\n  border: 2px solid #2f2c2f;\r\n}\r\n\r\n.sidebarElement:hover {\r\n  background:#5C6380;\r\n  border: 2px solid #5C6380;\r\n}\r\n\r\n.sidebarElement.active:hover {\r\n  background:#5C6380;\r\n}\r\n\r\n.sidebarElement.active {\r\n  border: 2px solid #D39B46;\r\n}\r\n\r\n.sidebarElement>span>i {\r\n  opacity: .4;\r\n}\r\n\r\n#sidebar .sidebarElement >span {\r\n  padding-left: 15px;\r\n  color:#DEDEDE;\r\n  user-select: none;\r\n}\r\n\r\n.channelInterfaceContainer {\r\n  width: 100%;\r\n  text-align: center;\r\n}\r\n\r\n.channelInterfaceContainer:hover {\r\n  color: white;\r\n  background:#252525;\r\n}\r\n\r\n/* Pretty Scrollbar */\r\n::-webkit-scrollbar {\r\n  width: 8px;\r\n  background-color: rgba(0, 0, 0, 0.04);\r\n  -webkit-border-radius: 100px;\r\n  border-radius: 100px;\r\n}\r\n\r\n::-webkit-scrollbar-thumb:vertical {\r\n  background: rgba(0,0,0,0.23);\r\n  -webkit-border-radius: 100px;\r\n  border-radius: 100px;\r\n}\r\n\r\n.redirect {\r\n  text-align: center;\r\n}\r\n.form-form {\r\n  align-items: center;\r\n  display: flex;\r\n  flex-direction: column;\r\n  text-align: center;\r\n}\r\n.form-wrapper {\r\n  display: flex;\r\n  margin-bottom: 0.5em;\r\n}\r\n\r\n.form-field {\r\n  flex: 1;\r\n}\r\n.form-field:not(:first-child) {\r\n  border-left: 0;\r\n}\r\n.form-field:not(:last-child) {\r\n  border-right: 0;\r\n}\r\n\r\n.form-item {\r\n  background-color: rgba(147, 128, 108, 0.1);\r\n  color: #666666;\r\n  font: inherit;\r\n  font-weight: normal;\r\n}\r\n.form-field,\r\n.form-item {\r\n  border: 1px solid rgba(147, 128, 108, 0.25);\r\n  padding: 0.5em 0.75em;\r\n}\r\n.form-field:first-child,\r\n.form-item:first-child {\r\n  border-radius: 2px 0 0 2px;\r\n}\r\n.form-field:last-child,\r\n.form-item:last-child {\r\n  border-radius: 0 2px 2px 0;\r\n}\r\n\r\n\r\n.sk-circle {\r\n  margin: 100px auto;\r\n  width: 40px;\r\n  height: 40px;\r\n  position: relative;\r\n}\r\n.sk-circle .sk-child {\r\n  width: 100%;\r\n  height: 100%;\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n}\r\n.sk-circle .sk-child:before {\r\n  content: '';\r\n  display: block;\r\n  margin: 0 auto;\r\n  width: 15%;\r\n  height: 15%;\r\n  background-color: #333;\r\n  border-radius: 100%;\r\n  -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;\r\n  animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;\r\n}\r\n.sk-circle .sk-circle2 {\r\n  -webkit-transform: rotate(30deg);\r\n  -ms-transform: rotate(30deg);\r\n  transform: rotate(30deg); }\r\n  .sk-circle .sk-circle3 {\r\n    -webkit-transform: rotate(60deg);\r\n    -ms-transform: rotate(60deg);\r\n    transform: rotate(60deg); }\r\n    .sk-circle .sk-circle4 {\r\n      -webkit-transform: rotate(90deg);\r\n      -ms-transform: rotate(90deg);\r\n      transform: rotate(90deg); }\r\n      .sk-circle .sk-circle5 {\r\n        -webkit-transform: rotate(120deg);\r\n        -ms-transform: rotate(120deg);\r\n        transform: rotate(120deg); }\r\n        .sk-circle .sk-circle6 {\r\n          -webkit-transform: rotate(150deg);\r\n          -ms-transform: rotate(150deg);\r\n          transform: rotate(150deg); }\r\n          .sk-circle .sk-circle7 {\r\n            -webkit-transform: rotate(180deg);\r\n            -ms-transform: rotate(180deg);\r\n            transform: rotate(180deg); }\r\n            .sk-circle .sk-circle8 {\r\n              -webkit-transform: rotate(210deg);\r\n              -ms-transform: rotate(210deg);\r\n              transform: rotate(210deg); }\r\n              .sk-circle .sk-circle9 {\r\n                -webkit-transform: rotate(240deg);\r\n                -ms-transform: rotate(240deg);\r\n                transform: rotate(240deg); }\r\n                .sk-circle .sk-circle10 {\r\n                  -webkit-transform: rotate(270deg);\r\n                  -ms-transform: rotate(270deg);\r\n                  transform: rotate(270deg); }\r\n                  .sk-circle .sk-circle11 {\r\n                    -webkit-transform: rotate(300deg);\r\n                    -ms-transform: rotate(300deg);\r\n                    transform: rotate(300deg); }\r\n                    .sk-circle .sk-circle12 {\r\n                      -webkit-transform: rotate(330deg);\r\n                      -ms-transform: rotate(330deg);\r\n                      transform: rotate(330deg); }\r\n                      .sk-circle .sk-circle2:before {\r\n                        -webkit-animation-delay: -1.1s;\r\n                        animation-delay: -1.1s; }\r\n                        .sk-circle .sk-circle3:before {\r\n                          -webkit-animation-delay: -1s;\r\n                          animation-delay: -1s; }\r\n                          .sk-circle .sk-circle4:before {\r\n                            -webkit-animation-delay: -0.9s;\r\n                            animation-delay: -0.9s; }\r\n                            .sk-circle .sk-circle5:before {\r\n                              -webkit-animation-delay: -0.8s;\r\n                              animation-delay: -0.8s; }\r\n                              .sk-circle .sk-circle6:before {\r\n                                -webkit-animation-delay: -0.7s;\r\n                                animation-delay: -0.7s; }\r\n                                .sk-circle .sk-circle7:before {\r\n                                  -webkit-animation-delay: -0.6s;\r\n                                  animation-delay: -0.6s; }\r\n                                  .sk-circle .sk-circle8:before {\r\n                                    -webkit-animation-delay: -0.5s;\r\n                                    animation-delay: -0.5s; }\r\n                                    .sk-circle .sk-circle9:before {\r\n                                      -webkit-animation-delay: -0.4s;\r\n                                      animation-delay: -0.4s; }\r\n                                      .sk-circle .sk-circle10:before {\r\n                                        -webkit-animation-delay: -0.3s;\r\n                                        animation-delay: -0.3s; }\r\n                                        .sk-circle .sk-circle11:before {\r\n                                          -webkit-animation-delay: -0.2s;\r\n                                          animation-delay: -0.2s; }\r\n                                          .sk-circle .sk-circle12:before {\r\n                                            -webkit-animation-delay: -0.1s;\r\n                                            animation-delay: -0.1s; }\r\n\r\n                                            @-webkit-keyframes sk-circleBounceDelay {\r\n                                              0%, 80%, 100% {\r\n                                                -webkit-transform: scale(0);\r\n                                                transform: scale(0);\r\n                                                } 40% {\r\n                                                  -webkit-transform: scale(1);\r\n                                                  transform: scale(1);\r\n                                                }\r\n                                              }\r\n\r\n                                              @keyframes sk-circleBounceDelay {\r\n                                                0%, 80%, 100% {\r\n                                                  -webkit-transform: scale(0);\r\n                                                  transform: scale(0);\r\n                                                  } 40% {\r\n                                                    -webkit-transform: scale(1);\r\n                                                    transform: scale(1);\r\n                                                  }\r\n                                                }\r\n", ""]);
 	
 	// exports
 
@@ -74467,46 +74527,6 @@
 
 /***/ },
 /* 640 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(641);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(637)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./timer.css", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./timer.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 641 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(635)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "#svg circle {\r\n  stroke-dashoffset: 100;\r\n  transition: stroke-dashoffset 1s linear;\r\n  stroke: red;\r\n  stroke-width: .25em;\r\n}\r\n#svg #bar {\r\n  stroke-width: .24em;\r\n  stroke: white;\r\n}\r\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 642 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	var overArg = __webpack_require__(__webpack_module_template_argument_0__);
