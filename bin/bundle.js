@@ -33322,7 +33322,7 @@
 	
 	      console.log(cookie, authStatus, user);
 	      if (cookie) {
-	        this.props.dispatch((0, _actions.whoami)()).then(function () {
+	        this.props.dispatch((0, _actions.whoami)(this.props.location.pathname)).then(function () {
 	          _this2.setState({
 	            isFetching: false
 	          });
@@ -33438,9 +33438,9 @@
 	  if (response.status >= 200 && response.status < 300) {
 	    return response;
 	  } else {
-	    var error = new Error(response.statusText);
-	    error.response = response;
-	    throw error;
+	    return response.json().then(function (err) {
+	      return Promise.reject(err);
+	    });
 	  }
 	};
 	
@@ -33449,17 +33449,19 @@
 	};
 	
 	var onSuccess = exports.onSuccess = function onSuccess(user) {
+	  var nextRoute = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '/game';
+	
 	  return function (dispatch) {
 	    dispatch({ type: 'REQUEST_SUCCESS' });
 	    dispatch({ type: 'SET_USER_INFO', user: user });
 	    dispatch(setSocket());
 	    return dispatch(fetchRooms()).then(function () {
-	      return dispatch((0, _reactRouterRedux.push)('/game'));
+	      return dispatch((0, _reactRouterRedux.replace)(nextRoute));
 	    });
 	  };
 	};
 	
-	var whoami = exports.whoami = function whoami() {
+	var whoami = exports.whoami = function whoami(nextRoute) {
 	  return function (dispatch) {
 	    dispatch({ type: 'SENDING_REQUEST' });
 	    return fetch('/whoami', {
@@ -33468,12 +33470,10 @@
 	      mode: 'cors',
 	      credentials: 'include',
 	      cache: 'no-cache'
-	    }).then(checkStatus).then(parseJSON).then(function (json) {
-	      dispatch({ type: 'REQUEST_SUCCESS' });
-	      dispatch({ type: 'SET_USER_INFO', user: json });
-	      dispatch(setSocket());
-	      return dispatch(fetchRooms());
+	    }).then(checkStatus).then(parseJSON).then(function (username) {
+	      dispatch(onSuccess(username, nextRoute));
 	    }).catch(function (error) {
+	      console.log(error.message);
 	      dispatch(requestFailure(error.message));
 	    });
 	  };
@@ -33516,8 +33516,9 @@
 	        'username': username,
 	        'password': password
 	      }) }).then(checkStatus).then(function () {
-	      dispatch(onSuccess(username));
+	      return dispatch(onSuccess(username));
 	    }).catch(function (error) {
+	      console.log(error);
 	      dispatch(requestFailure(error.message));
 	    });
 	  };
@@ -33579,9 +33580,7 @@
 	      headers: headers,
 	      mode: 'cors',
 	      cache: 'default'
-	    }).then(checkStatus).then(function (response) {
-	      return response.json();
-	    }).then(function (json) {
+	    }).then(checkStatus).then(parseJSON).then(function (json) {
 	      dispatch(setSocket());
 	      dispatch({ type: 'SET_USER_INFO', user: json.user });
 	      return dispatch(fetchRooms());
@@ -33604,9 +33603,7 @@
 	      method: 'GET',
 	      mode: 'cors',
 	      cache: 'default'
-	    }).then(checkStatus).then(function (response) {
-	      return response.json();
-	    }).then(function (rooms) {
+	    }).then(checkStatus).then(parseJSON).then(function (rooms) {
 	      dispatch(setRooms(rooms));
 	    }).catch(function (error) {
 	      // do some error handling here
@@ -33626,7 +33623,7 @@
 	      return response.json();
 	    }).then(function (roomData) {
 	      if (roomData.error) {
-	        dispatch((0, _reactRouterRedux.push)('/'));
+	        dispatch((0, _reactRouterRedux.push)('/game'));
 	        return {
 	          error: true
 	        };
@@ -57626,7 +57623,7 @@
 	  }, {
 	    key: 'remakeCanvas',
 	    value: function remakeCanvas() {
-	      if (this.canIDraw) {
+	      if (this.props.user === this.props.artist) {
 	        this.actionHistory.remakeCanvas(this.state.canvasWidth, this.state.canvasHeight);
 	      } else {
 	        this.remakeCanvasRemote();
@@ -57737,7 +57734,6 @@
 	      var canIDraw = _props.canIDraw;
 	      var isSpectating = _props.isSpectating;
 	
-	      canIDraw = canIDraw && this.props.turnStatus === 'drawing';
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'canvasContainer' },
@@ -57786,8 +57782,8 @@
 	        ) : null,
 	        this.props.turnStatus === 'starting' ? _react2.default.createElement(
 	          'div',
-	          { style: { position: 'absolute', top: '50%', right: '50%', width: '100px', height: '100px' } },
-	          _react2.default.createElement(Timer, { containerStyle: { border: '8px solid red', borderRadius: '50%' }, color: 'white', strokeWidth: 50, trailWidth: 0, progress: 1, text: this.props.timeLeft, key: this.props.timeLeft })
+	          { style: { position: 'absolute', top: '25%', right: '50%', width: '300px', height: '300px' } },
+	          _react2.default.createElement(Timer, { containerStyle: { fontSize: '300%', width: '300px', height: '300px', borderRadius: '50%' }, color: 'white', strokeWidth: 50, trailWidth: 0, progress: 1, text: this.props.timeLeft + 1, key: this.props.timeLeft })
 	        ) : null,
 	        _react2.default.createElement(CanvasMessage, _extends({ turnStatus: this.props.turnStatus, guessers: this.props.guessers, canIDraw: canIDraw }, this.props)),
 	        canIDraw ? _react2.default.createElement(ArtistOptions, {
@@ -57815,17 +57811,19 @@
 	var mapStateToProps = function mapStateToProps(state) {
 	  var players = state.root.room.game.players;
 	  var artist = state.root.room.game.artist;
-	  var canIDraw = state.root.user === artist;
+	  var turnStatus = state.root.room.game.turnStatus;
+	  var canIDraw = state.root.user === artist && turnStatus === 'drawing';
 	  var isSpectating = !(state.root.user in players);
 	  return {
 	    guessers: Object.keys(players).filter(function (player) {
 	      return players[player].pointsThisTurn > 0 && player !== artist;
 	    }),
-	    turnStatus: state.root.room.game.turnStatus,
+	    turnStatus: turnStatus,
 	    numPlayers: Object.keys(players).length,
 	    timePerTurn: state.root.room.game.timePerTurn,
 	    word: state.root.room.game.word,
 	    artist: state.root.room.game.artist,
+	    user: state.root.user,
 	    timeLeft: state.root.room.game.timeLeft,
 	    canIDraw: canIDraw,
 	    isSpectating: isSpectating,

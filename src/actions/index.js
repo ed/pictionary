@@ -1,6 +1,6 @@
 import * as types from '../constants'
 import 'isomorphic-fetch'
-import { push } from 'react-router-redux';
+import { push, replace } from 'react-router-redux';
 
 let headers = new Headers();
 headers.append('Content-Type', 'application/json');
@@ -42,11 +42,9 @@ export const dismissNotification = (notification) => {
 
 export const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
-    return response
+    return response;
   } else {
-    var error = new Error(response.statusText)
-    error.response = response
-    throw error
+    return response.json().then(err => Promise.reject(err));
   }
 }
 
@@ -54,17 +52,17 @@ export const parseJSON = (response) => {
   return response.json()
 }
 
-export const onSuccess = (user) => {
+export const onSuccess = (user, nextRoute='/game') => {
   return (dispatch) => {
     dispatch({ type: 'REQUEST_SUCCESS' });
     dispatch({ type: 'SET_USER_INFO', user: user});
     dispatch(setSocket());
-    return dispatch(fetchRooms()).then(() => dispatch(push('/game')))
+    return dispatch(fetchRooms()).then(() => dispatch(replace(nextRoute)))
   }
 }
 
 
-export const whoami = () => {
+export const whoami = (nextRoute) => {
   return (dispatch) => {
     dispatch({ type: 'SENDING_REQUEST' });
     return fetch('/whoami', { 
@@ -77,7 +75,7 @@ export const whoami = () => {
       .then(checkStatus)
       .then(parseJSON)
       .then(username => {
-	       return dispatch(onSuccess(username));
+	        dispatch(onSuccess(username, nextRoute));
       }).catch(error => {
           console.log(error.message)
 	        dispatch(requestFailure(error.message))
@@ -126,9 +124,9 @@ export const login  = (username, password) => {
           'password': password
         })})
       .then(checkStatus)
-      .then(() => {
-        dispatch(onSuccess(username));
-      }).catch(error => {
+      .then(() => dispatch(onSuccess(username)))
+      .catch(error => {
+        console.log(error)
         dispatch(requestFailure(error.message))
       });
   };
@@ -196,7 +194,7 @@ export const setTempUserInfo = () => {
       cache: 'default',
     })
     .then(checkStatus)
-    .then(response => response.json())
+    .then(parseJSON)
     .then(json => {
       dispatch(setSocket());
       dispatch({ type: 'SET_USER_INFO', user: json.user})
@@ -223,7 +221,7 @@ export const fetchRooms = () => {
       cache: 'default',
     })
       .then(checkStatus)
-      .then(response => response.json())
+      .then(parseJSON)
       .then(rooms => { 
 	       dispatch(setRooms(rooms))
       })
@@ -245,7 +243,7 @@ export const fetchRoomData = (room) => {
       .then(response => response.json())
       .then(roomData => {
 	if (roomData.error) {
-	  dispatch(push('/'));
+	  dispatch(push('/game'));
 	  return {
 	    error: true
 	  }
