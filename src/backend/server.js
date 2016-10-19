@@ -36,7 +36,7 @@ app.post('/signup', (req, res) => {
   const { username, password } = req.body;
   utils.register(req, res, username, password, (err, next) => {
     if (err) {
-      res.status(400).send(err)
+      res.status(400).send({message: err.message})
     }
     if (next) {
       res.writeHead(200, {
@@ -50,18 +50,16 @@ app.post('/signup', (req, res) => {
 
 app.post('/login', (req, res) => {
   const { username, password } = req.body
-  utils.login(req, res, username, password, (err, next) => {
+  utils.login(req, res, username, password, (err, token) => {
     if (err) {
-      res.status(400).send(err)
+      res.status(400).send({message: err.message})
     }
-    else {
-      if (next) {
-		res.writeHead(200, {
-		  'Set-Cookie': `a=${next};max-age=${1*60*60*24*30};HttpOnly;`,
-		  'Content-Type': 'text/plain',
-		});
-		res.end();
-      }
+    else if (token) {
+  		res.writeHead(200, {
+  		  'Set-Cookie': `a=${token};max-age=${1*60*60*24*30};HttpOnly;`,
+  		  'Content-Type': 'text/plain',
+  		});
+	    res.end();
     }
   })
 })
@@ -85,7 +83,7 @@ app.get('/whoami', (req, res) => {
   console.log('cookie: ', req.headers.cookie)
   utils.cookieMonster(req.headers.cookie, (err, cb) => {
     if (err) {
-      console.log(err)
+      res.status(400).send({message: err.message})
     }
     else {
       res.send(JSON.stringify(cb.user.username));
@@ -115,21 +113,21 @@ app.use((req, res) => {
     const store = configureStore(memoryHistory, preloadedState);
     const history = syncHistoryWithStore(memoryHistory, store);
     match({ history, routes, location: req.url }, (err, redirect, props) => {
-    if (err) {
-      res.status(500).send(err.message)
-    } else if (redirect) {
-      res.redirect(redirect.pathname + redirect.search)
-    } else if (props) {
-      const finalState = store.getState()
-      const html = renderToString(
-      <Provider store={store}>
-        <RouterContext {...props}/>
-      </Provider>
-      )
-      res.send(renderPage(html, finalState))
-    } else {
-      res.status(404).send('Not Found')
-    }
+      if (err) {
+        res.status(500).send({message: err.message})
+      } else if (redirect) {
+        res.redirect(redirect.pathname + redirect.search)
+      } else if (props) {
+        const finalState = store.getState()
+        const html = renderToString(
+        <Provider store={store}>
+          <RouterContext {...props}/>
+        </Provider>
+        )
+        res.send(renderPage(html, finalState))
+      } else {
+        res.status(404).send('Not Found')
+      }
     })
   });
 })

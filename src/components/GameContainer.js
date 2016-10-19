@@ -19,7 +19,7 @@ class Container extends Component {
     const { cookie, authStatus, user } = this.props
     console.log(cookie, authStatus, user)
     if (cookie) {
-      this.props.dispatch(whoami()).then(() => {
+      this.props.dispatch(whoami(this.props.location.pathname)).then(() => {
         this.setState({
           isFetching: false
         })
