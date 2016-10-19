@@ -207,7 +207,7 @@ class DMT {
       players: this.players,
       word: this.curWord,
       artist: this.currentArtist(),
-      timeLeft: 5,
+      timeLeft: 4,
       totalRounds: this.numRounds,
       round: this.curRound,
       timePerTurn: this.secondsPerTurn,

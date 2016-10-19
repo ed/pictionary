@@ -55,7 +55,7 @@ class Canvas extends Component {
   }
 
   remakeCanvas() {
-    if (this.canIDraw){
+    if (this.props.user === this.props.artist){
       this.actionHistory.remakeCanvas(this.state.canvasWidth, this.state.canvasHeight);
     }
     else {
@@ -139,7 +139,6 @@ class Canvas extends Component {
 
   render() {
     let { canIDraw, isSpectating } = this.props;
-    canIDraw = canIDraw && this.props.turnStatus === 'drawing';
     return (
       <div className="canvasContainer">
         <canvas 
@@ -162,8 +161,8 @@ class Canvas extends Component {
           null
         }
         {this.props.turnStatus === 'starting' ?
-        <div style={{position: 'absolute', top:'50%', right:'50%', width: '100px', height: '100px'}}>
-          <Timer containerStyle={{border:'8px solid red', borderRadius: '50%'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft} key={this.props.timeLeft}/>
+        <div style={{position: 'absolute', top:'25%', right:'50%', width: '300px', height: '300px'}}>
+          <Timer containerStyle={{fontSize: '300%', width: '300px', height: '300px', borderRadius: '50%'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft + 1} key={this.props.timeLeft}/>
         </div>
         : null}
         <CanvasMessage turnStatus={this.props.turnStatus} guessers={this.props.guessers} canIDraw={canIDraw} {...this.props} />
@@ -184,15 +183,17 @@ class Canvas extends Component {
 const mapStateToProps = (state) => {
     let players = state.root.room.game.players;
     let artist = state.root.room.game.artist;
-    let canIDraw = (state.root.user === artist);
+    let turnStatus = state.root.room.game.turnStatus;
+    let canIDraw = (state.root.user === artist) && turnStatus === 'drawing';
     let isSpectating = !(state.root.user in players);
     return {
         guessers: Object.keys(players).filter((player) => players[player].pointsThisTurn > 0 && player !== artist),
-        turnStatus: state.root.room.game.turnStatus,
+        turnStatus,
         numPlayers: Object.keys(players).length,
         timePerTurn: state.root.room.game.timePerTurn,
         word: state.root.room.game.word,
         artist: state.root.room.game.artist,
+        user: state.root.user,
         timeLeft: state.root.room.game.timeLeft, 
         canIDraw,
         isSpectating,

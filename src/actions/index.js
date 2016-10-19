@@ -76,13 +76,11 @@ export const whoami = () => {
     })
       .then(checkStatus)
       .then(parseJSON)
-      .then(json => {
-	       dispatch({ type: 'REQUEST_SUCCESS' });
-           dispatch({ type: 'SET_USER_INFO', user: json});
-           dispatch(setSocket());
-           return dispatch(fetchRooms());
+      .then(username => {
+	       return dispatch(onSuccess(username));
       }).catch(error => {
-	       dispatch(requestFailure(error.message))
+          console.log(error.message)
+	        dispatch(requestFailure(error.message))
       });
   }
 }

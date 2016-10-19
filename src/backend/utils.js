@@ -22,7 +22,7 @@ pool.connect(function(err, client, done) {
 
 module.exports = {
   cookieMonster(cookies, next) {
-    if (cookies === null) {
+    if (cookies === null || cookies === undefined) {
       const err = new Error('cookie not found');
       return next(err);
     }
