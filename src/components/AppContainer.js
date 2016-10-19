@@ -1,12 +1,42 @@
 import React, {Component} from 'react'
-import { dismissNotification } from '../actions'
+import { whoami, addNotification, dismissNotification, setTempUserInfo } from '../actions'
 import { connect } from 'react-redux'
 import { NotificationStack } from 'react-notification'
 import { push } from 'react-router-redux'
+import Spinner from './Spinner'
 
 class Container extends Component {
+	constructor(props) {
+    super(props);
+  
+   this.state = {
+      isFetching: true,
+    }
+  }
+
+  componentDidMount() {
+    const { cookie, authStatus, user } = this.props
+    console.log(cookie, authStatus, user)
+    if (cookie) {
+      this.props.dispatch(whoami(this.props.location.pathname)).then(() => {
+        this.setState({
+          isFetching: false
+        })
+      })
+    }
+    else {
+      if (!authStatus) this.props.dispatch(setTempUserInfo())
+      this.setState({
+        isFetching: false
+      })
+    }
+  }
+
 	render() {
+		const { roomStatus, user, cookie, error } = this.props
+    const { isFetching } = this.state;
 		return (
+			!isFetching && roomStatus ?
 			<div className="container">
 				<NotificationStack
 			      notifications={this.props.notifications.toArray()}
@@ -44,6 +74,8 @@ class Container extends Component {
 			    />
 			    {this.props.children}
 			</div>
+			:
+			<Spinner />
 		)
 	}  
 }
@@ -51,7 +83,10 @@ class Container extends Component {
 const mapStateToProps = (state) => {
   return {
     notifications: state.root.notifications,
+    user: state.root.user,
+    cookie: state.root.cookie,
     authStatus: state.root.auth.status,
+    roomStatus: state.root.rooms.isValid
   }
 };
 
