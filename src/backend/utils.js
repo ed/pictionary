@@ -1,14 +1,23 @@
 const auth = require('./auth')
 const uuid = require('node-uuid')
 const assign = Object.assign
+var parse = require('pg-connection-string').parse;
 
 var pg = require('pg');
 pg.defaults.ssl = true;
-console.log(process.env.DATABASE_URL)
-pg.connect({database: process.env.DATABASE_URL, ssl: true, port: process.env.PORT }, function(err, client) {
-  if (err) throw err;
+var pool = new pg.Pool(parse(process.env.DATABASE_URL))
+pool.connect(function(err, client, done) {
+  if (err) {
+    console.log(JSON.stringify(err))
+    throw err;
+  }
   console.log('Connected to postgres! Getting schemas...');
-
+  client
+    //.query('INSERT INTO USERS (USERNAME, PASSWORD, SALT) VALUES ($1,$2,$3)', ['eugene','afdsfg','fsdfsd'])
+    .query('SELECT * FROM USERS')
+    .on('row', function(row) {
+      console.log(JSON.stringify(row));
+    });
 });
 
 
