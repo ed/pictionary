@@ -40,7 +40,7 @@ app.post('/signup', (req, res) => {
     }
     if (next) {
       res.writeHead(200, {
-    		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30};HttpOnly;Secure`,
+    		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30};HttpOnly;`,
     		'Content-Type': 'text/plain',
       });
       res.end();
@@ -57,7 +57,7 @@ app.post('/login', (req, res) => {
     else {
       if (next) {
 		res.writeHead(200, {
-		  'Set-Cookie': `a=${next};max-age=${1*60*60*24*30};HttpOnly;Secure`,
+		  'Set-Cookie': `a=${next};max-age=${1*60*60*24*30};HttpOnly;`,
 		  'Content-Type': 'text/plain',
 		});
 		res.end();
@@ -74,7 +74,7 @@ app.post('/logout', (req, res) => {
   }
   catch(err){}
   res.writeHead(200, {
-    'Set-Cookie': `a='';max-age=${0};HttpOnly;Secure`,
+    'Set-Cookie': `a='';max-age=${0};HttpOnly;`,
     'Content-Type': 'text/plain',
   });
   res.end();
@@ -82,12 +82,15 @@ app.post('/logout', (req, res) => {
 
 app.get('/whoami', (req, res) => {
   // dispatch sets username + status based on cookie
-  try {
-    utils.cookieMonster(req.headers.cookie, users, (err, cb) => {
-	  res.send(JSON.stringify(cb.user.username));
-    });
-  }
-  catch(err){}
+  console.log('cookie: ', req.headers.cookie)
+  utils.cookieMonster(req.headers.cookie, (err, cb) => {
+    if (err) {
+      console.log(err)
+    }
+    else {
+      res.send(JSON.stringify(cb.user.username));
+    }
+  });
 })
 
 let userNum = 0;
@@ -104,33 +107,31 @@ app.use((req, res) => {
 	  cookie: false
     }
   }
-  try {
-    utils.cookieMonster(req.headers.cookie, users, (err, cb) => {
-	  // do things here like delete cookie
-	  assign(preloadedState.root, {cookie: cb.match})
-    });
-  }
-  catch (err) {}
-  const memoryHistory = createHistory(req.originalUrl);
-  const store = configureStore(memoryHistory, preloadedState);
-  const history = syncHistoryWithStore(memoryHistory, store);
-  match({ history, routes, location: req.url }, (err, redirect, props) => {
-	if (err) {
-	  res.status(500).send(err.message)
-	} else if (redirect) {
-	  res.redirect(redirect.pathname + redirect.search)
-	} else if (props) {
-	  const finalState = store.getState()
-	  const html = renderToString(
-		<Provider store={store}>
-		  <RouterContext {...props}/>
-		</Provider>
-	  )
-	  res.send(renderPage(html, finalState))
-	} else {
-	  res.status(404).send('Not Found')
-	}
-  })
+  utils.cookieMonster(req.headers.cookie, (err, cb) => {
+    if (!err) {
+      assign(preloadedState.root, { cookie: true });
+    }
+    const memoryHistory = createHistory(req.originalUrl);
+    const store = configureStore(memoryHistory, preloadedState);
+    const history = syncHistoryWithStore(memoryHistory, store);
+    match({ history, routes, location: req.url }, (err, redirect, props) => {
+    if (err) {
+      res.status(500).send(err.message)
+    } else if (redirect) {
+      res.redirect(redirect.pathname + redirect.search)
+    } else if (props) {
+      const finalState = store.getState()
+      const html = renderToString(
+      <Provider store={store}>
+        <RouterContext {...props}/>
+      </Provider>
+      )
+      res.send(renderPage(html, finalState))
+    } else {
+      res.status(404).send('Not Found')
+    }
+    })
+  });
 })
 
 const renderPage = (html, preloadedState) => {
