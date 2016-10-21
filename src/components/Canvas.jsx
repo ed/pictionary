@@ -15,7 +15,6 @@ class Canvas extends Component {
       canvasHeight: 0,
       brushColor: "#C45100",
       brushSize: 8,
-      timeLeft: 0
     };
     this.remakeCanvasRemote = () => null;
     this.ptsByStroke = {};
@@ -63,10 +62,8 @@ class Canvas extends Component {
   }
 
   componentWillUnmount() {
-    this.props.socket.off('turn over');
-    this.props.socket.off('start stroke');
-    this.props.socket.off('draw stroke');
-    this.props.socket.off('end stroke');
+    this.props.socket.off('stroke');
+    this.props.socket.off('update canvas');
   }
 
   buildRemoteCanvas(canvasData) {
@@ -106,7 +103,6 @@ class Canvas extends Component {
       setTimeout(() => this.setCanvasSize, 1000);
     }
   }
-
 
   startStroke(pos) {
     this.curMark = new Mark(this.ctx, this.state.brushColor, this.state.brushSize,this.scalePoint(pos));
