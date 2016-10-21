@@ -13,27 +13,60 @@ class Canvas extends Component {
       drawing: false,
       canvasWidth: 0,
       canvasHeight: 0,
-      brushColor: "#C45100", 
-      brushSize: 8, 
+      brushColor: "#C45100",
+      brushSize: 8,
       timeLeft: 0
     };
     this.remakeCanvasRemote = () => null;
+    this.ptsByStroke = {};
+    this.drawRemoteLoops = {};
   }
 
   componentDidMount() {
-    this.ctx = this.canvas.getContext('2d');    
+    this.strokeID = 0;
+    this.ctx = this.canvas.getContext('2d');
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.actionHistory = new ActionHistory(this.clearCanvas);
-    this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData));
+    this.props.socket.on('stroke', point => point.action === 'start' ? this.startStrokeRemote(point) : this.addStroke(point) );
+    this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData) );
     this.setCanvasSize();
-    if (this.props.canvasData) {
-      this.buildRemoteCanvas(this.props.canvasData);
+    this.remakeCanvasRemote = () => this.props.canvasData ? this.buildRemoteCanvas(this.props.canvasData) : null;
+    this.currentID = 0;
+  }
+
+  addStroke(point) {
+    point.strokeID in this.ptsByStroke ? this.ptsByStroke[point.strokeID].push(point.pos) : this.ptsByStroke[point.strokeID] = [];
+  }
+
+  startStrokeRemote(point) {
+    this.ptsByStroke[point.strokeID] = [];
+    setTimeout(() => this.startThat(point),100);
+  }
+
+  startThat(point) {
+    if (this.currentID !== point.strokeID || this.ptsByStroke[point.strokeID].length == 0) {
+      return setTimeout(() => this.startThat(point),100);
+    }
+    this.startStroke(point.pos);
+    this.drawRemoteLoops[point.strokeID] = setInterval(() => this.drawRemoteStroke(point.strokeID),5);
+  }
+
+  drawRemoteStroke(ID) {
+    if (this.ptsByStroke[ID].length > 0) {
+      this.drawStroke(this.ptsByStroke[ID][0]);
+      this.ptsByStroke[ID].shift();
+    }
+    else {
+      this.currentID++;
+      clearInterval(this.drawRemoteLoops[ID]);
     }
   }
 
   componentWillUnmount() {
     this.props.socket.off('turn over');
-    this.props.socket.off('update canvas');
+    this.props.socket.off('start stroke');
+    this.props.socket.off('draw stroke');
+    this.props.socket.off('end stroke');
   }
 
   buildRemoteCanvas(canvasData) {
@@ -47,9 +80,8 @@ class Canvas extends Component {
         this.clearCanvas();
       }
     }
-    this.remakeCanvasRemote = () => this.buildRemoteCanvas(canvasData);
   }
-  
+
   componentWillMount() {
     window.addEventListener('resize', () => this.setCanvasSize());
   }
@@ -75,50 +107,53 @@ class Canvas extends Component {
     }
   }
 
-  
-  startStroke(e) {
-    let pos = this.xy(e);
-    this.curMark = new Mark(this.ctx, this.state.brushColor, this.state.brushSize, pos);
-    this.curMark.startStroke();
+
+  startStroke(pos) {
+    this.curMark = new Mark(this.ctx, this.state.brushColor, this.state.brushSize,this.scalePoint(pos));
+    this.curMark.startStroke(this.state.canvasWidth, this.state.canvasHeight);
     this.setState({ drawing: true });
+    if (this.props.canIDraw) this.props.socket.emit('stroke', {action: 'noop'});
+    if (this.props.canIDraw) this.props.socket.emit('stroke', {action: 'start', pos, strokeID: this.strokeID});
   }
 
-  drawStroke(e) {
+  drawStroke(pos) {
     if (this.state.drawing) {
-      let pos = this.xy(e);
-      this.curMark.addStroke(pos);
+      let scaledPos = this.scalePoint(pos);
+      if (this.props.canIDraw) this.props.socket.emit('stroke', { action: 'draw', pos, strokeID: this.strokeID });
+      this.curMark.addStroke(scaledPos);
     }
-    e.preventDefault();
   }
 
-  endStroke(e) {
+  endStroke(pos) {
     if (this.state.drawing) {
-      this.drawStroke(e);
+      this.drawStroke(pos);
       this.setState({ drawing: false });
-      this.curMark.scalePoints(this.state.canvasWidth, this.state.canvasHeight);
       this.actionHistory.pushAction(this.curMark);
-      this.props.socket.emit('client update canvas', this.actionHistory.exportData());
+      this.strokeID++;
     }
-    e.preventDefault();
+  }
+
+  scalePoint(pos) {
+    return { x: pos.x*this.state.canvasWidth, y: pos.y*this.state.canvasHeight };
   }
 
   xy(e) {
     const {top, left} = this.canvas.getBoundingClientRect();
     return {
-      x: e.clientX - left,
-      y: e.clientY - top
+      x: (e.clientX - left)/this.state.canvasWidth,
+      y: (e.clientY - top)/this.state.canvasHeight
     }
   }
 
   clear() {
     this.clearCanvas();
     this.actionHistory.pushAction(new ClearCanvas(() => this.clearCanvas()));
-    this.props.socket.emit('client update canvas', this.actionHistory.exportData());
+    this.props.socket.emit('update canvas', this.actionHistory.exportData());
   }
 
   undo() {
     this.actionHistory.undoAction(this.state.canvasWidth, this.state.canvasHeight);
-    this.props.socket.emit('client update canvas', this.actionHistory.exportData());
+    this.props.socket.emit('update canvas', this.actionHistory.exportData());
   }
 
   save() {
@@ -128,7 +163,7 @@ class Canvas extends Component {
 
   redo() {
     this.actionHistory.redoAction(this.state.canvasWidth, this.state.canvasHeight);
-    this.props.socket.emit('client update canvas', this.actionHistory.exportData());
+    this.props.socket.emit('update canvas', this.actionHistory.exportData());
   }
 
   setBrushColor(color) {
@@ -141,11 +176,11 @@ class Canvas extends Component {
     let { canIDraw, isSpectating } = this.props;
     return (
       <div className="canvasContainer">
-        <canvas 
-        onMouseDown={canIDraw ? (e) => this.startStroke(e) : (e) => e.preventDefault()}
-        onMouseMove={canIDraw ? (e) => this.drawStroke(e) : (e) => e.preventDefault()}
-        onMouseOut={canIDraw ? (e) => this.endStroke(e) : (e) => e.preventDefault()}
-        onMouseUp={canIDraw ? (e) => this.endStroke(e) : (e) => e.preventDefault()}
+        <canvas
+        onMouseDown={(e) => { e.preventDefault(); canIDraw ? this.startStroke(this.xy(e)) : null }}
+        onMouseMove={(e) => { e.preventDefault(); canIDraw ? this.drawStroke(this.xy(e)) : null }}
+        onMouseOut={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
+        onMouseUp={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
         className="canvas"
         width={this.state.canvasWidth}
         height={this.state.canvasHeight}
@@ -153,27 +188,27 @@ class Canvas extends Component {
         />
         {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
 
-        {this.props.turnStatus === 'drawing' ? 
+        {this.props.turnStatus === 'drawing' ?
           <div style={{position: 'absolute', top:0, right:'20px', width: '100px', height: '100px'}}>
-          <Timer progress={this.props.timeLeft/this.props.timePerTurn} text={this.props.timeLeft}/>
+            <Timer progress={this.props.timeLeft/this.props.timePerTurn} text={this.props.timeLeft}/>
           </div>
-          : 
+          :
           null
         }
         {this.props.turnStatus === 'starting' ?
         <div style={{position: 'absolute', top:'25%', right:'50%', width: '300px', height: '300px'}}>
-          <Timer containerStyle={{fontSize: '300%', width: '300px', height: '300px', borderRadius: '50%'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft + 1} key={this.props.timeLeft}/>
+          <Timer containerStyle={{fontSize: '300%', width: '300px', height: '300px'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft + 1} key={this.props.timeLeft}/>
         </div>
         : null}
         <CanvasMessage turnStatus={this.props.turnStatus} guessers={this.props.guessers} canIDraw={canIDraw} {...this.props} />
-        {canIDraw ? 
-          <ArtistOptions 
-          color={this.state.brushColor} 
-          radius={this.state.brushSize} 
-          clear={() => this.clear()} 
-          redo={() => this.redo()} 
-          undo={() => this.undo()} 
-          setBrushColor={(color) => this.setBrushColor(color)}/> 
+        {canIDraw ?
+          <ArtistOptions
+          color={this.state.brushColor}
+          radius={this.state.brushSize}
+          clear={() => this.clear()}
+          redo={() => this.redo()}
+          undo={() => this.undo()}
+          setBrushColor={(color) => this.setBrushColor(color)}/>
         : null }
       </div>
       )
@@ -194,7 +229,7 @@ const mapStateToProps = (state) => {
         word: state.root.room.game.word,
         artist: state.root.room.game.artist,
         user: state.root.user,
-        timeLeft: state.root.room.game.timeLeft, 
+        timeLeft: state.root.room.game.timeLeft,
         canIDraw,
         isSpectating,
         canvasData: state.root.room.game.canvasData,
@@ -211,27 +246,33 @@ const CanvasMessage = ({ canIDraw, guessers, numPlayers, word, artist, turnStatu
   <div className="canvasMessage">
   {
     turnStatus === 'drawing' || turnStatus === 'starting' ?
-      <div style={{pointerEvents: 'auto'}}>  
-      { canIDraw ? <span> your turn, <br/> your word is <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span> </span> 
-      : 
+      <div style={{pointerEvents: 'auto'}}>
+      { canIDraw ? <span> your turn, <br/> your word is <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span> </span>
+      :
       <span > <span style={{fontWeight:'bold',color: 'orange'}}>{artist}</span> is drawing {turnStatus === 'starting' ? 'next' : <span> <br/> guess the word using the chat </span> } </span> }
       </div>
-    : 
-      <div> The word was <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span> <br/>
-      <span> { guessers.length > 0 ? 
+    :
+      <div>
+      <span> { guessers.length > 0 ?
         <span style={{fontWeight:'bold'}}>{ guessers.length === numPlayers - 1 ? 'everyone' : guessers.join(', ')}</span> : 'No one'} guessed the word!</span>
-      </div> 
+        <br/>
+        The word was <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span>
+      </div>
   }
-  </div> 
+  </div>
 )
 
-const Timer = ({ progress, text, strokeWidth=10, trailWidth=10, color="#FF3232", containerStyle}) => (
-  <div className="timer" style={{display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background:'white', left:0, right:0}}> 
+const Timer = ({ progress, text, strokeWidth=9, trailWidth=10, color="#FF3232", containerStyle}) => (
+  <div className="timer" style={{display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background:'white', left:0, right:0}}>
   <Circle
         progress={progress}
-        options={{strokeWidth, color, duration: 1000, text: { value: text, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} }, trailColor: '#D6D6D6', trailWidth }}
+        options={{strokeWidth,
+          color,
+          duration: 1000,
+          text: { value: text, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} },
+          trailColor: '#D6D6D6', trailWidth }}
         initialAnimate={true}
-        containerStyle={{ width: '80px', height: '80px', ...containerStyle }}
+        containerStyle={{ borderRadius: '50%', width: '80px', height: '80px',  ...containerStyle }}
         containerClassName={'.progressbar'} />
   </div>
 )
@@ -254,12 +295,12 @@ class ArtistOptions extends Component {
   render () {
     return (
       <div className="artistOptions">
-        <ColorCircle 
-          radius={this.props.radius + 10} 
-          color={this.props.color} 
+        <ColorCircle
+          radius={this.props.radius + 10}
+          color={this.props.color}
           onColorChange={(color) => this.props.setBrushColor(color)}
         />
-        <div className="editOptions">        
+        <div className="editOptions">
           <CanvasButton id="clear" iconName="square-o" onClick={() => this.props.clear()} />
           <CanvasButton id='undo' iconName='undo' onClick={() => this.props.undo()} />
           <CanvasButton id='redo' iconName='repeat' onClick={() => this.props.redo()} />
@@ -305,8 +346,8 @@ export class ColorCircle extends Component {
 
   render() {
     let circleStyle = {
-      width: this.props.radius, 
-      height: this.props.radius, 
+      width: this.props.radius,
+      height: this.props.radius,
       backgroundColor: this.props.color
     };
 
@@ -324,10 +365,10 @@ export class ColorCircle extends Component {
         <div className="colorCircle" onClick={() => this.toggleColorPicker()} style={circleStyle}></div>
         {this.state.displayColorPicker ?
           <div>
-          <div className="cover" onClick={() => this.hideColorPicker()}/> 
+          <div className="cover" onClick={() => this.hideColorPicker()}/>
           <CompactPicker
-            className="colorPicker" 
-            color={this.props.color} 
+            className="colorPicker"
+            color={this.props.color}
             onChange={(color) => this.handleChange(color)}
             />
           </div>

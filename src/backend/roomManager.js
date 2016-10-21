@@ -36,8 +36,8 @@ module.exports = (app, io) => {
     }
     io.sockets.in(roomName).emit('update room', roomData)
   }
-  
-  io.on('connection', (socket) => { 
+
+  io.on('connection', (socket) => {
 
     socket.on('join room', (roomName) => {
       console.log(socket.user + ' tried joining: ' + roomName);
@@ -49,7 +49,7 @@ module.exports = (app, io) => {
         socket.join(roomName);
         socket.curRoom = roomName;
         updateRoom(socket.curRoom);
-      } 
+      }
     });
 
     socket.on('chat msg', (msg) => {
@@ -60,10 +60,16 @@ module.exports = (app, io) => {
       }
     });
 
-    socket.on('client update canvas', (canvasData) => {
-      dmtManager.updateGame(socket.curRoom,{canvasData});
+    socket.on('update canvas', (canvasData) => {
+      dmtManager.updateGame(socket.curRoom,{ canvasData });
       socket.broadcast.to(socket.curRoom).emit('update canvas', canvasData);
     });
+
+		socket.on('stroke', (pos) => {
+			if (pos.action !== 'noop') {
+				socket.broadcast.to(socket.curRoom).emit('stroke', pos);
+			}
+		});
 
     socket.on('start game', () => {
       let players = usersByRoom(socket.curRoom);
@@ -74,7 +80,7 @@ module.exports = (app, io) => {
       socket.user = username;
       socket.color = colors[Math.floor(Math.random()*colors.length)];
     });
-    
+
   });
 
 

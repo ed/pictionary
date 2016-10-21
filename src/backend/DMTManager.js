@@ -3,7 +3,7 @@ let io;
 
 const createMessage = require('../utils/MessageUtils').createMessage;
 
-const words = ['alligator','ant','bear','bee','bird','camel','cat','cheetah','chicken','chimpanzee','cow','crocodile','deer','dog','dolphin','duck','eagle','elephant','fishfly','fox','frog','giraffe','goat','goldfish','hamster','hippopotamus','horse','kangaroo','kitten','leopard','lion','lizard','lobster','monkey','octopus','ostrich','otter','owl','oyster','panda','parrot','pelican','pig','pigeon','porcupine','puppy','rabbit','reindeer','rhinoceros','rooster','scorpion','seal','shark','sheep','shrimp','snail','snake','sparrow','spider','squid','squirrel','swallow','swan','tiger','toad','tortoise','turtle','vulture','walrus','weasel','whale','wolf','zebraairport','bank','barber shop','book store','bowling alley','bus stop','church','fire truck','gas station','hospital','house','library','movie theater','museum','post office','restaurant','school','mall','supermarket','train station','apple','banana','cherry','grapefruit','grapes','lemon','lime','melon ','orange','peach','pineapple','plum','strawberry','watermelon','drill','hammer','knife','ice cube','refrigerator','swordfish','shark','shrimp','lobster','eel','crab','asparagus','beans','broccoli','cabbage','carrot','celery','corn','cucumber','eggplant','green pepper','lettuce','onion','peas','potato','pumpkin','radish','spinach','sweet potato','tomato','turnip','dufflebag','suitcase','jet','vault','ocean','beach','sunset','lake','pie','cake','candy','chocolate',' cookie','donut',' icecream','muffin','pie','potato chips ','pudding','sweet roll','waterfall','valley','forest','saw','scissors','screwdriver','black board',' book','bookcase','bulletin board',' calendar','chair','chalk','clock','desk','thanksgiving','christmas','holloween','saint patrick\'s day','mardi gras','birthday','sun','moon','earth','space','rocket','scarf','winter','snowman','fireplace','dictionary','eraser','map','notebook','pen','white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps'];
+const words = ['alligator','ant','bear','bee','bird','camel','cat','cheetah','chicken','chimpanzee','cow','crocodile','deer','dog','dolphin','duck','eagle','elephant','fishfly','fox','frog','giraffe','goat','goldfish','hamster','hippopotamus','horse','kangaroo','kitten','leopard','lion','lizard','lobster','monkey','octopus','ostrich','otter','owl','oyster','panda','parrot','pelican','pig','pigeon','porcupine','puppy','rabbit','reindeer','rhinoceros','rooster','scorpion','seal','shark','sheep','shrimp','snail','snake','sparrow','spider','squid','squirrel','swallow','swan','tiger','toad','tortoise','turtle','vulture','walrus','weasel','whale','wolf','zebraairport','bank','barber shop','book store','bowling alley','bus stop','church','fire truck','gas station','hospital','house','library','movie theater','museum','post office','restaurant','school','mall','supermarket','train station','apple','banana','cherry','grapefruit','grapes','lemon','lime','melon ','orange','peach','pineapple','plum','strawberry','watermelon','drill','hammer','knife','ice cube','refrigerator','swordfish','shark','shrimp','lobster','eel','crab','asparagus','beans','broccoli','cabbage','carrot','celery','corn','cucumber','eggplant','green pepper','lettuce','onion','peas','potato','pumpkin','radish','spinach','sweet potato','tomato','turnip','dufflebag','suitcase','jet','vault','ocean','beach','sunset','lake','pie','cake','candy','chocolate','cookie','donut',' icecream','muffin','pie','potato chips ','pudding','sweet roll','waterfall','valley','forest','saw','scissors','screwdriver','black board',' book','bookcase','bulletin board',' calendar','chair','chalk','clock','desk','thanksgiving','christmas','holloween','saint patrick\'s day','mardi gras','birthday','sun','moon','earth','space','rocket','scarf','winter','snowman','fireplace','dictionary','eraser','map','notebook','pen','white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps'];
 const emptyGame = {
   gameInProgress: false,
   players: [],
@@ -17,7 +17,7 @@ const emptyRoom = {
   game: null,
   gameInProgress: false,
   clients: [],
-}
+};
 
 const usersByRoom = (room) => {
   if ( io.sockets.adapter.rooms[room]!= null && io.sockets.adapter.rooms[room]!= undefined ) {
@@ -53,7 +53,7 @@ class DMTManager {
     return Object.keys(this.rooms).reduce((previous, curRoom) => {
         previous[curRoom] = this.getRoom(curRoom);
         return previous;
-    }, {}); 
+    }, {});
   }
 
   getPublicRooms() {
@@ -62,7 +62,7 @@ class DMTManager {
           previous[curRoom] = this.getRoom(curRoom);
         }
         return previous;
-    }, {}); 
+    }, {});
   }
 
   getRoom(room) {
@@ -99,7 +99,7 @@ class DMTManager {
     if ( room in this.rooms && this.rooms[room].gameInProgress ){
       this.rooms[room].gameInProgress = false;
     }
-  } 
+  }
 
   testWinner(room, msg) {
     if ( room in this.rooms && this.rooms[room].gameInProgress ){
@@ -121,8 +121,8 @@ class DMTManager {
   updateGame(room, stateChange) {
     if ( room in this.rooms ) {
       this.rooms[room].game.setState(stateChange);
-    } 
-  }  
+    }
+  }
 }
 
 class DMT {
@@ -155,27 +155,34 @@ class DMT {
   }
 
   testWord(player, guess) {
-    if (player != this.currentArtist() && guess == this.curWord) {
+    if (player !== this.currentArtist() && guess === this.curWord) {
       this.allocatePoints(player);
       let author = 'GAME';
       let text = `${player} guessed the word`
       let msg = createMessage(text, author);
       msg.color = 'red';
       io.sockets.in(this.room).emit('update chat', msg);
-      this.setState({players: this.players});
+      this.setState({
+        players: this.players,
+        timeLeft: Math.min(this.gameState.timeLeft, 10)
+      });
       return true;
     }
     return false;
   }
 
   allocatePoints(player) {
-    let guesserPoints = this.correctGuessers < this.pointsForGuesser.length ? this.pointsForGuesser[this.correctGuessers] : this.pointsForGuesser[this.pointsForGuesser.length-1];
-    if (this.players[player].pointsThisTurn == 0) {
+    let guesserPoints = this.correctGuessers < this.pointsForGuesser.length ?
+      this.pointsForGuesser[this.correctGuessers] :
+      this.pointsForGuesser[this.pointsForGuesser.length-1];
+    if (this.players[player].pointsThisTurn === 0) {
       this.players[player].points += guesserPoints;
       this.players[player].pointsThisTurn += guesserPoints;
-      this.players[this.currentArtist()].points += this.pointsForArtist;
-      this.players[this.currentArtist()].pointsThisTurn += this.pointsForArtist;
       this.correctGuessers++;
+      if (this.players[this.currentArtist()].pointsThisTurn === 0) {
+        this.players[this.currentArtist()].points += this.pointsForArtist;
+        this.players[this.currentArtist()].pointsThisTurn += this.pointsForArtist;
+      }
       if (this.correctGuessers >= this.numPlayers - 1) {
         this.endTurn();
       }
@@ -191,7 +198,7 @@ class DMT {
     else {
       this.endGame();
       clearTimeout(this.gameTimer);
-      this.setState({gameInProgress: false});
+      this.setState({ gameInProgress: false });
     }
   }
 
@@ -216,18 +223,18 @@ class DMT {
   }
 
   endTurn() {
-    this.setState({turnStatus: 'finished', timeLeft: 10});
+    this.setState({ turnStatus: 'finished', timeLeft: 10 });
   }
 
   updateGame() {
     if (this.gameState['timeLeft'] > 0) {
-      this.setState({timeLeft : this.gameState.timeLeft-1})
+      this.setState({ timeLeft : this.gameState.timeLeft-1 })
     }
     else if (this.gameState.turnStatus === 'drawing') {
       this.endTurn();
     }
     else if (this.gameState.turnStatus === 'starting') {
-      this.setState({turnStatus: 'drawing', timeLeft: this.secondsPerTurn});
+      this.setState({ turnStatus: 'drawing', timeLeft: this.secondsPerTurn });
     }
     else if (this.gameState.turnStatus === 'finished') {
       this.curArtist++;
@@ -255,8 +262,8 @@ class DMT {
   }
 
   setState(newStates) {
-    for (let key in newStates) { 
-      this.gameState[key] = newStates[key]; 
+    for (let key in newStates) {
+      this.gameState[key] = newStates[key];
     }
     io.sockets.in(this.room).emit('update game', this.gameState);
   }

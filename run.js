@@ -9,6 +9,8 @@ console.log(`Listening at http://localhost:${port}`);
 
 console.log(process.env.NODE_ENV)
 
+//DATABASE_URL=$(heroku config:get DATABASE_URL -a afternoon-citadel-52337) npm start
+
 if (process.env.NODE_ENV !== 'production') {
   var config = require('./webpack.dev.config');
   var webpack = require('webpack');

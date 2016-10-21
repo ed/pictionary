@@ -27,7 +27,7 @@ export class ActionHistory {
 		this.actionList.push(action.action);
     this.rawActions.push({
       action: action.command,
-      data: action.data
+      data: action.points
     });
 		this.position = this.actionList.length;
 	}
@@ -61,24 +61,26 @@ export class Mark {
     this.action = (w,h,s) => this.reDraw(w,h,s);
   }
 
-  startStroke(){
+  startStroke(w,h){
     this.ctx.strokeStyle = this.color;
     this.ctx.lineWidth = this.size;
-    this.points.push({
-      pos: this.startPosition,
-      color: this.color,
-      size: this.size 
-    });
+		this.curWidth = w;
+		this.curHeight = h;
+    this.addPoint(this.startPosition)
     this.ctx.beginPath();
     this.ctx.moveTo(this.startPosition.x, this.startPosition.y);
   }
 
-  addStroke(pos){
-    this.points.push({
-      pos: pos,
+	addPoint(pos) {
+		this.points.push({
+      pos: {x: pos.x/this.curWidth, y: pos.y/this.curHeight},
       color: this.color,
-      size: this.size 
+      size: this.size
     });
+	}
+
+  addStroke(pos){
+    this.addPoint(pos);
     this.ctx.lineTo(pos.x, pos.y);
     this.ctx.stroke();
   }

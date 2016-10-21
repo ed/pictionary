@@ -33241,6 +33241,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.Container = undefined;
 	
 	var _createClass = function () {
 	  function defineProperties(target, props) {
@@ -33296,72 +33297,24 @@
 	  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	}
 	
-	var Container = function (_Component) {
+	var Container = exports.Container = function (_Component) {
 	  _inherits(Container, _Component);
 	
-	  function Container(props) {
+	  function Container() {
 	    _classCallCheck(this, Container);
 	
-	    var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
-	
-	    _this.state = {
-	      isFetching: true
-	    };
-	    return _this;
+	    return _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).apply(this, arguments));
 	  }
 	
 	  _createClass(Container, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var _this2 = this;
-	
-	      var _props = this.props;
-	      var cookie = _props.cookie;
-	      var authStatus = _props.authStatus;
-	      var user = _props.user;
-	
-	      console.log(cookie, authStatus, user);
-	      if (cookie) {
-	        this.props.dispatch((0, _actions.whoami)(this.props.location.pathname)).then(function () {
-	          _this2.setState({
-	            isFetching: false
-	          });
-	        });
-	      } else {
-	        if (!authStatus) this.props.dispatch((0, _actions.setTempUserInfo)());
-	        this.setState({
-	          isFetching: false
-	        });
-	      }
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props2 = this.props;
-	      var roomStatus = _props2.roomStatus;
-	      var user = _props2.user;
-	      var cookie = _props2.cookie;
-	      var error = _props2.error;
-	      var isFetching = this.state.isFetching;
-	
-	      return !isFetching && roomStatus ? _react2.default.createElement('div', { className: 'container' }, this.props.children) : _react2.default.createElement(_Spinner2.default, null);
+	      return _react2.default.createElement('div', { className: 'container' }, this.props.children);
 	    }
 	  }]);
-	
+
 	  return Container;
 	}(_react.Component);
-	
-	var mapStateToProps = function mapStateToProps(state) {
-	  return {
-	    notifications: state.root.notifications,
-	    user: state.root.user,
-	    cookie: state.root.cookie,
-	    authStatus: state.root.auth.status,
-	    roomStatus: state.root.rooms.isValid
-	  };
-	};
-	
-	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Container);
 
 /***/ },
 /* 260 */
@@ -74011,27 +73964,27 @@
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 	
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+			value: true
 	});
 	
 	var _extends = Object.assign || function (target) {
-		for (var i = 1; i < arguments.length; i++) {
-			var source = arguments[i];for (var key in source) {
-				if (Object.prototype.hasOwnProperty.call(source, key)) {
-					target[key] = source[key];
-				}
-			}
-		}return target;
+			for (var i = 1; i < arguments.length; i++) {
+					var source = arguments[i];for (var key in source) {
+							if (Object.prototype.hasOwnProperty.call(source, key)) {
+									target[key] = source[key];
+							}
+					}
+			}return target;
 	};
 	
 	var _createClass = function () {
-		function defineProperties(target, props) {
-			for (var i = 0; i < props.length; i++) {
-				var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-			}
-		}return function (Constructor, protoProps, staticProps) {
-			if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-		};
+			function defineProperties(target, props) {
+					for (var i = 0; i < props.length; i++) {
+							var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+					}
+			}return function (Constructor, protoProps, staticProps) {
+					if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+			};
 	}();
 	
 	var _react = __webpack_require__(2);
@@ -74046,85 +73999,128 @@
 	
 	var _reactRouterRedux = __webpack_require__(182);
 	
+	var _Spinner = __webpack_require__(265);
+	
+	var _Spinner2 = _interopRequireDefault(_Spinner);
+	
 	function _interopRequireDefault(obj) {
-		return obj && obj.__esModule ? obj : { default: obj };
+			return obj && obj.__esModule ? obj : { default: obj };
 	}
 	
 	function _classCallCheck(instance, Constructor) {
-		if (!(instance instanceof Constructor)) {
-			throw new TypeError("Cannot call a class as a function");
-		}
+			if (!(instance instanceof Constructor)) {
+					throw new TypeError("Cannot call a class as a function");
+			}
 	}
 	
 	function _possibleConstructorReturn(self, call) {
-		if (!self) {
-			throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-		}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+			if (!self) {
+					throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+			}return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 	}
 	
 	function _inherits(subClass, superClass) {
-		if (typeof superClass !== "function" && superClass !== null) {
-			throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-		}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+			if (typeof superClass !== "function" && superClass !== null) {
+					throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+			}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	}
 	
 	var Container = function (_Component) {
-		_inherits(Container, _Component);
+			_inherits(Container, _Component);
 	
-		function Container() {
-			_classCallCheck(this, Container);
+			function Container(props) {
+					_classCallCheck(this, Container);
 	
-			return _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).apply(this, arguments));
-		}
+					var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, props));
 	
-		_createClass(Container, [{
-			key: 'render',
-			value: function render() {
-				var _this2 = this;
-	
-				return _react2.default.createElement('div', { className: 'container' }, _react2.default.createElement(_reactNotification.NotificationStack, {
-					notifications: this.props.notifications.toArray(),
-					onDismiss: function onDismiss(notification) {
-						return _this2.props.dispatch((0, _actions.dismissNotification)(notification));
-					},
-					barStyleFactory: function barStyleFactory(ind, style) {
-						return _extends({}, style, {
-							fontFamily: 'Lato',
-							background: '#ffad90',
-							borderWidth: '0px',
-							height: '30px',
-							color: 'white',
-							borderRadius: '0px',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							top: 2 + ind * 5 + 'rem',
-							opacity: 0,
-							boxShadow: '',
-							right: '-100%',
-							left: ''
-						});
-					},
-					activeBarStyleFactory: function activeBarStyleFactory(ind, style) {
-						return _extends({}, style, {
-							left: '',
-							right: '0px',
-							top: 2 + ind * 5 + 'rem',
-							opacity: 1
-						});
-					}
-				}), this.props.children);
+					_this.state = {
+							isFetching: true
+					};
+					return _this;
 			}
-		}]);
 	
-		return Container;
+			_createClass(Container, [{
+					key: 'componentDidMount',
+					value: function componentDidMount() {
+							var _this2 = this;
+	
+							var _props = this.props;
+							var cookie = _props.cookie;
+							var authStatus = _props.authStatus;
+							var user = _props.user;
+	
+							console.log(cookie, authStatus, user);
+							if (cookie) {
+									this.props.dispatch((0, _actions.whoami)(this.props.location.pathname)).then(function () {
+											_this2.setState({
+													isFetching: false
+											});
+									});
+							} else {
+									if (!authStatus) this.props.dispatch((0, _actions.setTempUserInfo)());
+									this.setState({
+											isFetching: false
+									});
+							}
+					}
+			}, {
+					key: 'render',
+					value: function render() {
+							var _this3 = this;
+	
+							var _props2 = this.props;
+							var roomStatus = _props2.roomStatus;
+							var user = _props2.user;
+							var cookie = _props2.cookie;
+							var error = _props2.error;
+							var isFetching = this.state.isFetching;
+	
+							return !isFetching && roomStatus ? _react2.default.createElement('div', { className: 'container' }, _react2.default.createElement(_reactNotification.NotificationStack, {
+									notifications: this.props.notifications.toArray(),
+									onDismiss: function onDismiss(notification) {
+											return _this3.props.dispatch((0, _actions.dismissNotification)(notification));
+									},
+									barStyleFactory: function barStyleFactory(ind, style) {
+											return _extends({}, style, {
+													fontFamily: 'Lato',
+													background: '#ffad90',
+													borderWidth: '0px',
+													height: '30px',
+													color: 'white',
+													borderRadius: '0px',
+													display: 'flex',
+													alignItems: 'center',
+													justifyContent: 'center',
+													top: 2 + ind * 5 + 'rem',
+													opacity: 0,
+													boxShadow: '',
+													right: '-100%',
+													left: ''
+											});
+									},
+									activeBarStyleFactory: function activeBarStyleFactory(ind, style) {
+											return _extends({}, style, {
+													left: '',
+													right: '0px',
+													top: 2 + ind * 5 + 'rem',
+													opacity: 1
+											});
+									}
+							}), this.props.children) : _react2.default.createElement(_Spinner2.default, null);
+					}
+			}]);
+	
+			return Container;
 	}(_react.Component);
 	
 	var mapStateToProps = function mapStateToProps(state) {
-		return {
-			notifications: state.root.notifications,
-			authStatus: state.root.auth.status
-		};
+			return {
+					notifications: state.root.notifications,
+					user: state.root.user,
+					cookie: state.root.cookie,
+					authStatus: state.root.auth.status,
+					roomStatus: state.root.rooms.isValid
+			};
 	};
 	
 	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Container);
