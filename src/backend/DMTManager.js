@@ -71,7 +71,6 @@ class DMTManager {
     }
     let game = {...emptyGame};
     let clients = usersByRoom(room);
-    console.log(clients)
     if (this.rooms[room].game != null) {
       game = this.rooms[room].game.gameState;
       this.rooms[room].game.updatePlayers(clients);
