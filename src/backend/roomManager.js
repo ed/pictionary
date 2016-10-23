@@ -39,9 +39,13 @@ module.exports = (app, io) => {
 
   io.on('connection', (socket) => {
 
+		socket.on('disconnect', () => {
+			socket.leave(socket.curRoom);
+			updateRoom(socket.curRoom);
+		});
+
     socket.on('join room', (roomName) => {
-      console.log(socket.user + ' tried joining: ' + roomName);
-      if (roomName in dmtManager.getRooms()) {
+      if (roomName in dmtManager.getRooms() && socket.curRoom !== roomName) {
         console.log(socket.user + ' joined room: ' + roomName);
         let rooms = {...socket.rooms};
         delete rooms[roomName];

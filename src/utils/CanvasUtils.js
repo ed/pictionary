@@ -81,7 +81,8 @@ export class Mark {
 
   addStroke(pos){
     this.addPoint(pos);
-    this.ctx.lineTo(pos.x, pos.y);
+		let lastPos = this.points[this.points.length-1].pos;
+    this.ctx.quadraticCurveTo(lastPos.x*this.curWidth, lastPos.y*this.curHeight, (pos.x + lastPos.x*this.curWidth)/2, (pos.y + lastPos.y*this.curHeight)/2);
     this.ctx.stroke();
   }
 

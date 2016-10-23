@@ -8,7 +8,7 @@ class MessageComposer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            text: '', 
+            text: '',
             typing: false,
             focused: false,
         };
@@ -59,7 +59,7 @@ class MessageComposer extends Component {
                 let msg = MessageUtils.createMessage(text, this.props.user);
                 this.props.socket.emit('chat msg', msg);
                 this.setState({text: ''});
-            }         
+            }
         }
     }
 };
@@ -68,7 +68,8 @@ const mapStateToProps = (state) => {
     let noGameGoing = !state.root.room.game.gameInProgress;
     let isPlaying = (state.root.user in state.root.room.game.players);
     let isArtist = (state.root.room.game.artist === state.root.user);
-    let canChat = noGameGoing || (isPlaying && state.root.room.game.players[state.root.user].pointsThisTurn == 0 && !isArtist);
+    let turnInProgress = state.root.room.game.turnStatus === 'drawing';
+    let canChat = noGameGoing || (isPlaying && state.root.room.game.players[state.root.user].pointsThisTurn == 0 && !isArtist && turnInProgress);
     let placeholder = '';
     if (noGameGoing) {
         placeholder = 'Message room';

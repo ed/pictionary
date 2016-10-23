@@ -125,6 +125,7 @@ class Canvas extends Component {
     this.curMark = new Mark(this.ctx, this.state.brushColor, this.state.brushSize,this.scalePoint(pos));
     this.curMark.startStroke(this.state.canvasWidth, this.state.canvasHeight);
     this.setState({ drawing: true });
+    this.drawInterval = setInterval(() => this.drawStroke(this.state.pos), 10)
     if (this.props.canIDraw) this.props.socket.emit('stroke', {action: 'noop'});
     if (this.props.canIDraw) this.props.socket.emit('stroke', {action: 'start', pos, color: this.state.brushColor, size: this.state.brushSize, strokeID: this.strokeID});
   }
@@ -137,8 +138,13 @@ class Canvas extends Component {
     }
   }
 
+  updatePosition(pos) {
+    this.setState({ pos });
+  }
+
   endStroke(pos) {
     if (this.state.drawing) {
+      clearInterval(this.drawInterval);
       this.drawStroke(pos);
       this.setState({ drawing: false });
       this.actionHistory.pushAction(this.curMark);
@@ -153,10 +159,12 @@ class Canvas extends Component {
 
   xy(e) {
     const {top, left} = this.canvas.getBoundingClientRect();
-    return {
+    const pos = {
       x: (e.clientX - left)/this.state.canvasWidth,
       y: (e.clientY - top)/this.state.canvasHeight
     }
+    this.setState({ pos });
+    return pos;
   }
 
   clear() {
@@ -192,7 +200,7 @@ class Canvas extends Component {
       <div className="canvasContainer">
         <canvas
         onMouseDown={(e) => { e.preventDefault(); canIDraw ? this.startStroke(this.xy(e)) : null }}
-        onMouseMove={(e) => { e.preventDefault(); canIDraw ? this.drawStroke(this.xy(e)) : null }}
+        onMouseMove={(e) => { e.preventDefault(); canIDraw ? this.updatePosition(this.xy(e)) : null }}
         onMouseOut={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
         onMouseUp={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
         className="canvas"
@@ -296,6 +304,7 @@ class ArtistOptions extends Component {
     key.unbind('ctrl + z');
     key.unbind('ctrl + y');
     key.unbind('ctrl + c');
+    clearInterval(this.drawInterval);
   }
 
   componentDidMount() {

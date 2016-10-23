@@ -3,7 +3,7 @@ let io;
 
 const createMessage = require('../utils/MessageUtils').createMessage;
 
-const words = ['alligator','ant','bear','bee','bird','camel','cat','cheetah','chicken','chimpanzee','cow','crocodile','deer','dog','dolphin','duck','eagle','elephant','fishfly','fox','frog','giraffe','goat','goldfish','hamster','hippopotamus','horse','kangaroo','kitten','leopard','lion','lizard','lobster','monkey','octopus','ostrich','otter','owl','oyster','panda','parrot','pelican','pig','pigeon','porcupine','puppy','rabbit','reindeer','rhinoceros','rooster','scorpion','seal','shark','sheep','shrimp','snail','snake','sparrow','spider','squid','squirrel','swallow','swan','tiger','toad','tortoise','turtle','vulture','walrus','weasel','whale','wolf','zebraairport','bank','barber shop','book store','bowling alley','bus stop','church','fire truck','gas station','hospital','house','library','movie theater','museum','post office','restaurant','school','mall','supermarket','train station','apple','banana','cherry','grapefruit','grapes','lemon','lime','melon ','orange','peach','pineapple','plum','strawberry','watermelon','drill','hammer','knife','ice cube','refrigerator','swordfish','shark','shrimp','lobster','eel','crab','asparagus','beans','broccoli','cabbage','carrot','celery','corn','cucumber','eggplant','green pepper','lettuce','onion','peas','potato','pumpkin','radish','spinach','sweet potato','tomato','turnip','dufflebag','suitcase','jet','vault','ocean','beach','sunset','lake','pie','cake','candy','chocolate','cookie','donut',' icecream','muffin','pie','potato chips ','pudding','sweet roll','waterfall','valley','forest','saw','scissors','screwdriver','black board',' book','bookcase','bulletin board',' calendar','chair','chalk','clock','desk','thanksgiving','christmas','holloween','saint patrick\'s day','mardi gras','birthday','sun','moon','earth','space','rocket','scarf','winter','snowman','fireplace','dictionary','eraser','map','notebook','pen','white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps'];
+const words = ['alligator','ant','bear','bee','bird','camel','cat','cheetah','chicken','chimpanzee','cow','crocodile','deer','dog','dolphin','duck','eagle','elephant','fishfly','fox','frog','giraffe','goat','goldfish','hamster','hippopotamus','horse','kangaroo','kitten','leopard','lion','lizard','lobster','monkey','octopus','ostrich','otter','owl','oyster','panda','parrot','pelican','pig','pigeon','porcupine','puppy','rabbit','reindeer','rhinoceros','rooster','scorpion','seal','shark','sheep','shrimp','snail','snake','sparrow','spider','squid','squirrel','swallow','swan','tiger','toad','tortoise','turtle','vulture','walrus','weasel','whale','wolf','zebraairport','bank','barber shop','book store','bowling alley','bus stop','church','fire truck','gas station','hospital','house','library','movie theater','museum','post office','restaurant','school','mall','supermarket','train station','apple','banana','cherry','grapefruit','grapes','lemon','lime','melon ','orange','peach','pineapple','plum','strawberry','watermelon','drill','hammer','knife','ice cube','refrigerator','swordfish','shark','shrimp','lobster','eel','crab','asparagus','beans','broccoli','cabbage','carrot','celery','corn','cucumber','eggplant','green pepper','lettuce','onion','peas','potato','pumpkin','radish','spinach','sweet potato','tomato','turnip','dufflebag','suitcase','jet','vault','ocean','beach','sunset','lake','pie','cake','candy','chocolate','cookie','donut',' icecream','muffin','pie','potato chips ','pudding','sweet roll','waterfall','valley','forest','saw','scissors','screwdriver','black board',' book','bookcase','bulletin board',' calendar','chair','chalk','clock','desk','thanksgiving','christmas','halloween','saint patrick\'s day','mardi gras','birthday','sun','moon','earth','space','rocket','scarf','winter','snowman','fireplace','dictionary','eraser','map','notebook','pen','white ferrari', 'whale', 'guitar', 'television', 'kanye west', 'yeezus', 'blonde', 'harambe', 'bread', 'dwight schrute', 'water bottle', 'smoothie', 'sofa', 'smoke', 'menage on my birthday', 'sailing stock', 'kpop', 'bubble pop', 'bubble gum', 'naps'];
 const emptyGame = {
   gameInProgress: false,
   players: [],
@@ -69,13 +69,16 @@ class DMTManager {
     if ( !(room in this.rooms) ) {
       return null;
     }
-
     let game = {...emptyGame};
+    let clients = usersByRoom(room);
+    console.log(clients)
     if (this.rooms[room].game != null) {
-      game = this.rooms[room].game.gameState
+      game = this.rooms[room].game.gameState;
+      this.rooms[room].game.updatePlayers(clients);
     }
+
     return {
-      clients: usersByRoom(room),
+      clients,
       game
     }
   }
@@ -89,7 +92,7 @@ class DMTManager {
       this.rooms[room].gameInProgress = true;
       dmtGame.start();
     }
-    else if (players.length < 2){
+    else if (players.length < 2) {
       console.log(`game already started in room ${room}`)
     }
   }
@@ -137,16 +140,49 @@ class DMT {
         pointsThisTurn: 0,
       }
       return previous;
-    },{})
+    },{});
     this.playerOrder = this.shufflePlayers(players);
     this.endGame = endGame;
     this.curArtist = 0;
     this.curWord = 'NONE';
     this.secondsPerTurn = 60;
-    this.numPlayers = players.length;
     this.numRounds = 2;
     this.curRound = 1;
     this.gameState = {...emptyGame};
+  }
+
+  updatePlayers(newPlayers) {
+    for (let player in this.players) {
+      if (newPlayers.indexOf(player) <= -1) this.removePlayer(player);
+    }
+    for (let i = 0; i < newPlayers.length; i++) {
+      if ( !(newPlayers[i] in this.players) ) this.addPlayer(newPlayers[i]);
+    }
+  }
+
+  removePlayer(player) {
+    if (player === this.currentArtist()) {
+      this.endTurn();
+    }
+    this.playerOrder.splice(this.playerOrder.indexOf(player),1);
+    delete this.players[player];
+    if (this.numPlayers() < 1) {
+      this.endGame();
+      clearTimeout(this.gameTimer);
+      this.setState({ gameInProgress: false });
+    }
+  }
+
+  addPlayer(player) {
+    this.players[player] = {
+      points: 0,
+      pointsThisTurn: 0,
+    }
+    this.playerOrder.push(player);
+  }
+
+  numPlayers() {
+    return this.playerOrder.length;
   }
 
   start() {
@@ -183,7 +219,7 @@ class DMT {
         this.players[this.currentArtist()].points += this.pointsForArtist;
         this.players[this.currentArtist()].pointsThisTurn += this.pointsForArtist;
       }
-      if (this.correctGuessers >= this.numPlayers - 1) {
+      if (this.correctGuessers >= this.numPlayers() - 1) {
         this.endTurn();
       }
     }
@@ -238,7 +274,7 @@ class DMT {
     }
     else if (this.gameState.turnStatus === 'finished') {
       this.curArtist++;
-      if (this.curArtist >= this.numPlayers) {
+      if (this.curArtist >= this.numPlayers()) {
         this.endRound();
       }
       else {
