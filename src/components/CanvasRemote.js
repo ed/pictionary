@@ -10,11 +10,8 @@ class Canvas extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      drawing: false,
       canvasWidth: 0,
       canvasHeight: 0,
-      brushColor: "#C45100",
-      brushSize: 8,
     };
     this.remakeCanvasRemote = () => null;
     this.ptsByStroke = {};
@@ -22,10 +19,8 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    this.strokeID = 0;
     this.ctx = this.canvas.getContext('2d');
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
-    this.actionHistory = new ActionHistory(this.clearCanvas);
     this.props.socket.on('stroke', point => this.handleStroke(point));
     this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData) );
     this.setCanvasSize();
@@ -63,7 +58,7 @@ class Canvas extends Component {
     if (this.currentID !== point.strokeID || this.ptsByStroke[point.strokeID].pts.length == 0) {
       return setTimeout(() => this.startThat(point),100);
     }
-    this.startStroke(point.pos);
+    this.startStroke(point.pos, point.color, point.size);
     this.drawRemoteLoops[point.strokeID] = setInterval(() => this.drawRemoteStroke(point.strokeID),5);
   }
 
@@ -100,90 +95,30 @@ class Canvas extends Component {
     window.addEventListener('resize', () => this.setCanvasSize());
   }
 
-  remakeCanvas() {
-    if (this.props.user === this.props.artist){
-      this.actionHistory.remakeCanvas(this.state.canvasWidth, this.state.canvasHeight);
-    }
-    else {
-      this.remakeCanvasRemote();
-    }
-  }
-
   setCanvasSize(){
     if (this.canvas) {
       this.setState({
         canvasHeight: this.canvas.offsetHeight,
         canvasWidth: this.canvas.offsetWidth
-      }, () => this.remakeCanvas());
+      }, () => this.remakeCanvasRemote());
     }
     else {
       setTimeout(() => this.setCanvasSize, 1000);
     }
   }
 
-  startStroke(pos) {
-    this.curMark = new Mark(this.ctx, this.state.brushColor, this.state.brushSize,this.scalePoint(pos));
+  startStroke(pos, color, size) {
+    this.curMark = new Mark(this.ctx, color, size, this.scalePoint(pos));
     this.curMark.startStroke(this.state.canvasWidth, this.state.canvasHeight);
-    this.setState({ drawing: true });
-    if (this.props.canIDraw) this.props.socket.emit('stroke', {action: 'noop'});
-    if (this.props.canIDraw) this.props.socket.emit('stroke', {action: 'start', pos, color: this.state.brushColor, size: this.state.brushSize, strokeID: this.strokeID});
   }
 
   drawStroke(pos) {
-    if (this.state.drawing) {
-      let scaledPos = this.scalePoint(pos);
-      if (this.props.canIDraw) this.props.socket.emit('stroke', { action: 'draw', pos, strokeID: this.strokeID });
-      this.curMark.addStroke(scaledPos);
-    }
-  }
-
-  endStroke(pos) {
-    if (this.state.drawing) {
-      this.drawStroke(pos);
-      this.setState({ drawing: false });
-      this.actionHistory.pushAction(this.curMark);
-      if (this.props.canIDraw) this.props.socket.emit('stroke', { action: 'end', canvasData: this.actionHistory.raw() ,strokeID: this.strokeID });
-      this.strokeID++;
-    }
+    let scaledPos = this.scalePoint(pos);
+    this.curMark.addStroke(scaledPos);
   }
 
   scalePoint(pos) {
     return { x: pos.x*this.state.canvasWidth, y: pos.y*this.state.canvasHeight };
-  }
-
-  xy(e) {
-    const {top, left} = this.canvas.getBoundingClientRect();
-    return {
-      x: (e.clientX - left)/this.state.canvasWidth,
-      y: (e.clientY - top)/this.state.canvasHeight
-    }
-  }
-
-  clear() {
-    this.clearCanvas();
-    this.actionHistory.pushAction(new ClearCanvas(() => this.clearCanvas()));
-    this.props.socket.emit('update canvas', this.actionHistory.raw());
-  }
-
-  undo() {
-    this.actionHistory.undoAction(this.state.canvasWidth, this.state.canvasHeight);
-    this.props.socket.emit('update canvas', this.actionHistory.raw());
-  }
-
-  save() {
-    let img = this.canvas.toDataURL("image/png");
-    document.getElementById('imgwrapper').innerHTML = "<img src='" + img + "'>";
-  }
-
-  redo() {
-    this.actionHistory.redoAction(this.state.canvasWidth, this.state.canvasHeight);
-    this.props.socket.emit('update canvas', this.actionHistory.raw());
-  }
-
-  setBrushColor(color) {
-    this.setState({
-      brushColor: color.hex
-    });
   }
 
   render() {
@@ -214,16 +149,7 @@ class Canvas extends Component {
           <Timer containerStyle={{fontSize: '300%', width: '300px', height: '300px'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft + 1} key={this.props.timeLeft}/>
         </div>
         : null}
-        <CanvasMessage turnStatus={this.props.turnStatus} guessers={this.props.guessers} {...this.props} />
-        {canIDraw ?
-          <ArtistOptions
-          color={this.state.brushColor}
-          radius={this.state.brushSize}
-          clear={() => this.clear()}
-          redo={() => this.redo()}
-          undo={() => this.undo()}
-          setBrushColor={(color) => this.setBrushColor(color)}/>
-        : null }
+        <CanvasMessage turnStatus={this.props.turnStatus} guessers={this.props.guessers} canIDraw={canIDraw} {...this.props} />
       </div>
       )
     }
@@ -256,12 +182,12 @@ export default connect(
 )(Canvas)
 
 
-const CanvasMessage = ({ guessers, numPlayers, word, turnStatus }) => (
+const CanvasMessage = ({ guessers, numPlayers, word, artist, turnStatus }) => (
   <div className="canvasMessage">
   {
     turnStatus === 'drawing' || turnStatus === 'starting' ?
       <div style={{pointerEvents: 'auto'}}>
-      <span> your turn, <br/> your word is <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span> </span>
+      <span > <span style={{fontWeight:'bold',color: 'orange'}}>{artist}</span> is drawing {turnStatus === 'starting' ? 'next' : <span> <br/> guess the word using the chat </span> } </span>
       </div>
     :
       <div>
@@ -288,104 +214,3 @@ const Timer = ({ progress, text, strokeWidth=9, trailWidth=10, color="#FF3232", 
         containerClassName={'.progressbar'} />
   </div>
 )
-
-
-class ArtistOptions extends Component {
-
-  componentWillUnmount() {
-    key.unbind('ctrl + z');
-    key.unbind('ctrl + y');
-    key.unbind('ctrl + c');
-  }
-
-  componentDidMount() {
-    key('ctrl + z', () => this.props.undo());
-    key('ctrl + y', () => this.props.redo());
-    key('ctrl + c', () => this.props.clear());
-  }
-
-  render () {
-    return (
-      <div className="artistOptions">
-        <ColorCircle
-          radius={this.props.radius + 10}
-          color={this.props.color}
-          onColorChange={(color) => this.props.setBrushColor(color)}
-        />
-        <div className="editOptions">
-          <CanvasButton id="clear" iconName="square-o" onClick={() => this.props.clear()} />
-          <CanvasButton id='undo' iconName='undo' onClick={() => this.props.undo()} />
-          <CanvasButton id='redo' iconName='repeat' onClick={() => this.props.redo()} />
-        </div>
-      </div>
-    )
-  }
-}
-
-export const CanvasButton = ({ children, id, onClick, iconName }) => (
-    <div className={`option ${id}`} onClick={onClick}>
-      <i id={id} className={`fa fa-${iconName}`} aria-hidden="true"></i>
-    </div>
-);
-
-
-export class ColorCircle extends Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      displayColorPicker: false,
-    };
-  }
-
-  toggleColorPicker() {
-    this.setState({
-      displayColorPicker: !this.state.displayColorPicker
-    });
-  }
-
-  hideColorPicker() {
-    this.setState({
-      displayColorPicker: false
-    });
-  }
-
-  handleChange(color) {
-    this.props.onColorChange(color);
-    this.hideColorPicker();
-  }
-
-  render() {
-    let circleStyle = {
-      width: this.props.radius,
-      height: this.props.radius,
-      backgroundColor: this.props.color
-    };
-
-    let popoverStyle = {
-      position: 'fixed',
-      zIndex: '2',
-      top:0,
-      left:0,
-      height:400,
-      width:400,
-    }
-
-    return (
-      <div className="brushOptions">
-        <div className="colorCircle" onClick={() => this.toggleColorPicker()} style={circleStyle}></div>
-        {this.state.displayColorPicker ?
-          <div>
-          <div className="cover" onClick={() => this.hideColorPicker()}/>
-          <CompactPicker
-            className="colorPicker"
-            color={this.props.color}
-            onChange={(color) => this.handleChange(color)}
-            />
-          </div>
-        : null}
-      </div>
-    );
-  }
-}

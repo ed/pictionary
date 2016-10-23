@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import Canvas, { CanvasButton } from './Canvas'
+import Canvas from './Canvas'
+import CanvasRemote from './CanvasRemote'
 import { connect } from 'react-redux';
 import { addNotification } from '../actions'
 
@@ -18,12 +19,15 @@ export class WhiteBoard extends Component {
     console.log(this.props.artist)
     return (
       <div className="whiteboard">
-        { this.props.gameInProgress ? 
-          <Canvas key={this.props.artist} /> 
+        { this.props.gameInProgress ?
+          this.props.artist === this.props.user ?
+            <Canvas key={this.props.artist} />
+            :
+            <CanvasRemote key={this.props.artist} />
           :
           <div className="container">
           <StartButton active={true} onClick={() => this.startGame()} />
-          </div>  
+          </div>
         }
       </div>
       );
@@ -37,8 +41,9 @@ const StartButton = ({ onClick , active }) => (
 );
 
 const mapStateToProps = (state) => {
-    return { 
+    return {
         numClients: state.root.room.clients.length,
+        user: state.root.user,
         artist: state.root.room.game.artist,
         gameInProgress: state.root.room.game.gameInProgress,
         socket: state.root.socket

@@ -65,9 +65,12 @@ module.exports = (app, io) => {
       socket.broadcast.to(socket.curRoom).emit('update canvas', canvasData);
     });
 
-		socket.on('stroke', (pos) => {
-			if (pos.action !== 'noop') {
-				socket.broadcast.to(socket.curRoom).emit('stroke', pos);
+		socket.on('stroke', (strokeData) => {
+			if (strokeData.action !== 'noop') {
+				socket.broadcast.to(socket.curRoom).emit('stroke', strokeData);
+			}
+			if (strokeData.action === 'end') {
+				dmtManager.updateGame(socket.curRoom,{ canvasData: strokeData.canvasData });
 			}
 		});
 

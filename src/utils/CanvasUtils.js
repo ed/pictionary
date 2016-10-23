@@ -45,7 +45,7 @@ export class ActionHistory {
     this.actionList = [];
   }
 
-  exportData() {
+  raw() {
     return this.rawActions.slice(0,this.position);
   }
 }
