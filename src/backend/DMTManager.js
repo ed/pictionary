@@ -159,13 +159,23 @@ class DMT {
     }
   }
 
+  chatMsg(text) {
+    let author = 'GAME';
+    let msg = createMessage(text, author);
+    msg.color = 'red';
+    io.sockets.in(this.room).emit('update chat', msg);
+  }
+
   removePlayer(player) {
+    this.chatMsg(`${player} left the room`);
     if (player === this.currentArtist()) {
       this.endTurn();
+      this.chatMsg('artist left -- turn ended');
     }
     this.playerOrder.splice(this.playerOrder.indexOf(player),1);
     delete this.players[player];
-    if (this.numPlayers() < 1) {
+    if (this.numPlayers() < 2) {
+      this.chatMsg('not enough players left in the room -- game ended');
       this.endGame();
       clearTimeout(this.gameTimer);
       this.setState({ gameInProgress: false });
@@ -173,6 +183,7 @@ class DMT {
   }
 
   addPlayer(player) {
+    this.chatMsg(`${player} joined the room`);
     this.players[player] = {
       points: 0,
       pointsThisTurn: 0,
@@ -192,11 +203,7 @@ class DMT {
   testWord(player, guess) {
     if (player !== this.currentArtist() && guess === this.curWord) {
       this.allocatePoints(player);
-      let author = 'GAME';
-      let text = `${player} guessed the word`
-      let msg = createMessage(text, author);
-      msg.color = 'red';
-      io.sockets.in(this.room).emit('update chat', msg);
+      this.chatMsg(`${player} guessed the word`);
       this.setState({
         players: this.players,
         timeLeft: Math.min(this.gameState.timeLeft, 10)

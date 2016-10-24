@@ -21,9 +21,9 @@ export class WhiteBoard extends Component {
       <div className="whiteboard">
         { this.props.gameInProgress ?
           this.props.artist === this.props.user ?
-            <Canvas key={this.props.artist} />
+            <Canvas key={this.props.turnStatus} />
             :
-            <CanvasRemote key={this.props.artist} />
+            <CanvasRemote key={this.props.turnStatus} />
           :
           <div className="container">
           <StartButton active={true} onClick={() => this.startGame()} />
@@ -42,6 +42,7 @@ const StartButton = ({ onClick , active }) => (
 
 const mapStateToProps = (state) => {
     return {
+        turnStatus: state.root.room.game.turnStatus,
         numClients: state.root.room.clients.length,
         user: state.root.user,
         artist: state.root.room.game.artist,

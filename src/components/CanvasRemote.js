@@ -197,8 +197,14 @@ const CanvasMessage = ({ guessers, numPlayers, word, artist, turnStatus }) => (
   {
     turnStatus === 'drawing' || turnStatus === 'starting' ?
       <div style={{pointerEvents: 'auto'}}>
-      <span > <span style={{fontWeight:'bold',color: 'orange'}}>{artist}</span> is drawing {turnStatus === 'starting' ? 'next' : <span> <br/> guess the word using the chat </span> } </span>
-      </div>
+      <span > <span style={{fontWeight:'bold',color: 'orange'}}>{artist}</span> is drawing
+      {turnStatus === 'starting' ? ' next' :
+      guessers.length === 0 ?
+      <span><br/> guess the word using the chat </span>
+      :
+      <span><br/> someone guessed the word! </span>
+      }
+      </span></div>
     :
       <div>
       <span> { guessers.length > 0 ?
