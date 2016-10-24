@@ -257,6 +257,12 @@ canvas {
   height:100%;
 }
 
+.tmp_canvas {
+  position: absolute;
+	left: 0px; right: 0;
+	bottom: 0; top: 0;
+}
+
 .artistOptions {
   width:100%;
   height:100%;
@@ -331,7 +337,7 @@ canvas {
   pointer-events: none;
   display: inline-block;
   margin: 0 auto 0 auto;
-  position: absolute; 
+  position: absolute;
   left: 50%;
   bottom:50px;
   font-size: 250%;
@@ -339,17 +345,17 @@ canvas {
 
 .word>span {
   pointer-events: none;
-  position: relative; 
+  position: relative;
   left: -50%;
 }
 
 .spectatorMessage {
   display:flex;
   position: absolute;
-  left: 0; 
-  right: 0; 
-  margin-left: auto; 
-  margin-right: auto; 
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
   width: 400px;
 }
 
@@ -399,7 +405,7 @@ canvas {
 
 .message-list {
   flex: 1 1 auto;
-  direction:rtl; 
+  direction:rtl;
   overflow-y: scroll;
   overflow-x: hidden;
   display:flex;
@@ -416,7 +422,7 @@ canvas {
   padding-top:2px;
   padding-bottom: 4px;
   white-space: nowrap;
-  direction: ltr; 
+  direction: ltr;
 }
 
 .message:hover {

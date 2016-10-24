@@ -24,7 +24,8 @@ class Canvas extends Component {
   componentDidMount() {
     this.strokeID = 0;
     this.ctx = this.canvas.getContext('2d');
-    this.clearCanvas = () => this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
+	  this.perm_ctx = this.perm_canvas.getContext('2d');
+    this.clearCanvas = () => this.perm_ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.actionHistory = new ActionHistory(this.clearCanvas);
     this.props.socket.on('stroke', point => this.handleStroke(point));
     this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData) );
@@ -87,7 +88,7 @@ class Canvas extends Component {
     this.clearCanvas();
     for (let i = 0; i < canvasData.length; i++) {
       if(canvasData[i].action == 'stroke') {
-        let mark = new Mark(this.ctx,null,null,null,canvasData[i].data);
+        let mark = new Mark(this.canvas, this.ctx,this.perm_ctx,null,null,null,canvasData[i].data);
         mark.action(this.state.canvasWidth, this.state.canvasHeight);
       }
       else {
@@ -122,18 +123,18 @@ class Canvas extends Component {
   }
 
   startStroke(pos) {
-    this.curMark = new Mark(this.ctx, this.state.brushColor, this.state.brushSize,this.scalePoint(pos));
+    this.curMark = new Mark(this.canvas, this.ctx, this.perm_ctx, this.state.brushColor, this.state.brushSize,this.scalePoint(pos));
     this.curMark.startStroke(this.state.canvasWidth, this.state.canvasHeight);
     this.setState({ drawing: true });
     this.drawInterval = setInterval(() => this.drawStroke(this.state.pos), 10)
-    if (this.props.canIDraw) this.props.socket.emit('stroke', {action: 'noop'});
-    if (this.props.canIDraw) this.props.socket.emit('stroke', {action: 'start', pos, color: this.state.brushColor, size: this.state.brushSize, strokeID: this.strokeID});
+    this.props.socket.emit('stroke', {action: 'noop'});
+    this.props.socket.emit('stroke', {action: 'start', pos, color: this.state.brushColor, size: this.state.brushSize, strokeID: this.strokeID});
   }
 
   drawStroke(pos) {
     if (this.state.drawing) {
       let scaledPos = this.scalePoint(pos);
-      if (this.props.canIDraw) this.props.socket.emit('stroke', { action: 'draw', pos, strokeID: this.strokeID });
+      this.props.socket.emit('stroke', { action: 'draw', pos, strokeID: this.strokeID });
       this.curMark.addStroke(scaledPos);
     }
   }
@@ -148,7 +149,9 @@ class Canvas extends Component {
       this.drawStroke(pos);
       this.setState({ drawing: false });
       this.actionHistory.pushAction(this.curMark);
-      if (this.props.canIDraw) this.props.socket.emit('stroke', { action: 'end', canvasData: this.actionHistory.raw() ,strokeID: this.strokeID });
+      this.props.socket.emit('stroke', { action: 'end', canvasData: this.actionHistory.raw() ,strokeID: this.strokeID });
+      this.perm_ctx.drawImage(this.canvas,0,0);
+      this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
       this.strokeID++;
     }
   }
@@ -199,15 +202,21 @@ class Canvas extends Component {
     return (
       <div className="canvasContainer">
         <canvas
-        onMouseDown={(e) => { e.preventDefault(); canIDraw ? this.startStroke(this.xy(e)) : null }}
-        onMouseMove={(e) => { e.preventDefault(); canIDraw ? this.updatePosition(this.xy(e)) : null }}
-        onMouseOut={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
-        onMouseUp={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
-        className="canvas"
-        width={this.state.canvasWidth}
-        height={this.state.canvasHeight}
-        ref={(canvas) => this.canvas = canvas}
-        />
+          className="perm_canvas"
+          width={this.state.canvasWidth}
+          height={this.state.canvasHeight}
+          ref={(canvas) => this.perm_canvas = canvas}
+          />
+        <canvas
+          onMouseDown={(e) => { e.preventDefault(); canIDraw ? this.startStroke(this.xy(e)) : null }}
+          onMouseMove={(e) => { e.preventDefault(); canIDraw ? this.updatePosition(this.xy(e)) : null }}
+          onMouseOut={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
+          onMouseUp={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
+          className="tmp_canvas"
+          width={this.state.canvasWidth}
+          height={this.state.canvasHeight}
+          ref={(canvas) => this.canvas = canvas}
+          />
         {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
 
         {this.props.turnStatus === 'drawing' ?

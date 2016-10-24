@@ -51,13 +51,17 @@ export class ActionHistory {
 }
 
 export class Mark {
-  constructor(ctx, color, size, startPosition, points=[]) {
+  constructor(canvas, ctx, perm_ctx, color, size, startPosition, points=[]) {
     this.command = 'stroke';
     this.ctx = ctx;
+		this.ctx.lineJoin = 'round';
+	  this.ctx.lineCap = 'round';
     this.color = color;
     this.size = size;
     this.startPosition = startPosition;
     this.points = points;
+		this.perm_ctx = perm_ctx;
+		this.canvas = canvas;
     this.action = (w,h,s) => this.reDraw(w,h,s);
   }
 
@@ -66,9 +70,7 @@ export class Mark {
     this.ctx.lineWidth = this.size;
 		this.curWidth = w;
 		this.curHeight = h;
-    this.addPoint(this.startPosition)
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.startPosition.x, this.startPosition.y);
+    this.addStroke(this.startPosition);
   }
 
 	addPoint(pos) {
@@ -79,24 +81,55 @@ export class Mark {
     });
 	}
 
-  addStroke(pos){
-    this.addPoint(pos);
-		let lastPos = this.points[this.points.length-1].pos;
-    this.ctx.quadraticCurveTo(lastPos.x*this.curWidth, lastPos.y*this.curHeight, (pos.x + lastPos.x*this.curWidth)/2, (pos.y + lastPos.y*this.curHeight)/2);
-    this.ctx.stroke();
+  addStroke(pos) {
+	  this.addPoint(pos);
+		this.draw();
   }
 
-  reDraw(width, height, size=this.points[0].size) {
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.points[0].pos.x*width, this.points[0].pos.y*height);
-    this.ctx.strokeStyle = this.points[0].color;
-    this.ctx.lineWidth = size;
-    for (var j = 0; j < this.points.length; j++) {
-      this.ctx.strokeStyle = this.points[j].color;
-      this.ctx.lineWidth = size;
-      this.ctx.lineTo(this.points[j].pos.x*width, this.points[j].pos.y*height);
-    }
-    this.ctx.stroke();
+	draw() {
+		let ppts = this.points.map((point) => { return { x: point.pos.x*this.curWidth, y: point.pos.y*this.curHeight } });
+		this.ctx.strokeStyle = this.points[0].color;
+    this.ctx.lineWidth = this.points[0].size;
+		this.ctx.fillStyle = this.points[0].color;
+		if (ppts.length < 3) {
+			var b = ppts[0];
+			this.ctx.beginPath();
+			this.ctx.arc(b.x, b.y, this.ctx.lineWidth / 2, 0, Math.PI * 2, !0);
+			this.ctx.fill();
+			this.ctx.closePath();
+
+			return;
+		}
+
+		// Tmp canvas is always cleared up before drawing.
+		this.ctx.clearRect(0, 0, this.curWidth, this.curHeight);
+
+		this.ctx.beginPath();
+		this.ctx.moveTo(ppts[0].x, ppts[0].y);
+
+		for (var i = 1; i < ppts.length - 2; i++) {
+			var c = (ppts[i].x + ppts[i + 1].x) / 2;
+			var d = (ppts[i].y + ppts[i + 1].y) / 2;
+
+			this.ctx.quadraticCurveTo(ppts[i].x, ppts[i].y, c, d);
+		}
+
+		// For the last 2 points
+		this.ctx.quadraticCurveTo(
+			ppts[i].x,
+			ppts[i].y,
+			ppts[i + 1].x,
+			ppts[i + 1].y
+		);
+		this.ctx.stroke();
+	}
+
+  reDraw(width, height, size=this.points[0].size, ctx=this.perm_ctx) {
+		this.curWidth = width;
+		this.curHeight = height;
+    this.draw();
+		this.perm_ctx.drawImage(this.canvas,0,0);
+		this.ctx.clearRect(0,0,width, height);
   }
 
   scalePoints(width, height) {

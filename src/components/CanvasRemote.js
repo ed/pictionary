@@ -20,7 +20,8 @@ class Canvas extends Component {
 
   componentDidMount() {
     this.ctx = this.canvas.getContext('2d');
-    this.clearCanvas = () => this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
+    this.perm_ctx = this.perm_canvas.getContext('2d');
+    this.clearCanvas = () => this.perm_ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.props.socket.on('stroke', point => this.handleStroke(point));
     this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData) );
     this.setCanvasSize();
@@ -59,7 +60,7 @@ class Canvas extends Component {
       return setTimeout(() => this.startThat(point),100);
     }
     this.startStroke(point.pos, point.color, point.size);
-    this.drawRemoteLoops[point.strokeID] = setInterval(() => this.drawRemoteStroke(point.strokeID),5);
+    this.drawRemoteLoops[point.strokeID] = setInterval(() => this.drawRemoteStroke(point.strokeID),10);
   }
 
   drawRemoteStroke(ID) {
@@ -69,6 +70,8 @@ class Canvas extends Component {
     }
     else if (this.ptsByStroke[ID].ended) {
       this.currentID++;
+      this.perm_ctx.drawImage(this.canvas,0,0);
+      this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
       clearInterval(this.drawRemoteLoops[ID]);
     }
   }
@@ -82,7 +85,7 @@ class Canvas extends Component {
     this.clearCanvas();
     for (let i = 0; i < canvasData.length; i++) {
       if(canvasData[i].action == 'stroke') {
-        let mark = new Mark(this.ctx,null,null,null,canvasData[i].data);
+        let mark = new Mark(this.canvas, this.ctx,this.perm_ctx,null,null,null,canvasData[i].data);
         mark.action(this.state.canvasWidth, this.state.canvasHeight);
       }
       else {
@@ -95,12 +98,13 @@ class Canvas extends Component {
     window.addEventListener('resize', () => this.setCanvasSize());
   }
 
-  setCanvasSize(){
+  setCanvasSize() {
     if (this.canvas) {
       this.setState({
         canvasHeight: this.canvas.offsetHeight,
         canvasWidth: this.canvas.offsetWidth
-      }, () => this.remakeCanvasRemote());
+      },
+      () => this.remakeCanvasRemote());
     }
     else {
       setTimeout(() => this.setCanvasSize, 1000);
@@ -108,7 +112,7 @@ class Canvas extends Component {
   }
 
   startStroke(pos, color, size) {
-    this.curMark = new Mark(this.ctx, color, size, this.scalePoint(pos));
+    this.curMark = new Mark(this.canvas, this.ctx, this.perm_ctx, color, size, this.scalePoint(pos));
     this.curMark.startStroke(this.state.canvasWidth, this.state.canvasHeight);
   }
 
@@ -126,15 +130,21 @@ class Canvas extends Component {
     return (
       <div className="canvasContainer">
         <canvas
-        onMouseDown={(e) => { e.preventDefault(); canIDraw ? this.startStroke(this.xy(e)) : null }}
-        onMouseMove={(e) => { e.preventDefault(); canIDraw ? this.drawStroke(this.xy(e)) : null }}
-        onMouseOut={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
-        onMouseUp={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
-        className="canvas"
-        width={this.state.canvasWidth}
-        height={this.state.canvasHeight}
-        ref={(canvas) => this.canvas = canvas}
-        />
+          className="perm_canvas"
+          width={this.state.canvasWidth}
+          height={this.state.canvasHeight}
+          ref={(canvas) => this.perm_canvas = canvas}
+          />
+        <canvas
+          onMouseDown={(e) => { e.preventDefault(); canIDraw ? this.startStroke(this.xy(e)) : null }}
+          onMouseMove={(e) => { e.preventDefault(); canIDraw ? this.drawStroke(this.xy(e)) : null }}
+          onMouseOut={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
+          onMouseUp={(e) => { e.preventDefault(); canIDraw ? this.endStroke(this.xy(e)) : null }}
+          className="tmp_canvas"
+          width={this.state.canvasWidth}
+          height={this.state.canvasHeight}
+          ref={(canvas) => this.canvas = canvas}
+          />
         {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
 
         {this.props.turnStatus === 'drawing' ?
