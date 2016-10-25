@@ -196,8 +196,13 @@ class DMT {
   }
 
   start() {
-    this.gameTimer = setInterval(() => this.updateGame(), 1000);
+    this.resetInterval();
     this.startTurn();
+  }
+
+  resetInterval() {
+    clearInterval(this.gameTimer);
+    this.gameTimer = setInterval(() => this.updateGame(), 1000);
   }
 
   testWord(player, guess) {
@@ -206,8 +211,10 @@ class DMT {
       this.chatMsg(`${player} guessed the word`);
       this.setState({
         players: this.players,
-        timeLeft: Math.min(this.gameState.timeLeft, 10)
+        timeLeft: Math.min(this.gameState.timeLeft, 10),
+        totalTime: this.gameState.timeLeft < 10 ? this.gameState.totalTime : 10,
       });
+      this.resetInterval();
       return true;
     }
     return false;
@@ -259,13 +266,13 @@ class DMT {
       timeLeft: 4,
       totalRounds: this.numRounds,
       round: this.curRound,
-      timePerTurn: this.secondsPerTurn,
+      totalTime: this.secondsPerTurn,
       canvasData: null
     });
   }
 
   endTurn() {
-    this.setState({ turnStatus: 'finished', timeLeft: 10 });
+    this.setState({ turnStatus: 'finished', timeLeft: 10, totalTime: 10 });
   }
 
   updateGame() {

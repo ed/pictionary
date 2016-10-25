@@ -21,9 +21,9 @@ export class WhiteBoard extends Component {
       <div className="whiteboard">
         { this.props.gameInProgress ?
           this.props.artist === this.props.user ?
-            <Canvas key={this.props.turnStatus} />
+            <Canvas key={this.props.turnStatus !== 'starting'} />
             :
-            <CanvasRemote key={this.props.turnStatus} />
+            <CanvasRemote key={this.props.turnStatus !== 'starting'} />
           :
           <div className="container">
           <StartButton active={true} onClick={() => this.startGame()} />

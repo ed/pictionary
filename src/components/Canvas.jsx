@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { ActionHistory, Mark, ClearCanvas } from '../utils/CanvasUtils';
 import { CompactPicker } from 'react-color';
 import { connect } from 'react-redux';
-import { Circle } from 'react-progressbar.js'
-
+import Timer, { SmallTimer } from './Timer';
 
 class Canvas extends Component {
 
@@ -198,7 +197,7 @@ class Canvas extends Component {
   }
 
   render() {
-    let { canIDraw, isSpectating } = this.props;
+    let { turnStatus, timeLeft, totalTime, canIDraw, isSpectating } = this.props;
     return (
       <div className="canvasContainer">
         <canvas
@@ -219,19 +218,19 @@ class Canvas extends Component {
           />
         {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
 
-        {this.props.turnStatus === 'drawing' ?
+        {turnStatus === 'drawing' ?
           <div style={{position: 'absolute', top:0, right:'20px', width: '100px', height: '100px'}}>
-            <Timer progress={this.props.timeLeft/this.props.timePerTurn} text={this.props.timeLeft}/>
+            <SmallTimer key={this.props.totalTime} progress={timeLeft/totalTime} text={timeLeft}/>
           </div>
           :
           null
         }
-        {this.props.turnStatus === 'starting' ?
+        {turnStatus === 'starting' ?
         <div style={{position: 'absolute', top:'25%', right:'50%', width: '300px', height: '300px'}}>
-          <Timer containerStyle={{fontSize: '300%', width: '300px', height: '300px'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft + 1} key={this.props.timeLeft}/>
+          <Timer containerStyle={{fontSize: '300%', width: '300px', height: '300px'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft + 1} key={timeLeft}/>
         </div>
         : null}
-        <CanvasMessage turnStatus={this.props.turnStatus} guessers={this.props.guessers} {...this.props} />
+        <CanvasMessage {...this.props} />
         {canIDraw ?
           <ArtistOptions
           color={this.state.brushColor}
@@ -256,7 +255,7 @@ const mapStateToProps = (state) => {
         guessers: Object.keys(players).filter((player) => players[player].pointsThisTurn > 0 && player !== artist),
         turnStatus,
         numPlayers: Object.keys(players).length,
-        timePerTurn: state.root.room.game.timePerTurn,
+        totalTime: state.root.room.game.totalTime,
         word: state.root.room.game.word,
         artist: state.root.room.game.artist,
         user: state.root.user,
@@ -288,21 +287,6 @@ const CanvasMessage = ({ guessers, numPlayers, word, turnStatus }) => (
         The word was <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span>
       </div>
   }
-  </div>
-)
-
-const Timer = ({ progress, text, strokeWidth=9, trailWidth=10, color="#FF3232", containerStyle}) => (
-  <div className="timer" style={{display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background:'white', left:0, right:0}}>
-  <Circle
-        progress={progress}
-        options={{strokeWidth,
-          color,
-          duration: 1000,
-          text: { value: text, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} },
-          trailColor: '#D6D6D6', trailWidth }}
-        initialAnimate={true}
-        containerStyle={{ borderRadius: '50%', width: '80px', height: '80px',  ...containerStyle }}
-        containerClassName={'.progressbar'} />
   </div>
 )
 

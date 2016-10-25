@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ActionHistory, Mark, ClearCanvas } from '../utils/CanvasUtils';
 import { CompactPicker } from 'react-color';
 import { connect } from 'react-redux';
-import { Circle } from 'react-progressbar.js'
+import Timer, { SmallTimer } from './Timer';
 
 
 class Canvas extends Component {
@@ -149,7 +149,7 @@ class Canvas extends Component {
 
         {this.props.turnStatus === 'drawing' ?
           <div style={{position: 'absolute', top:0, right:'20px', width: '100px', height: '100px'}}>
-            <Timer progress={this.props.timeLeft/this.props.timePerTurn} text={this.props.timeLeft}/>
+            <SmallTimer key={this.props.totalTime} progress={this.props.timeLeft/this.props.totalTime} text={this.props.timeLeft}/>
           </div>
           :
           null
@@ -175,7 +175,7 @@ const mapStateToProps = (state) => {
         guessers: Object.keys(players).filter((player) => players[player].pointsThisTurn > 0 && player !== artist),
         turnStatus,
         numPlayers: Object.keys(players).length,
-        timePerTurn: state.root.room.game.timePerTurn,
+        totalTime: state.root.room.game.totalTime,
         word: state.root.room.game.word,
         artist: state.root.room.game.artist,
         user: state.root.user,
@@ -213,20 +213,5 @@ const CanvasMessage = ({ guessers, numPlayers, word, artist, turnStatus }) => (
         The word was <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span>
       </div>
   }
-  </div>
-)
-
-const Timer = ({ progress, text, strokeWidth=9, trailWidth=10, color="#FF3232", containerStyle}) => (
-  <div className="timer" style={{display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background:'white', left:0, right:0}}>
-  <Circle
-        progress={progress}
-        options={{strokeWidth,
-          color,
-          duration: 1000,
-          text: { value: text, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} },
-          trailColor: '#D6D6D6', trailWidth }}
-        initialAnimate={true}
-        containerStyle={{ borderRadius: '50%', width: '80px', height: '80px',  ...containerStyle }}
-        containerClassName={'.progressbar'} />
   </div>
 )
