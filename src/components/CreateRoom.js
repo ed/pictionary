@@ -6,7 +6,7 @@ import { Link } from 'react-router'
 class CreateRoom extends Component {
   constructor(props) {
     super(props);
-  
+
     this.state = {
       roomName: '',
       private: false,
@@ -66,7 +66,7 @@ class CreateRoom extends Component {
   _onKeyDown(e) {
     if (e.keyCode === 13) {
       this.createRoom();
-      e.preventDefault();             
+      e.preventDefault();
     }
     if (e.keyCode === 27) this.props.close();
   }
@@ -78,20 +78,7 @@ class CreateRoom extends Component {
   }
 
   render() {
-    let textBoxStyle = {
-      fontSize:'120%',
-      color:'#464646',
-      paddingBottom: '6px', 
-      paddingTop:'10px',
-      marginLeft: 0,
-      marginRight: 0, 
-      paddingRight: 0,
-      marginTop: '10px', 
-      borderWidth: '1px', 
-      height: '44px',
-      width: '100%',
-      boxSizing: 'border-box'
-    }
+    let textBoxStyle = { };
     if (this.state.roomNameError.length > 1) {
       textBoxStyle.borderColor = 'orange';
     }
@@ -102,14 +89,14 @@ class CreateRoom extends Component {
         <div style={{marginBottom: '12px', fontSize:'80%', color:'#c1c1c1'}}> Rooms can be public or private. Create a private room to play with friends or a public room to meet some new ones! </div>
         <label className="switch">
         <input className="switch-input" type="checkbox" checked={this.state.private} onChange={() => this.switchPublicPrivate()} />
-        <span className="switch-label" data-on="Private" data-off="Public"></span> 
-        <span className="switch-handle"></span> 
+        <span className="switch-label" data-on="Private" data-off="Public"></span>
+        <span className="switch-handle"></span>
         </label>
         {this.state.private ? null :
          <div >
-         <span style={{paddingBottom: '10px', fontWeight:'bold', color:'#464646'}}> Name </span> 
+         <span style={{paddingBottom: '10px', fontWeight:'bold', color:'#464646'}}> Name </span>
          <i style={{paddingBottom: '10px', fontSize:'80%', fontWeight:'bold', color:'orange'}}>   {this.state.roomNameError} </i>
-         <textarea onBlur={() => this.setRoomError()} spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
+         <textarea onBlur={() => this.setRoomError()} spellCheck={false} className="message-composer data-box" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
          <div style={{marginBottom: '12px', fontSize:'70%', color:'#c1c1c1'}}> Names must be lowercase, with no spaces or periods. </div>
          </div>
 	       }

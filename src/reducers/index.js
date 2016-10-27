@@ -25,7 +25,6 @@ const initRoom = {
 }
 
 function modals(state={openModal: 'NONE'}, action) {
-  console.log(action)
   switch (action.type) {
     case types.OPEN_MODAL:
       return { openModal : action.title};

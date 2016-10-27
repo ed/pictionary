@@ -5,7 +5,15 @@ import { push, replace } from 'react-router-redux';
 let headers = new Headers();
 headers.append('Content-Type', 'application/json');
 
+let saveData = { };
 
+export const redirectLogin = (returnPath) => {
+  return (dispatch) => {
+      dispatch(replace('/'));
+      saveData.returnPath = returnPath;
+      console.log(saveData)
+  }
+}
 export const openModal = (title) => {
   return {
     type: types.OPEN_MODAL,
@@ -125,7 +133,7 @@ export const logout = () => {
       .then(() => {
         dispatch({ type: 'REQUEST_FAILURE' });
         dispatch({ type: 'BYE_FELICIA' });
-        dispatch(push('/game'));
+        dispatch(push('/'));
       }).catch(error => {
         dispatch(requestFailure(error.message))
       });
@@ -213,20 +221,31 @@ export const setSocket = () => {
   }
 }
 
-export const setTempUserInfo = () => {
+export const setTempUserInfo = (name) => {
   return (dispatch) => {
     return fetch('/tempUserInfo', {
-      method: 'GET',
+      method: 'POST',
       headers,
       mode: 'cors',
       cache: 'default',
+      body: JSON.stringify({
+        name
+      })
     })
     .then(checkStatus)
     .then(parseJSON)
     .then(json => {
-      dispatch(setSocket());
-      dispatch({ type: 'SET_USER_INFO', user: json.user})
-      return dispatch(fetchRooms())
+      console.log(json)
+      if (json.err) {
+        return dispatch(addNotification(json.err));
+      }
+      else {
+        dispatch(setSocket());
+        dispatch({ type: 'SET_USER_INFO', user: json.user});
+        if (saveData.returnPath) dispatch(push(saveData.returnPath));
+        else dispatch(push('/game'));
+        return dispatch(fetchRooms());
+      }
     });
   }
 
@@ -271,7 +290,7 @@ export const fetchRoomData = (room) => {
       .then(response => response.json())
       .then(roomData => {
 	if (roomData.error) {
-	  dispatch(push('/game'));
+	  dispatch(replace('/game'));
 	  return {
 	    error: true
 	  }

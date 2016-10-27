@@ -48,7 +48,7 @@ module.exports = {
       if (res.rowCount < 1) {
         const error = new Error ('User not found');
         next(error);
-      } 
+      }
       else {
         const user = res.rows[0];
         auth.verify(password, user.salt, user.password, (err, verified) => {

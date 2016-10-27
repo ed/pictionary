@@ -8,6 +8,7 @@ import Register from './src/components/Register'
 import BrowseRooms from './src/components/BrowseRooms'
 import Home from './src/components/Home'
 import AppContainer from './src/components/AppContainer'
+import GuestLogin from  './src/components/GuestLogin'
 
 
 const CreateRoomWrapper = () => (
@@ -35,6 +36,7 @@ module.exports = (
         <IndexRoute component={Home}/>
         <Route path='login' component={Login}/>
         <Route path='register' component={Register}/>
+        <Route path='guest' component={GuestLogin}/>
         <Route path='game' component={GameContainer}>
             <IndexRoute component={CreateRoomWrapper} />
             <Route path='browse' component={BrowseRoomsWrapper} />

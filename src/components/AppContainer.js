@@ -8,7 +8,7 @@ import Spinner from './Spinner'
 class Container extends Component {
 	constructor(props) {
     super(props);
-  
+
    this.state = {
       isFetching: true,
     }
@@ -16,7 +16,6 @@ class Container extends Component {
 
   componentDidMount() {
     const { cookie, authStatus, user } = this.props
-    console.log(cookie, authStatus, user)
     if (cookie) {
       this.props.dispatch(whoami(this.props.location.pathname)).then(() => {
         this.setState({
@@ -25,7 +24,6 @@ class Container extends Component {
       })
     }
     else {
-      if (!authStatus) this.props.dispatch(setTempUserInfo())
       this.setState({
         isFetching: false
       })
@@ -36,14 +34,14 @@ class Container extends Component {
 		const { roomStatus, user, cookie, error } = this.props
     const { isFetching } = this.state;
 		return (
-			!isFetching && roomStatus ?
+			!isFetching?
 			<div className="container">
 				<NotificationStack
 			      notifications={this.props.notifications.toArray()}
 			      onDismiss={notification => this.props.dispatch(dismissNotification(notification))}
 			      barStyleFactory={(ind, style) => {
 			        return {
-			          ...style, 
+			          ...style,
 			          fontFamily: 'Lato',
 			          background: '#ffad90',
 			          borderWidth: '0px',
@@ -63,7 +61,7 @@ class Container extends Component {
 			    }
 			    activeBarStyleFactory={(ind, style) => {
 			        return {
-			          ...style, 
+			          ...style,
 			          left: '',
 			          right: '0px',
 			          top: `${2 + ind * 5}rem`,
@@ -77,7 +75,7 @@ class Container extends Component {
 			:
 			<Spinner />
 		)
-	}  
+	}
 }
 
 const mapStateToProps = (state) => {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 import { openSignup, closeSignup, openLogin, closeLogin } from '../actions'
 import { Link } from 'react-router'
 import Popover from './PopoverSmall'
@@ -15,7 +15,7 @@ class Home extends Component {
 
 	componentDidMount() {
     if (this.props.authStatus) {
-      this.props.dispatch(push('/game'));
+      this.props.dispatch(replace('/game'));
     }
   }
 
@@ -27,7 +27,7 @@ class Home extends Component {
 				<br/>
 				or
 				<br/>
-				<button className="myButton-transparent" style={{marginTop: '20px', position: 'relative'}} onClick={() => this.props.dispatch(push('/game'))}>Play</button>
+				<button className="myButton-transparent" style={{marginTop: '20px', position: 'relative'}} onClick={() => this.props.dispatch(push('/guest'))}>Play as guest</button>
 			</div>
 			<ul style={{position: 'absolute', left: 0, top: 0, width: '100%'}}>
 			  <li><a style={{}} onClick={() => this.props.dispatch(openLogin())}>Log in</a></li>

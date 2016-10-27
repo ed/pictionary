@@ -4,7 +4,7 @@ var DMTManager = require('./DMTManager');
 const uuid = require('node-uuid');
 
 let mainRoom = 'draw_stuff';
-let colors = ['#FF0000','#800000','#FFFF00','#808000','#008080','#F08080','#DAF7A6','#581845'];
+let colors = ['#FF68B0','#D05860','#F0E890','#80FFD0','#FFE0C0','#FF0000','#FF00E0','#B0E0E0', '#B08800','#000000', '#006000', '#FF8800', '#000080'];
 let users = {};
 let rooms = {'room2': [], 'room3' : []};
 rooms[mainRoom] = [];
@@ -91,13 +91,7 @@ module.exports = (app, io) => {
   });
 
 
-  app.post('/register', (req, res) => {
-    console.log(req.body);
-    res.send('hello world');
-  });
-
   app.get('/roomData/roomList', (req, res) => {
-    console.log('getting room LIST')
     let roomList = dmtManager.getPublicRooms();
     res.send(roomList);
   });
@@ -110,7 +104,7 @@ module.exports = (app, io) => {
     if (visibility == 'public') {
       if (roomName in rooms) {
         res.send({
-          error: '??'
+          error: 'Room already exists'
         })
       }
       else {

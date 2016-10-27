@@ -31,21 +31,27 @@ var io = require('socket.io')(server);
 
 var roomManager = require('./roomManager')(app, io);
 
+let tempUsers = {};
 
 app.post('/signup', (req, res) => {
   const { username, password } = req.body;
-  utils.register(req, res, username, password, (err, next) => {
-    if (err) {
-      res.status(400).send({message: err.message})
-    }
-    if (next) {
-      res.writeHead(200, {
-    		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30};HttpOnly;`,
-    		'Content-Type': 'text/plain',
-      });
-      res.end();
-    }
-  })
+  if (username.startsWith('nerd_')) {
+    res.status(400).send({message: 'Name cannot start with \'nerd_\''});
+  }
+  else {
+    utils.register(req, res, username, password, (err, next) => {
+      if (err) {
+        res.status(400).send({message: err.message})
+      }
+      if (next) {
+        res.writeHead(200, {
+      		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30};HttpOnly;`,
+      		'Content-Type': 'text/plain',
+        });
+        res.end();
+      }
+    })
+  }
 })
 
 app.post('/login', (req, res) => {
@@ -80,7 +86,6 @@ app.post('/logout', (req, res) => {
 
 app.get('/whoami', (req, res) => {
   // dispatch sets username + status based on cookie
-  console.log('cookie: ', req.headers.cookie)
   utils.cookieMonster(req.headers.cookie, (err, cb) => {
     if (err) {
       res.status(400).send({message: err.message})
@@ -92,9 +97,16 @@ app.get('/whoami', (req, res) => {
 })
 
 let userNum = 0;
-app.get('/tempUserInfo', (req, res) => {
+app.post('/tempUserInfo', (req, res) => {
   // dispatch sets username + status based on cookie
-  res.send({user: `nerd${userNum++}`});
+  let { name } = req.body;
+  if (name in tempUsers) {
+    res.send({ err: 'name in use'});
+  }
+  else {
+    tempUsers[name] = true;
+    res.send({user: `nerd_${name}`});
+  }
   res.end()
 })
 
