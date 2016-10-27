@@ -7,7 +7,7 @@ class Form extends Component {
 
   constructor(props) {
     super(props);
-  
+
     this.state = {
       username: '',
       password: ''
@@ -30,27 +30,27 @@ class Form extends Component {
     let textBoxStyle = {
       fontSize:'120%',
       color:'#464646',
-      paddingBottom: '6px', 
+      paddingBottom: '6px',
       paddingTop:'10px',
       marginLeft: 0,
-      marginRight: 0, 
+      marginRight: 0,
       paddingRight: 0,
-      marginTop: '10px', 
-      borderWidth: '1px', 
-      height: '44px',
+      marginTop: '10px',
+      borderWidth: '1px',
+      height: '70px',
       width: '100%',
       boxSizing: 'border-box',
     }
-    const { error, sendingRequest } = this.props;
+    const { secondaryTitle, openSecondary, title, sendingRequest } = this.props;
     return (
-      <div className="popoverContainer" style={{width: '400px', textAlign: 'center'}}>
-      <div style={{ fontSize: '200%'}}> {this.props.title}</div>
+      <div className="popoverContainer" style={{ textAlign: 'center', height: '75%', width: '80%'}}>
       <form className="form" onSubmit={this.go.bind(this)}>
       <input ref={(userField) => this.userField = userField} onChange={(e) => this.updateUsername(e)} spellCheck={false} className="message-composer" style={textBoxStyle} placeholder="username"/>
       <input onChange={(e) => this.updatePassword(e)} spellCheck={false} className="message-composer" style={textBoxStyle} type="password" placeholder="password"/>
-      <button className="myButton active" style={{width: '100%', marginTop: '70px'}} type="submit">{this.props.title}</button>
+      <button className="myButton-transparent" style={{ height: '70px', width: '100%', marginTop: '100px' }} type="submit">{ sendingRequest ? <Spinner style={{color: 'white', marginTop: 0}}/> : title }</button>
       </form>
-      { sendingRequest ? <Spinner /> : null }
+      <h2 style={{ color: '#bdbdbd', paddingTop: '100px', width: '100%', textAlign: 'center', borderBottom: '1px solid #bdbdbd', lineHeight: '0.1em', margin: '10px 0 20px' }}> <span style={{ backgroundColor: 'white', padding: '0 10px'}}> or </span> </h2>
+      <button onClick={openSecondary} className="myButton-transparent" style={{ height: '70px', width: '100%', marginTop: '5px' }} type="submit">{secondaryTitle}</button>
       </div>
       )
   }

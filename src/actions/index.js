@@ -5,11 +5,39 @@ import { push, replace } from 'react-router-redux';
 let headers = new Headers();
 headers.append('Content-Type', 'application/json');
 
+
+export const openModal = (title) => {
+  return {
+    type: types.OPEN_MODAL,
+    title
+  }
+}
+
+export const closeModal = () => {
+  return {
+    type: types.CLOSE_MODAL
+  }
+}
+
+export const openSignup = () => {
+  return {
+    type: types.OPEN_MODAL,
+    title: 'signup'
+  }
+}
+
+export const openLogin = () => {
+  return {
+    type: types.OPEN_MODAL,
+    title: 'login'
+  }
+}
+
 export const requestFailure = (message) => {
     return (dispatch) => {
         dispatch(addNotification(message));
         return dispatch({
-            type: 'REQUEST_FAILURE', 
+            type: 'REQUEST_FAILURE',
             error: message
         })
     }
@@ -65,8 +93,8 @@ export const onSuccess = (user, nextRoute='/game') => {
 export const whoami = (nextRoute) => {
   return (dispatch) => {
     dispatch({ type: 'SENDING_REQUEST' });
-    return fetch('/whoami', { 
-      method: 'GET', 
+    return fetch('/whoami', {
+      method: 'GET',
       headers,
       mode: 'cors',
       credentials: 'include',
@@ -86,8 +114,8 @@ export const whoami = (nextRoute) => {
 export const logout = () => {
   return (dispatch) => {
     dispatch({ type: 'SENDING_REQUEST' });
-    fetch('/logout', { 
-      method: 'POST', 
+    fetch('/logout', {
+      method: 'POST',
       headers,
       mode: 'cors',
       credentials: 'include',
@@ -112,8 +140,8 @@ export const login  = (username, password) => {
       dispatch({ type: 'REQUEST_FAILURE', error: 'please fill out both fields'})
       throw error;
     }
-    fetch('/login', { 
-      method: 'POST', 
+    fetch('/login', {
+      method: 'POST',
       headers,
       mode: 'cors',
       credentials: 'include',
@@ -142,8 +170,8 @@ export const register = (username, password) => {
     }
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    return fetch('/signup', { 
-      method: 'POST', 
+    return fetch('/signup', {
+      method: 'POST',
       headers,
       mode: 'cors',
       credentials: 'include',
@@ -187,8 +215,8 @@ export const setSocket = () => {
 
 export const setTempUserInfo = () => {
   return (dispatch) => {
-    return fetch('/tempUserInfo', { 
-      method: 'GET', 
+    return fetch('/tempUserInfo', {
+      method: 'GET',
       headers,
       mode: 'cors',
       cache: 'default',
@@ -201,7 +229,7 @@ export const setTempUserInfo = () => {
       return dispatch(fetchRooms())
     });
   }
-  
+
 }
 
 export const setRooms = (rooms) => {
@@ -214,15 +242,15 @@ export const setRooms = (rooms) => {
 export const fetchRooms = () => {
   return (dispatch) => {
     dispatch({ type: types.REQUEST_ROOMS });
-    return fetch('/roomData/roomList', { 
+    return fetch('/roomData/roomList', {
       headers,
-      method: 'GET', 
+      method: 'GET',
       mode: 'cors',
       cache: 'default',
     })
       .then(checkStatus)
       .then(parseJSON)
-      .then(rooms => { 
+      .then(rooms => {
 	       dispatch(setRooms(rooms))
       })
       .catch(error => {
@@ -234,9 +262,9 @@ export const fetchRooms = () => {
 
 export const fetchRoomData = (room) => {
   return (dispatch) => {
-    return fetch(`/roomData/room/${room}`, { 
+    return fetch(`/roomData/room/${room}`, {
       headers,
-      method: 'GET', 
+      method: 'GET',
       mode: 'cors',
       cache: 'default',
     })
@@ -266,9 +294,9 @@ export const fetchRoomData = (room) => {
 export const newRoom = (roomData) => {
   return (dispatch) => {
     console.log(roomData)
-    return fetch('/roomData/newRoom', { 
+    return fetch('/roomData/newRoom', {
       headers,
-      method: 'POST', 
+      method: 'POST',
       mode: 'cors',
       cache: 'default',
       body: JSON.stringify({
@@ -277,7 +305,7 @@ export const newRoom = (roomData) => {
       })
     })
       .then(response => response.json())
-      .then(json => { 
+      .then(json => {
 	if( !json.error ) {
 	  dispatch(setRooms(json.rooms))
 	  dispatch(push(`/game/r/${json.roomName}`));

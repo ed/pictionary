@@ -20,7 +20,7 @@ const emptyRoom = {
 };
 
 const usersByRoom = (room) => {
-  if ( io.sockets.adapter.rooms[room]!= null && io.sockets.adapter.rooms[room]!= undefined ) {
+  if ( io.sockets.adapter.rooms[room] !== null && io.sockets.adapter.rooms[room] !== undefined ) {
     let sockets = io.sockets.adapter.rooms[room].sockets;
     return Object.keys(sockets).map((socketId) => {
       var clientSocket = io.sockets.connected[socketId];
@@ -263,7 +263,7 @@ class DMT {
       players: this.players,
       word: this.curWord,
       artist: this.currentArtist(),
-      timeLeft: 4,
+      timeLeft: 2,
       totalRounds: this.numRounds,
       round: this.curRound,
       totalTime: this.secondsPerTurn,

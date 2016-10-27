@@ -6,11 +6,11 @@ import Register from './Register'
 import { NotificationStack } from 'react-notification'
 import Spinner from './Spinner'
 
-export class Container extends Component {
+export default class Container extends Component {
   render() {
     return (
       <div className="container">
-	      {this.props.children}
+	    {this.props.children}
       </div>
     )
   }

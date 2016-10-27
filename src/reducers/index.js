@@ -24,6 +24,18 @@ const initRoom = {
   game: initGame
 }
 
+function modals(state={openModal: 'NONE'}, action) {
+  console.log(action)
+  switch (action.type) {
+    case types.OPEN_MODAL:
+      return { openModal : action.title};
+    case types.CLOSE_MODAL:
+      return { openModal : 'NONE'};
+    default:
+      return state;
+    }
+}
+
 function error(state=null, action) {
   const {type, error} = action
   if (type === types.RESET_ERROR_MESSAGE) {
@@ -131,6 +143,7 @@ function notifications(state=OrderedSet(), action) {
 }
 
 const root = combineReducers({
+  modals,
   rooms,
   user,
   socket,

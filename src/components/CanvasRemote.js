@@ -4,7 +4,6 @@ import { CompactPicker } from 'react-color';
 import { connect } from 'react-redux';
 import Timer, { SmallTimer } from './Timer';
 
-
 class Canvas extends Component {
 
   constructor(props) {
