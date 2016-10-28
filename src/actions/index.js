@@ -11,7 +11,6 @@ export const redirectLogin = (returnPath) => {
   return (dispatch) => {
       dispatch(replace('/'));
       saveData.returnPath = returnPath;
-      console.log(saveData)
   }
 }
 export const openModal = (title) => {
@@ -88,7 +87,7 @@ export const parseJSON = (response) => {
   return response.json()
 }
 
-export const onSuccess = (user, nextRoute='/game') => {
+export const onSuccess = (user, nextRoute=saveData.returnPath||'/game') => {
   return (dispatch) => {
     dispatch({ type: 'REQUEST_SUCCESS' });
     dispatch({ type: 'SET_USER_INFO', user: user});
