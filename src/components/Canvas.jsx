@@ -27,74 +27,7 @@ class Canvas extends Component {
 	  this.perm_ctx = this.perm_canvas.getContext('2d');
     this.clearCanvas = () => this.perm_ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.actionHistory = new ActionHistory(this.clearCanvas);
-    this.props.socket.on('stroke', point => this.handleStroke(point));
-    this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData) );
     this.setCanvasSize();
-    this.remakeCanvasRemote = () => this.props.canvasData ? this.buildRemoteCanvas(this.props.canvasData) : null;
-    this.currentID = 0;
-  }
-
-  handleStroke(point) {
-    switch(point.action) {
-      case 'start':
-        return this.startStrokeRemote(point);
-      case 'draw':
-        return this.addStroke(point);
-      case 'end':
-        return this.endRemoteStroke(point);
-    }
-  }
-
-  endRemoteStroke(point) {
-    this.ptsByStroke[point.strokeID].ended = true;
-  }
-
-  addStroke(point) {
-    point.strokeID in this.ptsByStroke ? this.ptsByStroke[point.strokeID].pts.push(point.pos) : this.ptsByStroke[point.strokeID] = { pts: [], ended: false };
-  }
-
-  startStrokeRemote(point) {
-    if ( !(point.strokeID in this.ptsByStroke) ) {
-      this.ptsByStroke[point.strokeID] = { pts: [], ended: false };;
-    }
-    setTimeout(() => this.startThat(point),100);
-  }
-
-  startThat(point) {
-    if (this.currentID !== point.strokeID || this.ptsByStroke[point.strokeID].pts.length == 0) {
-      return setTimeout(() => this.startThat(point),100);
-    }
-    this.startStroke(point.pos);
-    this.drawRemoteLoops[point.strokeID] = setInterval(() => this.drawRemoteStroke(point.strokeID),5);
-  }
-
-  drawRemoteStroke(ID) {
-    if (this.ptsByStroke[ID].pts.length > 0) {
-      this.drawStroke(this.ptsByStroke[ID].pts[0]);
-      this.ptsByStroke[ID].pts.shift();
-    }
-    else if (this.ptsByStroke[ID].ended) {
-      this.currentID++;
-      clearInterval(this.drawRemoteLoops[ID]);
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.socket.off('stroke');
-    this.props.socket.off('update canvas');
-  }
-
-  buildRemoteCanvas(canvasData) {
-    this.clearCanvas();
-    for (let i = 0; i < canvasData.length; i++) {
-      if(canvasData[i].action == 'stroke') {
-        let mark = new Mark(this.canvas, this.ctx,this.perm_ctx,null,null,null,canvasData[i].data);
-        mark.action(this.state.canvasWidth, this.state.canvasHeight);
-      }
-      else {
-        this.clearCanvas();
-      }
-    }
   }
 
   componentWillMount() {
@@ -102,15 +35,10 @@ class Canvas extends Component {
   }
 
   remakeCanvas() {
-    if (this.props.user === this.props.artist){
-      this.actionHistory.remakeCanvas(this.state.canvasWidth, this.state.canvasHeight);
-    }
-    else {
-      this.remakeCanvasRemote();
-    }
+    this.actionHistory.remakeCanvas(this.state.canvasWidth, this.state.canvasHeight);
   }
 
-  setCanvasSize(){
+  setCanvasSize() {
     if (this.canvas) {
       this.setState({
         canvasHeight: this.canvas.offsetHeight,
@@ -126,7 +54,7 @@ class Canvas extends Component {
     this.curMark = new Mark(this.canvas, this.ctx, this.perm_ctx, this.state.brushColor, this.state.brushSize,this.scalePoint(pos));
     this.curMark.startStroke(this.state.canvasWidth, this.state.canvasHeight);
     this.setState({ drawing: true });
-    this.drawInterval = setInterval(() => this.drawStroke(this.state.pos), 10)
+    this.drawInterval = setInterval(() => this.drawStroke(this.state.pos), 10);
     this.props.socket.emit('stroke', {action: 'noop'});
     this.props.socket.emit('stroke', {action: 'start', pos, color: this.state.brushColor, size: this.state.brushSize, strokeID: this.strokeID});
   }
@@ -217,7 +145,6 @@ class Canvas extends Component {
           height={this.state.canvasHeight}
           ref={(canvas) => this.canvas = canvas}
           />
-        {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
 
         {turnStatus === 'drawing' ?
           <div style={{position: 'absolute', top:0, right:'20px', width: '100px', height: '100px'}}>

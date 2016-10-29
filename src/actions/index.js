@@ -161,7 +161,6 @@ export const login  = (username, password) => {
       .then(checkStatus)
       .then(() => dispatch(onSuccess(username)))
       .catch(error => {
-        console.log(error)
         dispatch(requestFailure(error.message))
       });
   };
@@ -234,7 +233,6 @@ export const setTempUserInfo = (name) => {
     .then(checkStatus)
     .then(parseJSON)
     .then(json => {
-      console.log(json)
       if (json.err) {
         return dispatch(addNotification(json.err));
       }
@@ -272,8 +270,7 @@ export const fetchRooms = () => {
 	       dispatch(setRooms(rooms))
       })
       .catch(error => {
-	// do some error handling here
-	console.log(error)
+      	console.log(error)
       })
   }
 }
@@ -288,23 +285,22 @@ export const fetchRoomData = (room) => {
     })
       .then(response => response.json())
       .then(roomData => {
-	if (roomData.error) {
-	  dispatch(replace('/game'));
-	  return {
-	    error: true
-	  }
-	}
-	else {
-	  dispatch(updateRoom(roomData.room));
-	  return {
-	    error: false,
-	    room: roomData.room
-	  }
-	}
+      	if (roomData.error) {
+      	  dispatch(replace('/game'));
+      	  return {
+      	    error: true
+      	  }
+      	}
+      	else {
+      	  dispatch(updateRoom(roomData.room));
+      	  return {
+      	    error: false,
+      	    room: roomData.room
+      	  }
+      	}
       })
       .catch(error => {
-	// do some error handling here
-	console.log(error)
+      	console.log(error)
       })
   }
 }
@@ -318,23 +314,22 @@ export const newRoom = (roomData) => {
       mode: 'cors',
       cache: 'default',
       body: JSON.stringify({
-	roomName: roomData.name,
-	visibility: roomData.visibility
+      	roomName: roomData.name,
+      	visibility: roomData.visibility
       })
     })
       .then(response => response.json())
       .then(json => {
-	if( !json.error ) {
-	  dispatch(setRooms(json.rooms))
-	  dispatch(push(`/game/r/${json.roomName}`));
-	}
-	else {
-	  console.log(json.error)
-	}
+      	if( !json.error ) {
+      	  dispatch(setRooms(json.rooms))
+      	  dispatch(push(`/game/r/${json.roomName}`));
+      	}
+      	else {
+      	  console.log(json.error)
+      	}
       })
       .catch(error => {
-	// do some error handling here
-	console.log(error)
+      	console.log(error)
       })
   }
 }

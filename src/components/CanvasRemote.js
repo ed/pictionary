@@ -22,7 +22,7 @@ class Canvas extends Component {
     this.perm_ctx = this.perm_canvas.getContext('2d');
     this.clearCanvas = () => this.perm_ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.props.socket.on('stroke', point => this.handleStroke(point));
-    this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData) );
+    this.props.socket.on('update canvas', canvasData => this.buildRemoteCanvas(canvasData));
     this.setCanvasSize();
     this.remakeCanvasRemote = () => this.props.canvasData ? this.buildRemoteCanvas(this.props.canvasData) : null;
     this.currentID = 0;
