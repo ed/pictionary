@@ -51,15 +51,15 @@ class Canvas extends Component {
     if ( !(point.strokeID in this.ptsByStroke) ) {
       this.ptsByStroke[point.strokeID] = { pts: [], ended: false };;
     }
-    setTimeout(() => this.startThat(point),100);
+    this.drawRemoteLoops[point.strokeID] = setInterval(() => this.tryStartStroke(point),100);
   }
 
-  startThat(point) {
-    if (this.currentID !== point.strokeID || this.ptsByStroke[point.strokeID].pts.length == 0) {
-      return setTimeout(() => this.startThat(point),100);
+  tryStartStroke(point) {
+    if (this.currentID === point.strokeID && this.ptsByStroke[point.strokeID].pts.length > 0) {
+      this.startStroke(point.pos, point.color, point.size);
+      clearInterval(this.drawRemoteLoops[point.strokeID]);
+      this.drawRemoteLoops[point.strokeID] = setInterval(() => this.drawRemoteStroke(point.strokeID),10);
     }
-    this.startStroke(point.pos, point.color, point.size);
-    this.drawRemoteLoops[point.strokeID] = setInterval(() => this.drawRemoteStroke(point.strokeID),10);
   }
 
   drawRemoteStroke(ID) {
@@ -78,6 +78,9 @@ class Canvas extends Component {
   componentWillUnmount() {
     this.props.socket.off('stroke');
     this.props.socket.off('update canvas');
+    for (let loop in this.drawRemoteLoops) {
+      clearInterval(this.drawRemoteLoops[loop]);
+    }
   }
 
   buildRemoteCanvas(canvasData) {
