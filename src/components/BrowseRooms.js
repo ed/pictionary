@@ -1,15 +1,15 @@
-import React, {Component} from 'react'
-import { Link } from 'react-router'
+import React, {Component} from 'react';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { fetchRooms } from '../actions'
-import WhiteBoard from './WhiteBoard'
-import CanvasViewOnly from './CanvasViewOnly'
-import Spinner from './Spinner'
+import { fetchRooms } from '../actions';
+import WhiteBoard from './WhiteBoard';
+import CanvasViewOnly from './CanvasViewOnly';
+import Spinner from './Spinner';
 
 class BrowseRooms extends Component {
 	constructor(props) {
 	  super(props);
-	
+
 	  this.state = {
 	  	isFetching: true,
 	  	roomName: '',
@@ -30,9 +30,9 @@ class BrowseRooms extends Component {
   _onKeyDown(e) {
       if (e.keyCode === 13) {
           if (this.state.roomName.trim().length > 0){
-            this.createRoom(); 
+            this.createRoom();
           }
-          e.preventDefault()             
+          e.preventDefault()
       }
       if (e.keyCode === 27) this.props.close();
   }
@@ -64,14 +64,14 @@ class BrowseRooms extends Component {
 		const textBoxStyle = {
       fontSize:'120%',
       color:'#464646',
-      paddingBottom: '6px', 
+      paddingBottom: '6px',
       paddingTop:'15px',
       marginLeft: 0,
-      marginRight: 0, 
+      marginRight: 0,
       paddingRight: 0,
-      marginTop: '10px', 
-      marginBottom: '20px', 
-      borderWidth: '1px', 
+      marginTop: '10px',
+      marginBottom: '20px',
+      borderWidth: '1px',
       height: '54px',
       width: '100%',
       boxSizing: 'border-box',
@@ -82,7 +82,7 @@ class BrowseRooms extends Component {
 			<div className="container">
 			  {this.state.isFetching ?
 			  <Spinner />
-			  : 
+			  :
 			  <div className="container" style={{position: 'relative',display: 'flex',flexDirection: 'column'}}>
 				  <h1 style={{marginBottom: '10px', fontWeight:'bold', marginBottom: '25px'}}>Join a room</h1>
 				  <textarea placeholder='Find a room' spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
@@ -97,25 +97,25 @@ class BrowseRooms extends Component {
 }
 
 const Room = ({ name, room, onClick, onMouseOut, onMouseOver, displayBorderTop, isHovered }) => (
-		<Link 
-		onMouseEnter={onMouseOver} 
-		onMouseLeave={onMouseOut} 
-		onClick={onClick} 
-		to={`/game/r/${name}`} 
-		className="room" 
+		<Link
+		onMouseEnter={onMouseOver}
+		onMouseLeave={onMouseOut}
+		onClick={onClick}
+		to={`/game/r/${name}`}
+		className="room"
 		style={{
-		 borderTop: displayBorderTop? '1px solid #DEDEDE' : isHovered? '' : '1px solid white', paddingLeft: '10px', 
-		 color:'grey', 
-		 paddingTop: '8px', 
-		 paddingBottom: '8px',  
-		 textDecoration: 'none' 
+		 borderTop: displayBorderTop? '1px solid #DEDEDE' : isHovered? '' : '1px solid white', paddingLeft: '10px',
+		 color:'grey',
+		 paddingTop: '8px',
+		 paddingBottom: '8px',
+		 textDecoration: 'none'
 		}}>
 			<span style={{color:'#5d5d5d', fontSize:'90%', fontWeight:'bold'}}> {name} </span>
 			<div style={{position: 'absolute',top:'30px', left:'10px', width:'100px', height: '80px', border: '1px solid #c5c5c5'}} >
-			{room.game.gameInProgress ? 
-				<CanvasViewOnly canvasData={room.game.canvasData} /> 
-				: 
-				<i style={{top: 'calc(50% - 7px)', left: 'calc(50% - 5px)', position: 'absolute', color: '#FF8669'}}className={`fa fa-play`} aria-hidden="true"></i> 
+			{room.game.gameInProgress ?
+				<CanvasViewOnly canvasData={room.game.canvasData} />
+				:
+				<i style={{top: 'calc(50% - 7px)', left: 'calc(50% - 5px)', position: 'absolute', color: '#FF8669'}}className={`fa fa-play`} aria-hidden="true"></i>
 			}
 			</div>
 			<div style={{marginTop:'40px',color:'#c5c5c5', float:'right', marginRight: '10px', fontSize: '90%'}}>
@@ -132,7 +132,7 @@ const Room = ({ name, room, onClick, onMouseOut, onMouseOver, displayBorderTop, 
 )
 
 const mapStateToProps = (state) => {
-  return { 
+  return {
   		canvasData: state.root.room.game.canvasData,
       rooms: state.root.rooms.rooms
   }

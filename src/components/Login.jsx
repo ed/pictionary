@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
-import { login } from '../actions'
-import { Link } from 'react-router'
-import { connect } from 'react-redux'
-import { openSignup } from '../actions'
-import { push } from 'react-router-redux'
-import Form from './Form'
+import React, {Component} from 'react';
+import { login } from '../actions';
+import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import { openSignup } from '../actions';
+import { push } from 'react-router-redux';
+import Form from './Form';
 
 
 class Login extends Component {

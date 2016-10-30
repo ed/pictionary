@@ -49,7 +49,7 @@ class Canvas extends Component {
 
   startStrokeRemote(point) {
     if ( !(point.strokeID in this.ptsByStroke) ) {
-      this.ptsByStroke[point.strokeID] = { pts: [], ended: false };;
+      this.ptsByStroke[point.strokeID] = { pts: [], ended: false };
     }
     this.drawRemoteLoops[point.strokeID] = setInterval(() => this.tryStartStroke(point),100);
   }

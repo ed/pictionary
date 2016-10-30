@@ -1,20 +1,20 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 import { findDOMNode } from 'react-dom';
 import MessageComposer from './MessageComposer';
 import Message from './Message';
 
-class MessageSection extends Component { 
+class MessageSection extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      messages: [] 
+      messages: []
     };
   }
 
   componentDidMount() {
     this._scrollToBottom();
-    this.props.socket.on('update chat', msg => 
+    this.props.socket.on('update chat', msg =>
       this.addMessage(msg)
     );
   }
@@ -23,8 +23,8 @@ class MessageSection extends Component {
     return (
         <div id="message-section">
           <div className="message-list" ref={(messageList) => this.messageList = messageList}>
-            <div className="messageListHeader"></div> 
-            {this.displayMessages()}
+            <div className="messageListHeader"></div>
+            { this.displayMessages() }
           </div>
           <MessageComposer />
         </div>

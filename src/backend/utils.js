@@ -5,20 +5,7 @@ var parse = require('pg-connection-string').parse;
 
 var pg = require('pg');
 pg.defaults.ssl = true;
-var pool = new pg.Pool(parse(process.env.DATABASE_URL))
-pool.connect(function(err, client, done) {
-  if (err) {
-    console.log(JSON.stringify(err))
-    throw err;
-  }
-  console.log('Connected to postgres! Getting schemas...');
-  client
-    //.query('INSERT INTO USERS (USERNAME, PASSWORD, SALT) VALUES ($1,$2,$3)', ['eugene','afdsfg','fsdfsd'])
-    .query('SELECT * FROM USERS')
-    .on('row', function(row) {
-      console.log(JSON.stringify(row));
-    });
-  });
+var pool = new pg.Pool(parse(process.env.DATABASE_URL));
 
 module.exports = {
   cookieMonster(cookies, next) {

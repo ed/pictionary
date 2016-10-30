@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
-import { setTempUserInfo } from '../actions'
-import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import React, {Component} from 'react';
+import { setTempUserInfo } from '../actions';
+import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 
 class GuestLogin extends Component {

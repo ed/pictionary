@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
-import { register, openLogin } from '../actions'
-import { connect } from 'react-redux'
-import Form from './Form'
+import React, {Component} from 'react';
+import { register, openLogin } from '../actions';
+import { connect } from 'react-redux';
+import Form from './Form';
 
 
 class Register extends Component {
@@ -14,8 +14,8 @@ class Register extends Component {
     )
   }
   register(username, password) {
-    this.props.dispatch(register(username,password))
+    this.props.dispatch(register(username,password));
   }
 }
 
-export default connect()(Register)
+export default connect()(Register);

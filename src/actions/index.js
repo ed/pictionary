@@ -1,5 +1,5 @@
-import * as types from '../constants'
-import 'isomorphic-fetch'
+import * as types from '../constants';
+import 'isomorphic-fetch';
 import { push, replace } from 'react-router-redux';
 
 let headers = new Headers();

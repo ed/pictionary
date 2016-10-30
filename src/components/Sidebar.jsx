@@ -1,12 +1,12 @@
-import React, {Component} from 'react'
-import { Link } from 'react-router'
-import { connect } from 'react-redux'
-import { addNotification } from '../actions'
-import CreateRoom from './CreateRoom'
-import Popover from './Popover'
-import BrowseRooms from './BrowseRooms'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import { Notification } from 'react-notification'
+import React, {Component} from 'react';
+import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import { addNotification } from '../actions';
+import CreateRoom from './CreateRoom';
+import Popover from './Popover';
+import BrowseRooms from './BrowseRooms';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { Notification } from 'react-notification';
 
 
 class SideBar extends Component {
@@ -27,9 +27,9 @@ class SideBar extends Component {
 
   closeBrowseRooms() { this.setState({ browseRoomsOpen: false }); }
 
-  openCreateRooms(e) { 
+  openCreateRooms(e) {
     this.setState({createRoomOpen: true});
-    e.stopPropagation(); 
+    e.stopPropagation();
   }
 
   closeCreateRooms() { this.setState({ createRoomOpen: false }); }
@@ -71,11 +71,11 @@ class SideBar extends Component {
       </div>
 
         <Popover close={() => this.closeCreateRooms()} isOpen={this.state.createRoomOpen}>
-          <CreateRoom close={() => this.closeCreateRooms()}/> 
+          <CreateRoom close={() => this.closeCreateRooms()}/>
         </Popover>
 
       <Popover close={() => this.closeBrowseRooms()} isOpen={this.state.browseRoomsOpen}>
-        <BrowseRooms close={() => this.closeBrowseRooms()} rooms={rooms}/> 
+        <BrowseRooms close={() => this.closeBrowseRooms()} rooms={rooms}/>
       </Popover>
       </div>
     );
@@ -101,14 +101,14 @@ export default connect(
 
 
 const Dropdown = () => (
-  <div style={{ borderRadius: '3px', zIndex: 3, width: '200px', height: '500px', position: 'absolute', top: '60px', left: '10px', background: 'white'}}> 
+  <div style={{ borderRadius: '3px', zIndex: 3, width: '200px', height: '500px', position: 'absolute', top: '60px', left: '10px', background: 'white'}}>
     asdasd
   </div>
 )
 
 
 const Player = ({ name, player, onClick, isActive }) => (
-  <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}> 
+  <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}>
       {player.pointsThisTurn > 0 ? <div style={{float: 'right', marginRight: '15px'}}> +{player.pointsThisTurn} </div> : null }
       <span> {name} </span>
       <br/>
@@ -118,7 +118,7 @@ const Player = ({ name, player, onClick, isActive }) => (
 
 
 const Client = ({ name, onClick, isActive }) => (
-  <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}> 
+  <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}>
       <span> {name} </span>
   </div>
 );
@@ -126,13 +126,13 @@ const Client = ({ name, onClick, isActive }) => (
 
 const PlayerHeader = ({ addChannel }) => (
   <div className="channelHeader">
-    <a href='#'> <div className="channelHeaderText"> PLAYERS </div> </a> 
+    <a href='#'> <div className="channelHeaderText"> PLAYERS </div> </a>
   </div>
 );
 
 
 const Channel = ({ title, onClick }) => (
-  <Link className="sidebarElement" to={title} activeClassName="active" onClick={onClick}> 
+  <Link className="sidebarElement" to={title} activeClassName="active" onClick={onClick}>
       <span><i>#</i> {title}</span>
       <br></br>
   </Link>
@@ -141,7 +141,7 @@ const Channel = ({ title, onClick }) => (
 
 const ChannelHeader = ({ addChannel }) => (
   <div className="channelHeader">
-    <a href='#'> <div className="channelHeaderText"> ROOMS </div> </a> 
+    <a href='#'> <div className="channelHeaderText"> ROOMS </div> </a>
     <div className="addChannel" onClick={addChannel}> <i className="fa fa-plus-square-o fa-lg"></i> </div>
   </div>
 );

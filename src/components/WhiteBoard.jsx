@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import Canvas from './Canvas'
-import CanvasRemote from './CanvasRemote'
+import Canvas from './Canvas';
+import CanvasRemote from './CanvasRemote';
 import { connect } from 'react-redux';
 import { addNotification } from '../actions'
 
 export class WhiteBoard extends Component {
   startGame() {
     if (this.props.numClients > 1) {
-      this.props.socket.emit('start game')
+      this.props.socket.emit('start game');
     }
     else {
       this.props.dispatch(addNotification('Not enough players'));

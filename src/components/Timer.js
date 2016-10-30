@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Circle } from 'react-progressbar.js'
+import { Circle } from 'react-progressbar.js';
 
 let countdownSound;
 try {

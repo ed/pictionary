@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import { resetErrorMessage } from '../actions'
-import Spinner from './Spinner'
+import { connect } from 'react-redux';
+import { resetErrorMessage } from '../actions';
+import Spinner from './Spinner';
 
 class Form extends Component {
 

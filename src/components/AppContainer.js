@@ -1,9 +1,9 @@
-import React, {Component} from 'react'
-import { whoami, addNotification, dismissNotification, setTempUserInfo } from '../actions'
-import { connect } from 'react-redux'
-import { NotificationStack } from 'react-notification'
-import { push } from 'react-router-redux'
-import Spinner from './Spinner'
+import React, {Component} from 'react';
+import { whoami, addNotification, dismissNotification, setTempUserInfo } from '../actions';
+import { connect } from 'react-redux';
+import { NotificationStack } from 'react-notification';
+import { push } from 'react-router-redux';
+import Spinner from './Spinner';
 
 class Container extends Component {
 	constructor(props) {

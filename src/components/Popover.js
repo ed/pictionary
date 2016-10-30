@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
-import Modal from 'react-modal'
-import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup'
+import React, {Component} from 'react';
+import Modal from 'react-modal';
+import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
 
 export default class Popover extends Component {
 

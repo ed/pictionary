@@ -1,11 +1,11 @@
-import React, {Component} from 'react'
-import { connect } from 'react-redux'
-import { push, replace } from 'react-router-redux'
-import { openSignup, closeSignup, openLogin, closeLogin } from '../actions'
-import { Link } from 'react-router'
-import Popover from './PopoverSmall'
-import Register from './Register'
-import Login from './Login'
+import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import { push, replace } from 'react-router-redux';
+import { openSignup, closeSignup, openLogin, closeLogin } from '../actions';
+import { Link } from 'react-router';
+import Popover from './PopoverSmall';
+import Register from './Register';
+import Login from './Login';
 
 class Home extends Component {
 

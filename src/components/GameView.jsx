@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Router, Route, IndexRoute, Link, IndexLink, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
-import { updateRoom, setRooms, updateGame, setSocket, setUserInfo, fetchRoomData } from '../actions'
+import { updateRoom, setRooms, updateGame, setSocket, setUserInfo, fetchRoomData } from '../actions';
 import MessageSection from './MessageSection';
 import Sidebar from './Sidebar';
 import WhiteBoard from './WhiteBoard';
@@ -69,7 +69,7 @@ class GameView extends Component {
           <WhiteBoard />
           <MessageSection socket={this.props.socket}/>
         </div>
-      : 
+      :
       <Spinner />
       }
       </div>
@@ -78,7 +78,7 @@ class GameView extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { 
+  return {
       socket: state.root.socket,
       user: state.root.user
   }
