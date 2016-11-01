@@ -15,15 +15,15 @@ class Form extends Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(resetErrorMessage())
+    this.props.dispatch(resetErrorMessage());
   }
 
   updateUsername(e) {
-    this.setState({ username: e.target.value })
+    this.setState({ username: e.target.value });
   }
 
   updatePassword(e) {
-    this.setState({ password: e.target.value })
+    this.setState({ password: e.target.value });
   }
 
   render() {
@@ -47,9 +47,10 @@ class Form extends Component {
 
   go(e) {
     e.preventDefault();
-    this.props.dispatch(resetErrorMessage())
-    this.props.onSubmit(this.state.username, this.state.password)
-    this.userField.focus()
+    if (!this.props.sendingRequest) {
+      this.props.dispatch(resetErrorMessage());
+      this.props.onSubmit(this.state.username, this.state.password);
+    }
   }
 }
 
