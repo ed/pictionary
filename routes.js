@@ -3,8 +3,6 @@ import { Route, IndexRoute, IndexRedirect } from 'react-router'
 import GameContainer from './src/components/GameContainer'
 import GameView from './src/components/GameView'
 import CreateRoom from './src/components/CreateRoom'
-import Login from './src/components/Login'
-import Register from './src/components/Register'
 import BrowseRooms from './src/components/BrowseRooms'
 import Home from './src/components/Home'
 import AppContainer from './src/components/AppContainer'
@@ -34,8 +32,6 @@ const Container = ({children}) => (
 module.exports = (
     <Route path='/' component={AppContainer}>
         <IndexRoute component={Home}/>
-        <Route path='login' component={Login}/>
-        <Route path='register' component={Register}/>
         <Route path='guest' component={GuestLogin}/>
         <Route path='game' component={GameContainer}>
             <IndexRoute component={CreateRoomWrapper} />

@@ -21,11 +21,11 @@ class Home extends Component {
 
 	render() {
 		return (
-			<div className="container backgroundImg" style={{position:'absolute', top: 0, left: 0, right:0, bottom: 0, opacity: '.9', backgroundSize: 'cover'}}>
+			<div className="container backgroundImg" style={{ userSelect: 'none', position:'absolute', top: 0, left: 0, right:0, bottom: 0, opacity: '.9', backgroundSize: 'cover'}}>
 			<div className="popoverContainer" style={{color: 'white', textAlign: 'center'}}>
 				<button className="myButton-transparent" style={{marginBottom: '20px', position: 'relative'}} onClick={() => this.props.dispatch(openSignup())}>Sign Up</button>
 				<br/>
-				or
+				<span style={{opacity: '.7'}}>or</span>
 				<br/>
 				<button className="myButton-transparent" style={{marginTop: '20px', position: 'relative'}} onClick={() => this.props.dispatch(push('/guest'))}>Play as guest</button>
 			</div>

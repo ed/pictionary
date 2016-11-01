@@ -157,6 +157,10 @@ html, body {
   opacity: .6;
 }
 
+.myButton-transparent:focus {
+  opacity: 1;
+}
+
 
 #app{
   height: 100%;

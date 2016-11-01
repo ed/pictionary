@@ -143,9 +143,7 @@ export const login  = (username, password) => {
   return (dispatch) => {
     dispatch({ type: 'SENDING_REQUEST' });
     if (emptyFields({username,password})) {
-      // throw err
-      dispatch({ type: 'REQUEST_FAILURE', error: 'please fill out both fields'})
-      throw error;
+      return dispatch(requestFailure('Please fill out both fields'));
     }
     fetch('/login', {
       method: 'POST',

@@ -2,14 +2,17 @@ import React, { Component } from 'react';
 import { Circle } from 'react-progressbar.js';
 
 let countdownSound;
+let countdownURL;
 try {
-  countdownSound = new Audio("../../img/countdown2.wav");
+  countdownURL = require("../../img/countdown2.wav");
+  countdownSound = new Audio(countdownURL);
 } catch (e) {}
 
 
 const Timer = ({ progress, text, strokeWidth=9, trailWidth=10, color="#FF3232", containerStyle }) => {
   if (text === 3) {
-    if (typeof countdownSound === 'undefined') countdownSound = new Audio("../../img/countdown2.wav");
+    console.log(countdownURL)
+    if (typeof countdownSound === 'undefined') countdownSound = new Audio(countdownURL);
     countdownSound.play();
   }
   return (

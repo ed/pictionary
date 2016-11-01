@@ -47,8 +47,8 @@ module.exports = {
       { test: /\.scss?$/,
         loader: 'style!css!sass',
         include: path.join(__dirname, 'src', 'styles') },
-      { test: /\.(png|jpg)$/,
-        loader: 'file' },
+      { test: /\.(png|jpg|wav|mp3)$/,
+        loader: 'file?hash=sha512&digest=hex&name=[hash].[ext]' },
       { test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
         loader: 'file'},
       { test: /\.css$/, loader: 'style!css' }
