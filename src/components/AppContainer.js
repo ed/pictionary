@@ -3,6 +3,9 @@ import { whoami, addNotification, dismissNotification, setTempUserInfo } from '.
 import { connect } from 'react-redux';
 import { NotificationStack } from 'react-notification';
 import { push } from 'react-router-redux';
+import Popover from './PopoverSmall';
+import Register from './Register';
+import Login from './Login';
 import Spinner from './Spinner';
 
 class Container extends Component {
@@ -71,6 +74,13 @@ class Container extends Component {
 			      }
 			    }
 			    />
+					<Popover isOpen={this.props.signupOpen}>
+		        <Register/>
+		      </Popover>
+
+		      <Popover isOpen={this.props.loginOpen}>
+		        <Login />
+		      </Popover>
 			    {this.props.children}
 			</div>
 			:
@@ -81,6 +91,8 @@ class Container extends Component {
 
 const mapStateToProps = (state) => {
   return {
+		signupOpen: state.root.modals.openModal === 'signup',
+		loginOpen: state.root.modals.openModal === 'login',
     notifications: state.root.notifications,
     user: state.root.user,
     cookie: state.root.cookie,

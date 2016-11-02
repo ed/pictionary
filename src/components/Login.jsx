@@ -9,12 +9,6 @@ import Form from './Form';
 
 class Login extends Component {
 
-  componentDidMount() {
-    if (this.props.authStatus) {
-      this.props.dispatch(push('/game'))
-    }
-  }
-
   render() {
     const {...props} = this.props;
     return (

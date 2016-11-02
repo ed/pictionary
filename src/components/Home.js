@@ -3,9 +3,6 @@ import { connect } from 'react-redux';
 import { push, replace } from 'react-router-redux';
 import { openSignup, closeSignup, openLogin, closeLogin } from '../actions';
 import { Link } from 'react-router';
-import Popover from './PopoverSmall';
-import Register from './Register';
-import Login from './Login';
 
 class Home extends Component {
 
@@ -32,15 +29,6 @@ class Home extends Component {
 			<ul style={{position: 'absolute', left: 0, top: 0, width: '100%'}}>
 			  <li><a style={{}} onClick={() => this.props.dispatch(openLogin())}>Log in</a></li>
 			</ul>
-
-			<Popover isOpen={this.props.signupOpen}>
-        <Register/>
-      </Popover>
-
-      <Popover isOpen={this.props.loginOpen}>
-        <Login />
-      </Popover>
-
 			</div>
 		)
 	}
@@ -48,8 +36,6 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
   return {
-		signupOpen: state.root.modals.openModal === 'signup',
-		loginOpen: state.root.modals.openModal === 'login',
     authStatus: state.root.auth.status,
   }
 }

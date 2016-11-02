@@ -7,10 +7,10 @@ headers.append('Content-Type', 'application/json');
 
 let saveData = { };
 
-export const redirectLogin = (returnPath) => {
+export const redirectLogin = (curPath) => {
   return (dispatch) => {
       dispatch(replace('/'));
-      saveData.returnPath = returnPath;
+      saveData.returnPath = curPath;
   }
 }
 export const openModal = (title) => {
@@ -84,15 +84,24 @@ export const checkStatus = (response) => {
 }
 
 export const parseJSON = (response) => {
-  return response.json()
+  return response.json();
 }
 
-export const onSuccess = (user, nextRoute=saveData.returnPath||'/game') => {
+export const onSuccess = (user) => {
   return (dispatch) => {
     dispatch({ type: 'REQUEST_SUCCESS' });
     dispatch({ type: 'SET_USER_INFO', user: user});
     dispatch(setSocket());
-    return dispatch(fetchRooms()).then(() => dispatch(replace(nextRoute)))
+    dispatch(closeModal());
+    return dispatch(fetchRooms()).then(() => dispatch(returnToSavePath()))
+  }
+}
+
+export const returnToSavePath = () => {
+  return (dispatch) => {
+    const returnPath = saveData.returnPath || '/game';
+    delete saveData.returnPath;
+    return dispatch(replace(returnPath));
   }
 }
 
@@ -120,6 +129,7 @@ export const whoami = (nextRoute) => {
 
 export const logout = () => {
   return (dispatch) => {
+    if (!confirm('Are you sure you want to log out?')) return;
     dispatch({ type: 'SENDING_REQUEST' });
     fetch('/logout', {
       method: 'POST',
@@ -237,8 +247,7 @@ export const setTempUserInfo = (name) => {
       else {
         dispatch(setSocket());
         dispatch({ type: 'SET_USER_INFO', user: json.user});
-        if (saveData.returnPath) dispatch(push(saveData.returnPath));
-        else dispatch(push('/game'));
+        dispatch(returnToSavePath());
         return dispatch(fetchRooms());
       }
     });

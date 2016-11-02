@@ -16,7 +16,7 @@ if (process.env.NODE_ENV !== 'production') {
   var webpack = require('webpack');
   var WebpackDevServer = require('webpack-dev-server');
   new WebpackDevServer(webpack(config), {
-    publicPath: "/bin/", 
+    publicPath: "/bin/",
     hot: true,
     colors: true,
     inline: true,
@@ -30,6 +30,10 @@ if (process.env.NODE_ENV !== 'production') {
         secure: false
       },
       '/login': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
+      '/logout': {
         target: 'http://localhost:3000',
         secure: false
       },
