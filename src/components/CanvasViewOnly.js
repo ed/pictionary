@@ -16,7 +16,8 @@ export default class CanvasViewOnly extends Component {
   }
 
   componentDidMount() {
-    this.ctx = this.canvas.getContext('2d');    
+    this.ctx = this.canvas.getContext('2d');
+    this.perm_ctx = this.perm_canvas.getContext('2d');
     this.clearCanvas = () => this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.setCanvasSize();
     if (this.props.canvasData) {
@@ -28,7 +29,7 @@ export default class CanvasViewOnly extends Component {
     this.clearCanvas();
     for (let i = 0; i < canvasData.length; i++) {
       if(canvasData[i].action == 'stroke') {
-        let mark = new Mark(this.ctx,null,null,null,canvasData[i].data);
+        let mark = new Mark(this.canvas, this.ctx,this.perm_ctx,null,null,null,canvasData[i].data);
         mark.action(this.state.canvasWidth, this.state.canvasHeight, 2);
       }
       else {
@@ -53,7 +54,13 @@ export default class CanvasViewOnly extends Component {
   render() {
     return (
       <div className="canvasContainer">
-        <canvas 
+      <canvas
+        className="perm_canvas"
+        width={this.state.canvasWidth}
+        height={this.state.canvasHeight}
+        ref={(canvas) => this.perm_canvas = canvas}
+        />
+        <canvas
         className="canvas"
         width={this.state.canvasWidth}
         height={this.state.canvasHeight}

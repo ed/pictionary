@@ -86,10 +86,10 @@ export class Mark {
 		this.draw();
   }
 
-	draw() {
+	draw(size) {
 		let ppts = this.points.map((point) => { return { x: point.pos.x*this.curWidth, y: point.pos.y*this.curHeight } });
 		this.ctx.strokeStyle = this.points[0].color;
-    this.ctx.lineWidth = this.points[0].size;
+    this.ctx.lineWidth = size;
 		this.ctx.fillStyle = this.points[0].color;
 		if (ppts.length < 3) {
 			var b = ppts[0];
@@ -127,7 +127,7 @@ export class Mark {
   reDraw(width, height, size=this.points[0].size, ctx=this.perm_ctx) {
 		this.curWidth = width;
 		this.curHeight = height;
-    this.draw();
+    this.draw(size);
 		this.perm_ctx.drawImage(this.canvas,0,0);
 		this.ctx.clearRect(0,0,width, height);
   }
