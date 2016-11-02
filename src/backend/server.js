@@ -19,12 +19,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const utils = require('./utils')
-const publicPath = express.static(path.join(__dirname, '..' , '..' , 'bin'))
+const publicPath = express.static(path.join(__dirname, '..' , '..' , 'bin'));
+const favicon = require('serve-favicon');
 const app = express();
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
-app.use('/bin', publicPath)
+app.use('/bin', publicPath);
+app.use(favicon(path.join(__dirname,'..' , '..' ,'img','favicon.ico')));
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -100,8 +102,12 @@ let userNum = 0;
 app.post('/tempUserInfo', (req, res) => {
   // dispatch sets username + status based on cookie
   let { name } = req.body;
-  if (name in tempUsers) {
-    res.send({ err: 'name in use'});
+  name = name.trim();
+  if (name.length < 1) {
+    res.send({ err: 'Name cannot be empty'});
+  }
+  else if (name in tempUsers) {
+    res.send({ err: 'Name in use'});
   }
   else {
     tempUsers[name] = true;

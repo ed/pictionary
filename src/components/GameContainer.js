@@ -18,7 +18,6 @@ class Container extends Component {
   render() {
     return (
       <div className="container">
-
 	     {this.props.user ? this.props.children : null}
       </div>
     )

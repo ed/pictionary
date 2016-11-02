@@ -52,8 +52,8 @@ class Container extends Component {
 			          alignItems: 'center',
 			          justifyContent: 'center',
 			          top: `${2 + ind * 5}rem`,
+								transition: 'all .5s ease-in-out, opacity .8s ease-in-out',
 			          opacity: 0,
-			          boxShadow: '',
 			          right: '-100%',
 			          left: '',
 			        }
@@ -63,9 +63,10 @@ class Container extends Component {
 			        return {
 			          ...style,
 			          left: '',
-			          right: '0px',
+			          right: '15px',
 			          top: `${2 + ind * 5}rem`,
-			          opacity: 1
+			          opacity: 1,
+								boxShadow: '3px 3px 5px -1px rgba(0,0,0,0.39)'
 			        }
 			      }
 			    }

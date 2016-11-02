@@ -13,11 +13,11 @@ class GuestLogin extends Component {
     this.onChangeName = this.onChangeName.bind(this);
     this.state = {
       name: ''
-    }
+    };
   }
 
   addTempUser() {
-    this.props.dispatch(setTempUserInfo(this.state.name))
+    this.props.dispatch(setTempUserInfo(this.state.name));
   }
 
   onChangeName(e) {
