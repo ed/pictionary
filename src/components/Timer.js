@@ -43,7 +43,7 @@ export const SmallTimer = ({ progress, text, strokeWidth=9, trailWidth=10, color
           text: { value: text, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} },
           trailColor: '#D6D6D6', trailWidth }}
         initialAnimate={true}
-        containerStyle={{ border: '2px solid white', boxShadow: '-3px 3px 5px #888888', background: 'white', borderRadius: '50%', width: '80px', height: '80px',  ...containerStyle }}
+        containerStyle={{ border: '2px solid white', background: 'white', borderRadius: '50%', width: '80px', height: '80px',  ...containerStyle }}
         containerClassName={'.progressbar'} />
   </div>
 )

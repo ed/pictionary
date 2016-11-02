@@ -234,7 +234,7 @@ html, body {
   height: 60px;
   border-radius: 50%;
   cursor: pointer;
-  color: #e4e4e4;
+  color: #A8A8A8;
 }
 
 .closeModal:hover {
@@ -618,16 +618,8 @@ canvas {
   display:block;
   width:100%;
   color:white;
+  border-radius: 3px;
   border: 2px solid #2f2c2f;
-}
-
-.sidebarElement:hover {
-  background:#5C6380;
-  border: 2px solid #5C6380;
-}
-
-.sidebarElement.active:hover {
-  background:#5C6380;
 }
 
 .sidebarElement.active {

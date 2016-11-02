@@ -59,8 +59,8 @@ export default class Popover extends Component {
         onAfterOpen={() => this.fadeIn()}
         onRequestClose={() => this.handleClose()}
         >
-        <div className="closeModal" tabIndex="-1" onClick={() => this.handleClose()} ><i className="ion-ios-close-empty"></i></div>
-        <div className="popoverContainer">
+        <div className="closeModal" tabIndex="-1" onClick={() => this.handleClose()} ><i className="ion-ios-close-empty"></i><span style={{ fontSize: '80%', position: 'absolute', top:'38px', left:'22px'}}>esc</span></div>
+        <div className="popoverContainer" style={{ height:'70%', paddingTop:'100px'}}>
           {this.props.children}
         </div>
       </Modal>

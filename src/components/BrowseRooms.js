@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { fetchRooms } from '../actions';
+import { push } from 'react-router-redux';
 import WhiteBoard from './WhiteBoard';
 import CanvasViewOnly from './CanvasViewOnly';
 import Spinner from './Spinner';
@@ -83,8 +84,10 @@ class BrowseRooms extends Component {
 			  {this.state.isFetching ?
 			  <Spinner />
 			  :
-			  <div className="container" style={{position: 'relative',display: 'flex',flexDirection: 'column'}}>
-				  <h1 style={{marginBottom: '10px', fontWeight:'bold', marginBottom: '25px'}}>Join a room</h1>
+			  <div className="container" style={{ position: 'relative',display: 'flex',flexDirection: 'column' }}>
+				<div style={{marginBottom: '25px'}}>
+				  <span><span style={{ fontSize: '200%', fontWeight:'bold' }}>Join a room</span> <button onClick={() => this.props.dispatch(push('/game'))}className="myButton active" style={{marginTop: '5px', padding: '8px 20px', float:'right'}}>Make Channel</button> </span>
+				</div>
 				  <textarea placeholder='Find a room' spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
 				  <div className="rooms">
 				  { rooms.length > 0 ? rooms : <span>No rooms match <span style={{fontWeight:'bold'}}>{this.state.roomName}</span></span>}

@@ -39,7 +39,7 @@ class Form extends Component {
       <input onChange={(e) => this.updatePassword(e)} spellCheck={false} className="message-composer data-box" style={textBoxStyle} type="password" placeholder="password"/>
       <button className="myButton-transparent" style={{ height: '70px', width: '100%', marginTop: '100px' }} type="submit">{ sendingRequest ? <Spinner style={{color: 'white', marginTop: 0}}/> : title }</button>
       </form>
-      <h2 style={{ color: '#bdbdbd', paddingTop: '100px', width: '100%', textAlign: 'center', borderBottom: '1px solid #bdbdbd', lineHeight: '0.1em', margin: '10px 0 20px' }}> <span style={{ backgroundColor: 'white', padding: '0 10px'}}> or </span> </h2>
+      <h2 style={{ color: '#bdbdbd', paddingTop: '100px', width: '100%', textAlign: 'center', borderBottom: '1px solid #bdbdbd', lineHeight: '0.1em', margin: '10px 0 20px' }}> <span style={{ fontSize:'90%', fontWeight: 'normal', backgroundColor: 'white', padding: '0 5px'}}> or </span> </h2>
       <button onClick={openSecondary} className="myButton-transparent" style={{ background: '#1e90ff', height: '50px', width: '50%', marginTop: '5px' }} type="submit">{secondaryTitle}</button>
       </div>
       )

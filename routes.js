@@ -10,14 +10,14 @@ import GuestLogin from  './src/components/GuestLogin'
 
 
 const CreateRoomWrapper = () => (
-    <div className="popoverContainer">
+    <div style={{ height:'70%', paddingTop:'100px'}} className="popoverContainer">
     <CreateRoom />
     </div>
 )
 
 
 const BrowseRoomsWrapper = () => (
-    <div className="popoverContainer">
+    <div style={{ height:'70%', paddingTop:'100px'}} className="popoverContainer">
     <BrowseRooms />
     </div>
 )
