@@ -36,6 +36,16 @@ class Container extends Component {
 	render() {
 		const { roomStatus, user, cookie, error } = this.props
     const { isFetching } = this.state;
+		let popoverContent = null;
+		switch(this.props.openModal) {
+			case 'signup':
+				popoverContent = <Register/>;
+				break;
+			case 'login':
+				popoverContent = <Login/>;
+				break;
+		}
+		console.log(this.props.openModal);
 		return (
 			!isFetching?
 			<div className="container">
@@ -74,12 +84,8 @@ class Container extends Component {
 			      }
 			    }
 			    />
-					<Popover isOpen={this.props.signupOpen}>
-		        <Register/>
-		      </Popover>
-
-		      <Popover isOpen={this.props.loginOpen}>
-		        <Login />
+					<Popover isOpen={this.props.openModal !== 'NONE'}>
+						{popoverContent}
 		      </Popover>
 			    {this.props.children}
 			</div>
@@ -91,8 +97,7 @@ class Container extends Component {
 
 const mapStateToProps = (state) => {
   return {
-		signupOpen: state.root.modals.openModal === 'signup',
-		loginOpen: state.root.modals.openModal === 'login',
+		openModal: state.root.modals.openModal,
     notifications: state.root.notifications,
     user: state.root.user,
     cookie: state.root.cookie,

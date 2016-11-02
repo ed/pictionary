@@ -21,10 +21,11 @@ class Popover extends Component {
   }
 
   componentWillUnmount() {
-    key.unbind('esc')
+    key.unbind('esc');
   }
 
   handleClose() {
+    this.setState({active: false});
     this.props.dispatch(closeModal());
   }
 
@@ -33,6 +34,7 @@ class Popover extends Component {
   }
 
   render() {
+    let top = this.state.active ? '50%' : '-500px';
     return (
       <Modal
         isOpen={this.props.isOpen}
@@ -49,12 +51,12 @@ class Popover extends Component {
             position                   : 'absolute',
             width: '400px',
             height: '500px',
-            top                        : '50%',
+            top                        : top,
             left                       : '50%',
             transform: 'translate(-50%, -50%)',
             textAlign                  : 'center',
             color                      : '#252525',
-              transition        : 'opacity .15s ease-in-out, top .15s ease-in-out',
+              transition        : 'opacity 1s ease-in-out, top .4s ease-in-out',
           }
         }}
         onAfterOpen={this.fadeIn}
