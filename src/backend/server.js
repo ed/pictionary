@@ -12,7 +12,7 @@ import configureStore from '../store'
 
 var pg = require('pg');
 
-
+const fs = require('fs');
 const assign = Object.assign
 const port = (process.env.PORT || 3000);
 const express = require('express');
@@ -26,6 +26,8 @@ const app = express();
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 app.use('/bin', publicPath);
+console.log(path.join(__dirname,'..' , '..' ,'img','favicon.ico'));
+console.log(fs.existsSync(path.join(__dirname,'..' , '..' ,'img','favicon.ico')))
 app.use(favicon(path.join(__dirname,'..' , '..' ,'img','favicon.ico')));
 
 var server = require('http').Server(app);
@@ -105,6 +107,9 @@ app.post('/tempUserInfo', (req, res) => {
   name = name.trim();
   if (name.length < 1) {
     res.send({ err: 'Name cannot be empty'});
+  }
+  else if ( !(/^[A-Za-z0-9]+$/.test(name)) ) {
+    res.send({ err: 'Temporary names must contain only letters and numbers'});
   }
   else if (name in tempUsers) {
     res.send({ err: 'Name in use'});
