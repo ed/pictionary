@@ -22,7 +22,7 @@ class GuestLogin extends Component {
 
   onChangeName(e) {
     this.setState({
-      name: e.target.value
+      name: e.target.value.slice(0,12)
     })
   }
 

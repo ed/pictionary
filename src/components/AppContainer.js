@@ -18,7 +18,7 @@ class Container extends Component {
   }
 
   componentDidMount() {
-    const { cookie, authStatus, user } = this.props
+    const { cookie, authStatus, user } = this.props;
     if (cookie) {
       this.props.dispatch(whoami(this.props.location.pathname)).then(() => {
         this.setState({
@@ -45,7 +45,6 @@ class Container extends Component {
 				popoverContent = <Login/>;
 				break;
 		}
-		console.log(this.props.openModal);
 		return (
 			!isFetching?
 			<div className="container">
@@ -56,7 +55,7 @@ class Container extends Component {
 			        return {
 			          ...style,
 			          fontFamily: 'Lato',
-			          background: '#ffad90',
+			          background: '#f2777a',
 			          borderWidth: '0px',
 			          height: '30px',
 			          color: 'white',
@@ -65,7 +64,7 @@ class Container extends Component {
 			          alignItems: 'center',
 			          justifyContent: 'center',
 			          top: `${2 + ind * 5}rem`,
-								transition: 'all .5s ease-in-out, opacity .8s ease-in-out',
+								transition: 'all .2s ease-in-out, opacity .4s ease-in-out',
 			          opacity: 0,
 			          right: '-100%',
 			          left: '',

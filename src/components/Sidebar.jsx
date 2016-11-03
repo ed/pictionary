@@ -35,32 +35,32 @@ class SideBar extends Component {
   closeCreateRooms() { this.setState({ createRoomOpen: false }); }
 
   render() {
-    const { clients, gameInProgress, players, artist, rooms } = this.props;
+    const { user, clients, gameInProgress, players, artist, rooms } = this.props;
     return (
       <div id="sidebar">
         <div>
           <div className="sidebarHeader">
           <div className="headerText">Pretty Pictures</div>
           <div className="addChannel" onClick={(e) => this.openCreateRooms(e)}> <i className="fa fa-plus-square-o fa-lg"></i> </div>
-          <div className="headerUsername">{this.props.user}</div>
+          <div className="headerUsername">{user}</div>
           </div>
         </div>
         {this.state.displayDropdown ? <Dropdown />: null }
         <div className="sidebarElementArea">
           {gameInProgress ?
             <div className="container">
-            <PlayerHeader />
-            {Object.keys(players).map( (player) => <Player key={player} name={player} player={players[player]} isActive={player===artist}/>)}
+            <PlayerHeader onClick={() => this.props.dispatch(addNotification('url copied to clipboard'))}/>
+            {Object.keys(players).map( (player) => <Player key={player} user={user} name={player} player={players[player]} isActive={player===artist}/>)}
             </div>
             :
             <div className="container">
-            <PlayerHeader />
-            {clients.map( (player) => <Client key={player} name={player}/>)}
+            <PlayerHeader onClick={() => this.props.dispatch(addNotification('url copied to clipboard'))}/>
+            {clients.map( (player) => <Client key={player} user={user} name={player}/>)}
             </div>
         }
         <CopyToClipboard text={document.URL} >
-        <div className="copyLink" style={{width: '73px',  marginTop: '10px', fontSize: '80%',  paddingBottom: '4px', marginLeft: '15px', display: 'block'}} onClick={() => this.props.dispatch(addNotification('url copied to clipboard'))}>
-        <i style={{fontSize: '85%',marginBottom: '2px', marginRight: '2px', marginLeft: '2px'}}className="ion-plus-round" aria-hidden="true"></i>  <span style={{fontWeight: 'bold',}} >  Copy link </span>
+        <div className="copyLink" style={{width: '86px',  marginTop: '10px',  paddingBottom: '4px', marginLeft: '15px', display: 'block'}} onClick={() => this.props.dispatch(addNotification('url copied to clipboard'))}>
+        <i style={{fontSize: '80%',marginBottom: '2px', marginRight: '2px', marginLeft: '2px'}}className="ion-plus-round" aria-hidden="true"></i>  <span style={{fontWeight: 'bold',}} >  copy link </span>
         </div>
         </CopyToClipboard>
         </div>
@@ -107,41 +107,27 @@ const Dropdown = () => (
 )
 
 
-const Player = ({ name, player, onClick, isActive }) => (
+const Player = ({ user, name, player, onClick, isActive }) => (
   <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}>
       {player.pointsThisTurn > 0 ? <div style={{float: 'right', marginRight: '15px'}}> +{player.pointsThisTurn} </div> : null }
-      <span> {name} </span>
+      <span> {name} {user === name ? '(you)' : null} </span>
       <br/>
       <span> {player.points} PTS</span>
   </div>
 );
 
 
-const Client = ({ name, onClick, isActive }) => (
+const Client = ({ user, name, onClick, isActive }) => (
   <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}>
-      <span> {name} </span>
+      <span> {name} {user === name ? '(you)' : null} </span>
   </div>
 );
 
 
-const PlayerHeader = ({ addChannel }) => (
-  <div className="channelHeader">
-    <a href='#'> <div className="channelHeaderText"> PLAYERS </div> </a>
+const PlayerHeader = ({ addChannel, onClick }) => (
+  <CopyToClipboard text={document.URL} >
+  <div className="channelHeader" style={{cursor: 'pointer'}} onClick={onClick}>
+    <div className="channelHeaderText"> PLAYERS </div>
   </div>
-);
-
-
-const Channel = ({ title, onClick }) => (
-  <Link className="sidebarElement" to={title} activeClassName="active" onClick={onClick}>
-      <span><i>#</i> {title}</span>
-      <br></br>
-  </Link>
-);
-
-
-const ChannelHeader = ({ addChannel }) => (
-  <div className="channelHeader">
-    <a href='#'> <div className="channelHeaderText"> ROOMS </div> </a>
-    <div className="addChannel" onClick={addChannel}> <i className="fa fa-plus-square-o fa-lg"></i> </div>
-  </div>
+  </CopyToClipboard>
 );

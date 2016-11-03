@@ -26,7 +26,7 @@ class CreateRoom extends Component {
   }
 
   _onChange(e) {
-    let roomName = e.target.value;
+    let roomName = e.target.value.slice(0,12);
     this.setState({ roomName }, () => this.setRoomError());
   }
 
@@ -38,22 +38,22 @@ class CreateRoom extends Component {
     let roomName = this.state.roomName;
     if (!this.state.private) {
       if (roomName.length < 1) {
-        this.setState({ roomNameError: 'Please enter a room name.'})
+        this.setState({ roomNameError: 'Please enter a room name.'});
       }
       else if (roomName.search(/\./) > -1) {
-        this.setState({ roomNameError: 'Names cannot contain periods'})
+        this.setState({ roomNameError: 'Names cannot contain periods'});
       }
       else if (roomName.search(' ') > -1) {
-        this.setState({ roomNameError: 'Names cannot contain spaces'})
+        this.setState({ roomNameError: 'Names cannot contain spaces'});
       }
       else if (roomName.toLowerCase() != roomName) {
-        this.setState({ roomNameError: 'Names must be lowercase'})
+        this.setState({ roomNameError: 'Names must be lowercase'});
       }
       else if (roomName in this.props.rooms) {
-        this.setState({ roomNameError: `\"${roomName}\" is already taken by a public room`})
+        this.setState({ roomNameError: `\"${roomName}\" is already taken by a public room`});
       }
       else {
-        this.setState({ roomNameError: ''})
+        this.setState({ roomNameError: ''});
       }
     }
   }

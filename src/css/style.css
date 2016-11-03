@@ -209,7 +209,6 @@ html, body {
   display:block;
   position: relative;
   box-sizing: border-box;
-  z-index: 1;
 }
 
 
@@ -243,7 +242,7 @@ html, body {
 
 .closeModal:focus {
   outline: 0;
-  background: #eac67a;
+  background: #eb3136;
   color: white;
   opacity: .6;
 }
@@ -325,12 +324,12 @@ canvas {
 
 .active #startGame  {
   cursor: pointer;
-  color:#F79F66;
+  color:#eb3136;
+  opacity: .5;
 }
 
 .active #startGame:hover {
-  opacity: 1;
-  color: #FF8669;
+  opacity: .7;
 }
 
 .canvasMessage {
@@ -523,8 +522,8 @@ canvas {
   float:left;
   height: 100%;
   width:240px;
-  color:#DEDEDE;
-  background:#2f2c2f;
+  color:#515151;
+  background:#F2F0EC;
   font-weight: 400;
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -548,7 +547,7 @@ canvas {
   width: 100%;
 }
 .headerText {
-  color:white;
+  color: #515151;
   font-size: 110%;
   font-weight: 900;
   display: inline-block;
@@ -564,8 +563,8 @@ canvas {
 }
 
 .sidebarHeader:hover {
-  color: white;
-  background:#252525;
+  color: #515151;
+  background:#E8E6DF;
 }
 
 .sidebarElementArea {
@@ -588,7 +587,7 @@ canvas {
 }
 
 .channelHeaderText {
-  color:#DEDEDE;
+  color:#515151;
   opacity: .7;
   display: inline-block;
   width: 90%;
@@ -602,7 +601,7 @@ canvas {
 .addChannel {
   font-size: 85%;
   opacity: .4;
-  color:#DEDEDE;
+  color:#515151;
   display: inline-block;
   cursor: pointer;
 }
@@ -618,11 +617,11 @@ canvas {
   width:100%;
   color:white;
   border-radius: 3px;
-  border: 2px solid #2f2c2f;
+  border: 2px solid rbga(0,0,0,0);
 }
 
 .sidebarElement.active {
-  border: 2px solid #D39B46;
+  border: 2px solid #F2777A;
 }
 
 .sidebarElement>span>i {
@@ -631,7 +630,7 @@ canvas {
 
 #sidebar .sidebarElement >span {
   padding-left: 15px;
-  color:#DEDEDE;
+  color:#515151;
   user-select: none;
 }
 
@@ -640,9 +639,12 @@ canvas {
   text-align: center;
 }
 
+.channelInterfaceContainer>i {
+  opacity: .6;
+}
+
 .channelInterfaceContainer:hover {
-  color: white;
-  background:#252525;
+  background:#E8E6DF;
 }
 
 /* Pretty Scrollbar */

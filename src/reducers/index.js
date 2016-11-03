@@ -120,7 +120,6 @@ let notificationID = 0;
 function notifications(state=OrderedSet(), action) {
   switch (action.type) {
   case types.ADD_NOTIFICATION:
-    if (state.some((notification) => notification.message === action.message)) return state;
     let key = Number(notificationID++);
     return state.add({
       message: action.message,

@@ -52,8 +52,8 @@ module.exports = (app, io) => {
         leaveRooms(socket,rooms);
         socket.join(roomName);
         socket.curRoom = roomName;
-        updateRoom(socket.curRoom);
       }
+			updateRoom(socket.curRoom);
     });
 
     socket.on('chat msg', (msg) => {

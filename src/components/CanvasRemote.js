@@ -44,7 +44,7 @@ class Canvas extends Component {
   }
 
   addStroke(point) {
-    point.strokeID in this.ptsByStroke ? this.ptsByStroke[point.strokeID].pts.push(point.pos) : this.ptsByStroke[point.strokeID] = { pts: [], ended: false };
+    point.strokeID in this.ptsByStroke ? this.ptsByStroke[point.strokeID].pts.push(point) : this.ptsByStroke[point.strokeID] = { pts: [], ended: false };
   }
 
   startStrokeRemote(point) {
@@ -64,7 +64,7 @@ class Canvas extends Component {
 
   drawRemoteStroke(ID) {
     if (this.ptsByStroke[ID].pts.length > 0) {
-      this.drawStroke(this.ptsByStroke[ID].pts[0]);
+      this.drawStroke(this.ptsByStroke[ID].pts[0].pos);
       this.ptsByStroke[ID].pts.shift();
     }
     else if (this.ptsByStroke[ID].ended) {

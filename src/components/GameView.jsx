@@ -13,7 +13,6 @@ class GameView extends Component {
     super(props)
     this.state = {
       roomDataReceived: false,
-      loggingIn: false,
     }
   }
 
@@ -62,7 +61,6 @@ class GameView extends Component {
   render() {
     return(
       <div className="container">
-      {this.state.loggingIn ? <Login /> : null}
       {this.state.roomDataReceived ?
         <div className="container">
           <Sidebar />
@@ -70,7 +68,7 @@ class GameView extends Component {
           <MessageSection socket={this.props.socket}/>
         </div>
       :
-      <Spinner />
+      <Spinner style={{position: 'absolute', top: '30%', left: '50%'}}/>
       }
       </div>
     )
