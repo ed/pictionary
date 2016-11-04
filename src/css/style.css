@@ -617,7 +617,7 @@ canvas {
   width:100%;
   color:white;
   border-radius: 3px;
-  border: 2px solid rbga(0,0,0,0);
+  border: 2px solid rgba(0,0,0,0);
 }
 
 .sidebarElement.active {

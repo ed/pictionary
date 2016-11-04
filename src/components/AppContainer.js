@@ -51,20 +51,31 @@ class Container extends Component {
 				<NotificationStack
 			      notifications={this.props.notifications.toArray()}
 			      onDismiss={notification => this.props.dispatch(dismissNotification(notification))}
+						dismissInOrder={false}
 			      barStyleFactory={(ind, style) => {
 			        return {
 			          ...style,
+								WebKittransition: '',
+      MozTransition: '',
+      msTransition: '',
+      OTransition: '',
+      transition: '',
+      WebkitTransform: 'translatez(0)',
+      MozTransform: 'translatez(0)',
+      msTransform: 'translatez(0)',
+      OTransform: 'translatez(0)',
+      transform: 'translatez(0)',
 			          fontFamily: 'Lato',
 			          background: '#f2777a',
 			          borderWidth: '0px',
 			          height: '30px',
 			          color: 'white',
-			          borderRadius: '0px',
+			          borderRadius: '4px',
 			          display: 'flex',
 			          alignItems: 'center',
 			          justifyContent: 'center',
-			          top: `${2 + ind * 5}rem`,
-								transition: 'all .2s ease-in-out, opacity .4s ease-in-out',
+			          top: `${4 + ind * 5}rem`,
+								transition: 'all .8s ease-in-out',
 			          opacity: 0,
 			          right: '-100%',
 			          left: '',
@@ -76,9 +87,9 @@ class Container extends Component {
 			          ...style,
 			          left: '',
 			          right: '15px',
-			          top: `${2 + ind * 5}rem`,
+			          top: `${4 + ind * 5}rem`,
 			          opacity: 1,
-								boxShadow: '3px 3px 5px -1px rgba(0,0,0,0.39)'
+								boxShadow: '2px 2px 5px -1px rgba(0,0,0,0.39)'
 			        }
 			      }
 			    }

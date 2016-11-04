@@ -9,11 +9,12 @@ class MessageComposer extends Component {
         super(props);
         this.state = {
             text: '',
-            typing: false,
             focused: false,
         };
         this._onChange = this._onChange.bind(this);
         this._onKeyDown = this._onKeyDown.bind(this);
+        this.messageHistory = [];
+        this.currentPos = -1;
     }
 
     render() {
@@ -41,14 +42,6 @@ class MessageComposer extends Component {
 
     _onChange(e, value) {
         this.setState({text: e.target.value});
-        if (e.target.value.length > 0 && !this.state.typing) {
-            {/* socket.emit('typing', { user: user.name, room: threadID}); */}
-            this.setState({typing: true});
-        }
-        if (e.target.value.length === 0 && !this.state.typing) {
-            {/* socket.emit('not typing', { user: user.name, room: threadID}); */}
-            this.setState({typing: false});
-        }
     }
 
     _onKeyDown(e) {
@@ -57,9 +50,28 @@ class MessageComposer extends Component {
             let text = this.state.text.trim();
             if (text && this.props.canChat) {
                 let msg = MessageUtils.createMessage(text, this.props.user);
+                this.messageHistory.push(text);
+                this.currentPos = this.messageHistory.length;
                 this.props.socket.emit('chat msg', msg);
                 this.setState({text: ''});
             }
+        }
+        else if (e.keyCode === 38) {
+          e.preventDefault();
+          if (this.currentPos > 0) {
+            this.currentPos--;
+            this.setState({text: this.messageHistory[this.currentPos]});
+          }
+        }
+        else if (e.keyCode === 40) {
+          e.preventDefault();
+          if (this.currentPos < this.messageHistory.length) {
+            let newText;
+            if (this.currentPos === this.messageHistory.length - 1) newText = '';
+            else newText = this.messageHistory[this.currentPos + 1];
+            this.currentPos++;
+            this.setState({text: newText});
+          }
         }
     }
 };

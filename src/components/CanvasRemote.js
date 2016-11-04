@@ -3,6 +3,7 @@ import { ActionHistory, Mark, ClearCanvas } from '../utils/CanvasUtils';
 import { CompactPicker } from 'react-color';
 import { connect } from 'react-redux';
 import Timer, { SmallTimer } from './Timer';
+const WorkerTimer = require("worker-timer");
 
 class Canvas extends Component {
 
@@ -51,14 +52,14 @@ class Canvas extends Component {
     if ( !(point.strokeID in this.ptsByStroke) ) {
       this.ptsByStroke[point.strokeID] = { pts: [], ended: false };
     }
-    this.drawRemoteLoops[point.strokeID] = setInterval(() => this.tryStartStroke(point),100);
+    this.drawRemoteLoops[point.strokeID] = WorkerTimer.setInterval(() => this.tryStartStroke(point),100);
   }
 
   tryStartStroke(point) {
     if (this.currentID === point.strokeID && this.ptsByStroke[point.strokeID].pts.length > 0) {
       this.startStroke(point.pos, point.color, point.size);
-      clearInterval(this.drawRemoteLoops[point.strokeID]);
-      this.drawRemoteLoops[point.strokeID] = setInterval(() => this.drawRemoteStroke(point.strokeID),10);
+      WorkerTimer.clearInterval(this.drawRemoteLoops[point.strokeID]);
+      this.drawRemoteLoops[point.strokeID] = WorkerTimer.setInterval(() => this.drawRemoteStroke(point.strokeID),10);
     }
   }
 
@@ -71,7 +72,7 @@ class Canvas extends Component {
       this.currentID++;
       this.perm_ctx.drawImage(this.canvas,0,0);
       this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
-      clearInterval(this.drawRemoteLoops[ID]);
+      WorkerTimer.clearInterval(this.drawRemoteLoops[ID]);
     }
   }
 
@@ -79,7 +80,7 @@ class Canvas extends Component {
     this.props.socket.off('stroke');
     this.props.socket.off('update canvas');
     for (let loop in this.drawRemoteLoops) {
-      clearInterval(this.drawRemoteLoops[loop]);
+      WorkerTimer.clearInterval(this.drawRemoteLoops[loop]);
     }
   }
 

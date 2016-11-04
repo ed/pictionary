@@ -59,8 +59,8 @@ class SideBar extends Component {
             </div>
         }
         <CopyToClipboard text={document.URL} >
-        <div className="copyLink" style={{width: '86px',  marginTop: '10px',  paddingBottom: '4px', marginLeft: '15px', display: 'block'}} onClick={() => this.props.dispatch(addNotification('url copied to clipboard'))}>
-        <i style={{fontSize: '80%',marginBottom: '2px', marginRight: '2px', marginLeft: '2px'}}className="ion-plus-round" aria-hidden="true"></i>  <span style={{fontWeight: 'bold',}} >  copy link </span>
+        <div className="copyLink" style={{width: '80px',  marginTop: '10px',  paddingBottom: '4px', marginLeft: '15px', display: 'block'}} onClick={() => this.props.dispatch(addNotification('url copied to clipboard'))}>
+        <span style={{fontWeight: 'bold',}} >+  copy url </span>
         </div>
         </CopyToClipboard>
         </div>
@@ -109,7 +109,7 @@ const Dropdown = () => (
 
 const Player = ({ user, name, player, onClick, isActive }) => (
   <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}>
-      {player.pointsThisTurn > 0 ? <div style={{float: 'right', marginRight: '15px'}}> +{player.pointsThisTurn} </div> : null }
+      {player.pointsThisTurn > 0 ? <div style={{background: '#66CCCC', float: 'right', marginTop: '5px', marginRight: '15px', borderRadius: '4px', padding: '2px 10px'}}> {player.pointsThisTurn} </div> : null }
       <span> {name} {user === name ? '(you)' : null} </span>
       <br/>
       <span> {player.points} PTS</span>

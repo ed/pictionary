@@ -24,17 +24,20 @@ class Container extends Component {
   }
 
   render() {
+    const inRoom = this.props.location.pathname.search('/r/') > -1;
+    const navBackground = inRoom ? '#4abdac' : '';
+    const navColor = inRoom ? 'white' : 'black';
     return (
       <div className="container" style={{ height: '100%', dispaly: 'flex', flexFlow: 'column'}}>
-        <div style={{position: 'absolute', top: 0, left: 0, height: '50px', width: '100%', background: '#4abdac'}}>
+        <div style={{position: 'absolute', top: 0, left: 0, height: '50px', width: '100%', background: navBackground}}>
         <ul style={{userSelect: 'none', position: 'absolute', left: 0, top: 0, width: '100%'}}>
-          <li onClick={() => this.props.dispatch(push('/game'))} style={{color: 'white', fontSize: '120%', fontWeight: 'bold', marginTop: '10px', marginLeft: '15px', float: 'left'}}>
+          <li onClick={() => this.props.dispatch(push('/game'))} style={{color: navColor, fontSize: '120%', fontWeight: 'bold', marginTop: '10px', marginLeft: '15px', float: 'left'}}>
             <img style={{ opacity: '.9' }} src={icon}/> <span style={{ position: 'absolute', top: '15px', left: '50px'}}> ugp </span>
           </li>
           {this.props.authStatus ?
-            <li style={{ marginTop: '5px', marginRight: '40px'}}><a style={{border: '0px'}} onClick={() => this.props.dispatch(logout())}>Log out</a></li>
+            <li style={{ marginTop: '5px', marginRight: '40px' }}><a style={{ color: navColor, border: '0px' }} onClick={() => this.props.dispatch(logout())}>Log out</a></li>
             :
-            <li style={{ marginTop: '5px', marginRight: '40px'}}><a style={{border: '0px'}} onClick={() => this.props.dispatch(openLogin())}>Log in</a></li>
+            <li style={{ marginTop: '5px', marginRight: '40px' }}><a style={{ color: navColor, border: `2px solid ${navColor}` }} onClick={() => this.props.dispatch(openLogin())}>Log in</a></li>
           }
         </ul>
         </div>
