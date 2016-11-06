@@ -67,7 +67,7 @@ class SideBar extends Component {
 
       { this.props.gameInProgress ? <div style={{marginLeft: '15px', fontSize: '120%', marginTop: '20px'}}> Round {this.props.curRound}/{this.props.totalRounds} </div> : null }
       <div className="channelInterfaceContainer">
-        <i className="ion-navicon-round centerIcon" onClick={() => this.openBrowseRooms()}></i>
+        <i className="ion-grid centerIcon" onClick={() => this.openBrowseRooms()}></i>
       </div>
 
         <Popover close={() => this.closeCreateRooms()} isOpen={this.state.createRoomOpen}>
@@ -109,10 +109,10 @@ const Dropdown = () => (
 
 const Player = ({ user, name, player, onClick, isActive }) => (
   <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}>
-      {player.pointsThisTurn > 0 ? <div style={{background: '#66CCCC', float: 'right', marginTop: '5px', marginRight: '15px', borderRadius: '4px', padding: '2px 10px'}}> {player.pointsThisTurn} </div> : null }
+      {player.pointsThisTurn > 0 ? <div style={{background: '#66CCCC', float: 'right', marginTop: '5px', marginRight: '15px', borderRadius: '4px', padding: '1px 10px'}}> {player.pointsThisTurn} </div> : null }
       <span> {name} {user === name ? '(you)' : null} </span>
       <br/>
-      <span> {player.points} PTS</span>
+      <span style={{color: '#66CCCC'}}> {player.points} PTS</span>
   </div>
 );
 

@@ -29,7 +29,7 @@ class Container extends Component {
     const navColor = inRoom ? 'white' : 'black';
     return (
       <div className="container" style={{ height: '100%', dispaly: 'flex', flexFlow: 'column'}}>
-        <div style={{position: 'absolute', top: 0, left: 0, height: '50px', width: '100%', background: navBackground}}>
+        <div style={{position: 'absolute', top: 0, left: 0, height: '52px', width: '100%', background: navBackground}}>
         <ul style={{userSelect: 'none', position: 'absolute', left: 0, top: 0, width: '100%'}}>
           <li onClick={() => this.props.dispatch(push('/game'))} style={{color: navColor, fontSize: '120%', fontWeight: 'bold', marginTop: '10px', marginLeft: '15px', float: 'left'}}>
             <img style={{ opacity: '.9' }} src={icon}/> <span style={{ position: 'absolute', top: '15px', left: '50px'}}> ugp </span>
@@ -41,7 +41,7 @@ class Container extends Component {
           }
         </ul>
         </div>
-        <div style={{paddingTop: '50px', height: '100%', boxSizing: 'border-box'}}>
+        <div style={{paddingTop: '52px', height: '100%', boxSizing: 'border-box'}}>
   	     {this.props.user ? this.props.children : null}
         </div>
       </div>
