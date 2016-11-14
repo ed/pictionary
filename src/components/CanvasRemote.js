@@ -195,12 +195,12 @@ export default connect(
 )(Canvas)
 
 
-const CanvasMessage = ({ guessers, numPlayers, word, artist, turnStatus }) => (
+const CanvasMessage = ({ guessers, numPlayers, word, artist, turnStatus, color="#f7b733" }) => (
   <div className="canvasMessage">
   {
     turnStatus === 'drawing' || turnStatus === 'starting' ?
       <div style={{pointerEvents: 'auto'}}>
-      <span > <span style={{fontWeight:'bold',color: 'orange'}}>{artist}</span> is drawing
+      <span > <span style={{fontWeight:'bold',color}}>{artist}</span> is drawing
       {turnStatus === 'starting' ? ' next' :
       guessers.length === 0 ?
       <span><br/> guess the word using the chat </span>
@@ -213,7 +213,7 @@ const CanvasMessage = ({ guessers, numPlayers, word, artist, turnStatus }) => (
       <span> { guessers.length > 0 ?
         <span style={{fontWeight:'bold'}}>{ guessers.length === numPlayers - 1 ? 'everyone' : guessers.join(', ')}</span> : 'No one'} guessed the word!</span>
         <br/>
-        The word was <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span>
+        The word was <span style={{fontWeight:'bold',color}}>{word}</span>
       </div>
   }
   </div>

@@ -641,13 +641,11 @@ canvas {
 .channelInterfaceContainer {
   width: 100%;
   text-align: center;
-}
-
-.channelInterfaceContainer>i {
   opacity: .6;
 }
 
 .channelInterfaceContainer:hover {
+  opacity:1;
   background:#E8E6DF;
 }
 

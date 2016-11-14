@@ -200,19 +200,19 @@ export default connect(
 )(Canvas)
 
 
-const CanvasMessage = ({ guessers, numPlayers, word, turnStatus }) => (
+const CanvasMessage = ({ guessers, numPlayers, word, turnStatus, color="#f7b733" }) => (
   <div className="canvasMessage">
   {
     turnStatus === 'drawing' || turnStatus === 'starting' ?
       <div style={{pointerEvents: 'auto'}}>
-      <span> your turn, <br/> your word is <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span> </span>
+      <span> your turn, <br/> your word is <span style={{fontWeight:'bold',color}}>{word}</span> </span>
       </div>
     :
       <div>
       <span> { guessers.length > 0 ?
         <span style={{fontWeight:'bold'}}>{ guessers.length === numPlayers - 1 ? 'everyone' : guessers.join(', ')}</span> : 'No one'} guessed the word!</span>
         <br/>
-        The word was <span style={{fontWeight:'bold',color: 'orange'}}>{word}</span>
+        The word was <span style={{fontWeight:'bold',color}}>{word}</span>
       </div>
   }
   </div>

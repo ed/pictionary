@@ -25,7 +25,7 @@ class Container extends Component {
 
   render() {
     const inRoom = this.props.location.pathname.search('/r/') > -1;
-    const navBackground = inRoom ? '#4abdac' : '';
+    const navBackground = inRoom ? '#a7d2cb' : '';
     const navColor = inRoom ? 'white' : 'black';
     return (
       <div className="container" style={{ height: '100%', dispaly: 'flex', flexFlow: 'column'}}>

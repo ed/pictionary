@@ -1,113 +1,100 @@
-import * as types from '../constants';
 import 'isomorphic-fetch';
 import { push, replace } from 'react-router-redux';
+import * as types from '../constants';
 
-let headers = new Headers();
-headers.append('Content-Type', 'application/json');
+const headers = {
+  'Content-Type': 'application/json',
+};
 
-let saveData = { };
+const saveData = { };
 
-export const redirectLogin = (curPath) => {
-  return (dispatch) => {
-      dispatch(replace('/'));
-      saveData.returnPath = curPath;
+export const redirectLogin = (curPath) => (
+  (dispatch) => {
+    dispatch(replace('/'));
+    saveData.returnPath = curPath;
   }
-}
-export const openModal = (title) => {
-  return {
-    type: types.OPEN_MODAL,
-    title
+);
+
+export const openModal = (title) => ({
+  type: types.OPEN_MODAL,
+  title,
+});
+
+export const closeModal = () => ({
+  type: types.CLOSE_MODAL,
+});
+
+export const openSignup = () => ({
+  type: types.OPEN_MODAL,
+  title: 'signup',
+});
+
+export const openLogin = () => ({
+  type: types.OPEN_MODAL,
+  title: 'login',
+});
+
+export const addNotification = (message) => (
+  (dispatch) => (
+    dispatch({
+      type: types.ADD_NOTIFICATION,
+      message,
+      removeNotification: (key) => dispatch(removeNotification(key)),
+    })
+  )
+);
+
+export const requestFailure = (message) => (
+  (dispatch) => {
+    dispatch(addNotification(message));
+    return dispatch({
+      type: 'REQUEST_FAILURE',
+      error: message,
+    });
   }
-}
+);
 
-export const closeModal = () => {
-  return {
-    type: types.CLOSE_MODAL
-  }
-}
+export const removeNotification = (key) => ({
+  type: types.REMOVE_NOTIFICATION,
+  key,
+});
 
-export const openSignup = () => {
-  return {
-    type: types.OPEN_MODAL,
-    title: 'signup'
-  }
-}
-
-export const openLogin = () => {
-  return {
-    type: types.OPEN_MODAL,
-    title: 'login'
-  }
-}
-
-export const requestFailure = (message) => {
-    return (dispatch) => {
-        dispatch(addNotification(message));
-        return dispatch({
-            type: 'REQUEST_FAILURE',
-            error: message
-        })
-    }
-}
-
-export const addNotification = (message) => {
-    return (dispatch) => {
-        return dispatch({
-            type: types.ADD_NOTIFICATION,
-            message,
-            removeNotification: (key) => dispatch(removeNotification(key))
-        })
-    }
-}
-
-export const removeNotification = (key) => {
-    return {
-        type: types.REMOVE_NOTIFICATION,
-        key
-    }
-}
-
-export const dismissNotification = (notification) => {
-    return {
-        type: types.DISMISS_NOTIFICATION,
-        notification
-    }
-}
+export const dismissNotification = (notification) => ({
+  type: types.DISMISS_NOTIFICATION,
+  notification,
+});
 
 
 export const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
-  } else {
-    return response.json().then(err => Promise.reject(err));
   }
-}
+  return response.json().then(err => Promise.reject(err));
+};
 
-export const parseJSON = (response) => {
-  return response.json();
-}
+export const parseJSON = (response) => response.json();
 
-export const onSuccess = (user) => {
-  return (dispatch) => {
+export const onSuccess = (user) => (
+  (dispatch) => {
     dispatch({ type: 'REQUEST_SUCCESS' });
     dispatch({ type: 'SET_USER_INFO', user: user});
     dispatch(setSocket());
     dispatch(closeModal());
-    return dispatch(fetchRooms()).then(() => dispatch(returnToSavePath()))
+    return dispatch(fetchRooms()).then(() => dispatch(returnToSavePath()));
   }
-}
+);
 
-export const returnToSavePath = () => {
-  return (dispatch) => {
+export const returnToSavePath = () => (
+  (dispatch) => {
     const returnPath = saveData.returnPath || '/game';
     delete saveData.returnPath;
     return dispatch(replace(returnPath));
   }
-}
+);
 
 
-export const whoami = (nextRoute) => {
-  return (dispatch) => {
+export const whoami = (nextRoute) => (
+  (dispatch) => {
     dispatch({ type: 'SENDING_REQUEST' });
     return fetch('/whoami', {
       method: 'GET',
@@ -125,10 +112,10 @@ export const whoami = (nextRoute) => {
 	        dispatch(requestFailure(error.message))
       });
   }
-}
+);
 
-export const logout = () => {
-  return (dispatch) => {
+export const logout = () => (
+  (dispatch) => {
     if (!confirm('Are you sure you want to log out?')) return;
     dispatch({ type: 'SENDING_REQUEST' });
     fetch('/logout', {
@@ -147,10 +134,10 @@ export const logout = () => {
         dispatch(requestFailure(error.message))
       });
   }
-}
+);
 
-export const login  = (username, password) => {
-  return (dispatch) => {
+export const login  = (username, password) => (
+  (dispatch) => {
     dispatch({ type: 'SENDING_REQUEST' });
     if (emptyFields({username,password})) {
       return dispatch(requestFailure('Please fill out both fields'));
@@ -165,18 +152,19 @@ export const login  = (username, password) => {
         {
           'username': username,
           'password': password
-        })})
+        }),
+      })
       .then(checkStatus)
       .then(() => dispatch(onSuccess(username)))
       .catch(error => {
         dispatch(requestFailure(error.message))
       });
-  };
-};
+  }
+);
 
 
-export const register = (username, password) => {
-  return (dispatch) => {
+export const register = (username, password) => (
+  (dispatch) => {
     dispatch({ type: 'SENDING_REQUEST' });
     if (emptyFields({username,password})) {
       // throw err
@@ -202,33 +190,29 @@ export const register = (username, password) => {
         dispatch(setSocket());
         dispatch(requestFailure(error.message))
       });
-  };
-};
-
-export const updateGame = (newGameState) => {
-  return {
-    type: types.UPDATE_GAME,
-    newGameState
   }
-}
+);
 
-export const updateRoom = (newRoomState) => {
-  return {
-    type: types.UPDATE_ROOM,
-    newRoomState
-  }
-}
+export const updateGame = (newGameState) => ({
+  type: types.UPDATE_GAME,
+  newGameState
+});
+
+export const updateRoom = (newRoomState) => ({
+  type: types.UPDATE_ROOM,
+  newRoomState
+});
 
 export const setSocket = () => {
   let socket = io();
   return {
     type: types.SET_SOCKET,
     socket
-  }
+  };
 }
 
-export const setTempUserInfo = (name) => {
-  return (dispatch) => {
+export const setTempUserInfo = (name) => (
+  (dispatch) => {
     return fetch('/tempUserInfo', {
       method: 'POST',
       headers,
@@ -252,18 +236,15 @@ export const setTempUserInfo = (name) => {
       }
     });
   }
+);
 
-}
+export const setRooms = (rooms) => ({
+  type: types.SET_ROOMS,
+  rooms
+});
 
-export const setRooms = (rooms) => {
-  return {
-    type: types.SET_ROOMS,
-    rooms
-  }
-}
-
-export const fetchRooms = () => {
-  return (dispatch) => {
+export const fetchRooms = () => (
+  (dispatch) => {
     dispatch({ type: types.REQUEST_ROOMS });
     return fetch('/roomData/roomList', {
       headers,
@@ -280,10 +261,10 @@ export const fetchRooms = () => {
       	console.log(error)
       })
   }
-}
+);
 
-export const fetchRoomData = (room) => {
-  return (dispatch) => {
+export const fetchRoomData = (room) => (
+  (dispatch) => {
     return fetch(`/roomData/room/${room}`, {
       headers,
       method: 'GET',
@@ -310,10 +291,10 @@ export const fetchRoomData = (room) => {
       	console.log(error)
       })
   }
-}
+);
 
-export const newRoom = (roomData) => {
-  return (dispatch) => {
+export const newRoom = (roomData) => (
+  (dispatch) => {
     console.log(roomData)
     return fetch('/roomData/newRoom', {
       headers,
@@ -339,15 +320,12 @@ export const newRoom = (roomData) => {
       	console.log(error)
       })
   }
-}
+);
 
-export const emptyFields = (a) => {
-  return Object.keys(a).map(k => a[k] !== '').includes(false)
-}
+export const emptyFields = (a) => (
+  Object.keys(a).map(k => a[k] !== '').includes(false)
+);
 
-export const resetErrorMessage = () => {
-  return {
+export const resetErrorMessage = () => ({
     type: types.RESET_ERROR_MESSAGE
-  }
-
-}
+});

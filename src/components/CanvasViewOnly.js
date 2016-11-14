@@ -18,7 +18,7 @@ export default class CanvasViewOnly extends Component {
   componentDidMount() {
     this.ctx = this.canvas.getContext('2d');
     this.perm_ctx = this.perm_canvas.getContext('2d');
-    this.clearCanvas = () => this.ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
+    this.clearCanvas = () => this.perm_ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
     this.setCanvasSize();
     if (this.props.canvasData) {
       this.buildRemoteCanvas(this.props.canvasData);
@@ -39,7 +39,7 @@ export default class CanvasViewOnly extends Component {
     this.remakeCanvasRemote = () => this.buildRemoteCanvas(canvasData);
   }
 
-  setCanvasSize(){
+  setCanvasSize() {
     if (this.canvas) {
       this.setState({
         canvasHeight: this.canvas.offsetHeight,
@@ -66,7 +66,6 @@ export default class CanvasViewOnly extends Component {
         height={this.state.canvasHeight}
         ref={(canvas) => this.canvas = canvas}
         />
-        <div className="timer"> {this.props.timeLeft} </div>
       </div>
       )
     }
