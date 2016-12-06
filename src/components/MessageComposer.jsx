@@ -25,7 +25,7 @@ class MessageComposer extends Component {
         return (
             <div id="msg-send">
                 <textarea
-                style={{border: `2px solid ${borderColor}`, background: `${this.props.canChat ? 'inherit' : '#ffe9c1'}`}}
+                style={{marginLeft: 'auto', display: 'block', width: '80%', border: `2px solid ${borderColor}`, background: `${this.props.canChat ? 'inherit' : '#ffe9c1'}`}}
                 className="message-composer"
                 ref={(messageComposer) => this.messageComposer = messageComposer}
                 name="message"
