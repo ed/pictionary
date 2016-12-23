@@ -126,7 +126,7 @@ class Canvas extends Component {
   }
 
   render() {
-    let { turnStatus, timeLeft, totalTime, canIDraw, isSpectating } = this.props;
+    let { displayControls, turnStatus, timeLeft, totalTime, canIDraw, isSpectating } = this.props;
     return (
       <div className="canvasContainer">
         <canvas
@@ -159,7 +159,7 @@ class Canvas extends Component {
         </div>
         : null}
         <CanvasMessage {...this.props} />
-        {canIDraw ?
+      {displayControls ?
           <ArtistOptions
           color={this.state.brushColor}
           radius={this.state.brushSize}
@@ -173,13 +173,15 @@ class Canvas extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    let players = state.root.room.game.players;
-    let artist = state.root.room.game.artist;
-    let turnStatus = state.root.room.game.turnStatus;
-    let canIDraw = (state.root.user === artist) && turnStatus === 'drawing';
-    let isSpectating = !(state.root.user in players);
+const mapStateToProps = (state, props) => {
+    const players = state.root.room.game.players;
+    const artist = state.root.room.game.artist;
+    const turnStatus = state.root.room.game.turnStatus;
+    const canIDraw = (state.root.user === artist) && turnStatus === 'drawing';
+    const displayControls = props.displayControls && canIDraw;
+    const isSpectating = !(state.root.user in players);
     return {
+        displayControls,
         guessers: Object.keys(players).filter((player) => players[player].pointsThisTurn > 0 && player !== artist),
         turnStatus,
         numPlayers: Object.keys(players).length,
