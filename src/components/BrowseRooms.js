@@ -14,18 +14,23 @@ class BrowseRooms extends Component {
 	  this.state = {
 	  	isFetching: true,
 	  	roomName: '',
-	  	hoveredRoom: 'NONE'
+	  	hoveredRoom: 'NONE',
+      rooms: [],
 	  };
 	}
 
 	componentDidMount() {
     this.props.dispatch(fetchRooms()).then(() => this.setState({
-      isFetching: false
+      isFetching: false,
+      rooms: this.filterRooms(this.state.roomName)
     }))
   }
 
   _onChange(e) {
-      this.setState({roomName: e.target.value});
+    this.setState({
+      roomName: e.target.value,
+      rooms: this.filterRooms(e.target.value)
+    });
   }
 
   _onKeyDown(e) {
@@ -50,14 +55,22 @@ class BrowseRooms extends Component {
   	})
   }
 
-  filterRooms() {
+  filterRooms(roomName) {
   	let prevRoom;
-  	let rooms = Object.keys(this.props.rooms).filter((room) => room.startsWith(this.state.roomName));
+  	let rooms = Object.keys(this.props.rooms).filter((room) => room.startsWith(roomName));
   	return rooms.map( (room) => {
   		let displayBorderTop = true;
   		if ( prevRoom === this.state.hoveredRoom || room === this.state.hoveredRoom ) displayBorderTop = false;
   		prevRoom = room;
-  		return <Room key={room} isHovered={room === this.state.hoveredRoom} displayBorderTop={displayBorderTop} onMouseOver={() => this.hoverRoom(room)} onMouseOut={() => this.unHoverRoom()} name={room} room={this.props.rooms[room]} onClick={this.props.close} />
+  		return <Room
+        key={room}
+        isHovered={room === this.state.hoveredRoom}
+        displayBorderTop={displayBorderTop}
+        onMouseOver={() => this.hoverRoom(room)}
+        onMouseOut={() => this.unHoverRoom()}
+        name={room}
+        room={this.props.rooms[room]}
+        onClick={this.props.close} />
   	});
   }
 
@@ -78,22 +91,20 @@ class BrowseRooms extends Component {
       boxSizing: 'border-box',
       flex: '0 0 auto'
     }
-		let rooms=this.filterRooms();
+    const { rooms } = this.state;
 		return (
 			<div className="container">
-			  {this.state.isFetching ?
-			  <Spinner />
-			  :
 			  <div className="container" style={{ position: 'relative',display: 'flex',flexDirection: 'column' }}>
 				<div style={{marginBottom: '25px'}}>
 				  <span><span style={{ fontSize: '200%', fontWeight:'bold' }}>Join a room</span> <button onClick={() => this.props.dispatch(push('/game'))}className="myButton active" style={{marginTop: '5px', padding: '8px 20px', float:'right'}}>Make Channel</button> </span>
 				</div>
 				  <textarea placeholder='Find a room' spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
-				  <div className="rooms">
-				  { rooms.length > 0 ? rooms : <span>No rooms match <span style={{fontWeight:'bold'}}>{this.state.roomName}</span></span>}
-				  </div>
+          {this.state.isFetching ? <Spinner/> :
+  				  <div className="rooms">
+  				    { rooms.length > 0 ? rooms : <span>No rooms match <span style={{fontWeight:'bold'}}>{this.state.roomName}</span></span>}
+  				  </div>
+          }
 			  </div>
-			}
 			</div>
 		);
 	}

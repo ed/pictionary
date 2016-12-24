@@ -31,7 +31,6 @@ export default class Popover extends Component {
 
   render() {
     let opacity = this.state.active ? 1 : 0;
-    let top = this.state.active ? 0 : 50;
     return (
       <Modal
         isOpen={this.props.isOpen}
@@ -46,14 +45,14 @@ export default class Popover extends Component {
             },
           content : {
             position                   : 'absolute',
-            top                        : top,
+            top                        : '0',
             left                       : '0',
             right                      : '0',
             bottom                     : '0',
             textAlign                  : 'center',
             color                      : '#252525',
                           opacity           ,
-              transition        : 'opacity .15s ease-in-out, top .15s ease-in-out',
+              transition        : 'opacity .15s ease-in-out',
           }
         }}
         onAfterOpen={() => this.fadeIn()}
