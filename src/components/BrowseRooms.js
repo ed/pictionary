@@ -98,7 +98,7 @@ class BrowseRooms extends Component {
 				<div style={{marginBottom: '25px'}}>
 				  <span><span style={{ fontSize: '200%', fontWeight:'bold' }}>Join a room</span> <button onClick={() => this.props.dispatch(push('/game'))}className="myButton active" style={{marginTop: '5px', padding: '8px 20px', float:'right'}}>Make Channel</button> </span>
 				</div>
-				  <textarea placeholder='Find a room' spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
+				  <textarea autoFocus={true} placeholder='Find a room' spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
           {this.state.isFetching ? <Spinner/> :
   				  <div className="rooms">
   				    { rooms.length > 0 ? rooms : <span>No rooms match <span style={{fontWeight:'bold'}}>{this.state.roomName}</span></span>}

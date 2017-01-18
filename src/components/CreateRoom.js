@@ -96,7 +96,7 @@ class CreateRoom extends Component {
          <div >
          <span style={{paddingBottom: '10px', fontWeight:'bold', color:'#464646'}}> Name </span>
          <i style={{paddingBottom: '10px', fontSize:'80%', fontWeight:'bold', color:'orange'}}>   {this.state.roomNameError} </i>
-         <textarea onBlur={() => this.setRoomError()} spellCheck={false} className="message-composer data-box" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
+         <textarea autoFocus={true} onBlur={() => this.setRoomError()} spellCheck={false} className="message-composer data-box" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
          <div style={{marginBottom: '12px', fontSize:'70%', color:'#c1c1c1'}}> Names must be lowercase, with no spaces or periods. </div>
          </div>
 	       }

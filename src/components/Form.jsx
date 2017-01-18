@@ -35,7 +35,7 @@ class Form extends Component {
       <div className="popoverContainer" style={{ textAlign: 'center', height: '75%', width: '80%'}}>
       <h1> {title} </h1>
       <form className="form" onSubmit={this.go.bind(this)}>
-      <input value={this.state.username} ref={(userField) => this.userField = userField} onChange={(e) => this.updateUsername(e)} spellCheck={false} className="message-composer data-box" style={textBoxStyle} placeholder="username"/>
+      <input autoFocus={true} value={this.state.username} ref={(userField) => this.userField = userField} onChange={(e) => this.updateUsername(e)} spellCheck={false} className="message-composer data-box" style={textBoxStyle} placeholder="username"/>
       <input onChange={(e) => this.updatePassword(e)} spellCheck={false} className="message-composer data-box" style={textBoxStyle} type="password" placeholder="password"/>
       <button className="myButton active" style={{ height: '70px', width: '100%', marginTop: '100px' }} type="submit">{ sendingRequest ? <Spinner style={{color: 'white', marginTop: 0}}/> : title }</button>
       </form>

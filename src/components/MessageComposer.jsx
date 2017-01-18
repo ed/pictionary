@@ -25,16 +25,17 @@ class MessageComposer extends Component {
         return (
             <div id="msg-send">
                 <textarea
-                style={{marginLeft: 'auto', display: 'block', width: '80%', border: `2px solid ${borderColor}`, background: `${this.props.canChat ? 'inherit' : '#ffe9c1'}`}}
-                className="message-composer"
-                ref={(messageComposer) => this.messageComposer = messageComposer}
-                name="message"
-                value={this.state.text}
-                onFocus={() => this.setState({focused: true})}
-                onBlur={() => this.setState({focused: false})}
-                onChange={this._onChange}
-                onKeyDown={this._onKeyDown}
-                placeholder={this.props.placeholder}
+                  autoFocus={true}
+                  style={{marginLeft: 'auto', display: 'block', width: '80%', border: `2px solid ${borderColor}`, background: `${this.props.canChat ? 'inherit' : '#ffe9c1'}`}}
+                  className="message-composer"
+                  ref={(messageComposer) => this.messageComposer = messageComposer}
+                  name="message"
+                  value={this.state.text}
+                  onFocus={() => this.setState({focused: true})}
+                  onBlur={() => this.setState({focused: false})}
+                  onChange={this._onChange}
+                  onKeyDown={this._onKeyDown}
+                  placeholder={this.props.placeholder}
                 />
             </div>
         );
