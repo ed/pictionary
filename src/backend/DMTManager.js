@@ -162,7 +162,7 @@ class DMT {
     this.curArtist = 0;
     this.curWord = 'NONE';
     this.secondsPerTurn = 60;
-    this.numRounds = 1;
+    this.numRounds = 2;
     this.curRound = 1;
     this.gameState = {...emptyGame};
   }

@@ -445,12 +445,6 @@ canvas {
   background:#f1f1f1;
 }
 
-.leftMessage {
-  width: 20px;
-  height: 100%;
-  display: inline-block;
-}
-
 .innerMessage {
   white-space:normal;
   display: inline-block;
