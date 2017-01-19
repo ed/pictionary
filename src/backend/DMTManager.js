@@ -223,7 +223,9 @@ class DMT {
   }
 
   testWord(player, guess) {
-    if (player !== this.currentArtist() && guess === this.curWord) {
+   const wordNoSpaces = this.curWord.replace(/ /g,'');
+   const guessNoSpaces = guess.replace(/ /g,'');
+   if (player !== this.currentArtist() && guessNoSpaces.includes(wordNoSpaces)) {
       this.allocatePoints(player);
       this.chatMsg(`${player} guessed the word`);
       this.setState({
