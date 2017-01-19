@@ -77,6 +77,8 @@ class DMTManager {
     }
 
     return {
+      displayWinners: this.rooms[room].displayWinners,
+      winners: this.rooms[room].winners,
       clients,
       game
     }
@@ -86,7 +88,7 @@ class DMTManager {
     let players = usersByRoom(room);
     if ( room in this.rooms && this.rooms[room].gameInProgress == false && players.length > 1) {
       console.log(`game started in room ${room}`);
-      let dmtGame = new DMT(players, room, () => this.endGame(room));
+      let dmtGame = new DMT(players, room, (winners) => this.endGame(room, winners));
       this.rooms[room].game = dmtGame;
       this.rooms[room].gameInProgress = true;
       dmtGame.start();
@@ -96,10 +98,25 @@ class DMTManager {
     }
   }
 
-  endGame(room) {
+  endGame(room, winners) {
     console.log(`end game in room ${room}`)
     if ( room in this.rooms && this.rooms[room].gameInProgress ){
       this.rooms[room].gameInProgress = false;
+      this.rooms[room].displayWinners = true;
+      this.rooms[room].winners = winners;
+      let curRoom = this.getRoom(room);
+      let rooms = this.getRooms();
+      let roomData = {
+        rooms,
+        curRoom,
+      }
+      io.sockets.in(room).emit('update room', roomData);
+      this.rooms[room].displayWinners = false;
+      let roomDataAfter = {
+        rooms: this.getRooms(),
+        curRoom: this.getRoom(room)
+      }
+      setTimeout(() => io.sockets.in(room).emit('update room', roomDataAfter), 10000);
     }
   }
 
@@ -145,7 +162,7 @@ class DMT {
     this.curArtist = 0;
     this.curWord = 'NONE';
     this.secondsPerTurn = 60;
-    this.numRounds = 2;
+    this.numRounds = 1;
     this.curRound = 1;
     this.gameState = {...emptyGame};
   }
@@ -245,7 +262,12 @@ class DMT {
       this.startTurn();
     }
     else {
-      this.endGame();
+      let props = Object.keys(this.players).map(function(playerName) {
+        return { name: playerName, score: this[playerName].points };
+      }, this.players);
+      props.sort(function(p1, p2) { return p2.score - p1.score; });
+      let winners = props.slice(0, 3);
+      this.endGame(winners);
       clearTimeout(this.gameTimer);
       this.setState({ gameInProgress: false });
     }

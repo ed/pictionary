@@ -16,23 +16,42 @@ export class WhiteBoard extends Component {
   }
 
   render() {
-    console.log(this.props.artist)
+    let { winners, user, artist, gameInProgress, turnStatus, displayWinners } = this.props;
+    console.log(displayWinners)
     return (
       <div className="whiteboard">
-        { this.props.gameInProgress ?
-          this.props.artist === this.props.user ?
-            <Canvas displayControls={true} key={this.props.turnStatus !== 'starting'} />
+        { gameInProgress ?
+          artist === user ?
+            <Canvas displayControls={true} key={turnStatus !== 'starting'} />
             :
-            <CanvasRemote key={this.props.turnStatus !== 'starting'} />
+            <CanvasRemote key={turnStatus !== 'starting'} />
           :
-          <div className="container">
-          <StartButton active={true} onClick={() => this.startGame()} />
-          </div>
+          displayWinners === true ?
+            <div className='popoverContainer' style={{fontFamily: ' "Inconsolata", monospace', width: '100%', height: '400px'}}>
+              <WinnersDisplay winners={winners} />
+            </div>
+            :
+            <div className="container">
+            <StartButton active={true} onClick={() => this.startGame()} />
+            </div>
         }
       </div>
       );
   }
 }
+
+const WinnersDisplay = ({ winners }) => (
+  <ul>
+    {winners.map((winner, index) => <Winner key={index} index={index} {...winner} />)}
+  </ul>
+);
+
+const Winner = ({ name, score, index }) => (
+  <li style={{height:'50px', lineHeight: '50px', verticalAlign: 'middle', width: '90%', textAlign: 'center', color: '#414141',
+    fontSize: index === 0 ? '250%' : index === 1 ? '220%' : '190%'}}>
+    <span style={{verticalAlign: 'middle', fontSize: '130%', color: '#eeb6b7'}}>{index + 1}</span> <span style={{verticalAlign: 'middle'}}>{name} {score}pts</span>
+  </li>
+);
 
 const StartButton = ({ onClick , active }) => (
     <div className={`startGame${active ? ' active' : ''}`} onClick={onClick}>
@@ -42,6 +61,8 @@ const StartButton = ({ onClick , active }) => (
 
 const mapStateToProps = (state) => {
     return {
+        winners: state.root.room.winners,
+        displayWinners: state.root.room.displayWinners,
         turnStatus: state.root.room.game.turnStatus,
         numClients: state.root.room.clients.length,
         user: state.root.user,
