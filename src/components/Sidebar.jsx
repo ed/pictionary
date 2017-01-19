@@ -110,9 +110,8 @@ const Dropdown = () => (
 const Player = ({ user, name, player, onClick, isActive }) => (
   <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}>
       {player.pointsThisTurn > 0 ? <div style={{background: '#66CCCC', float: 'right', marginTop: '5px', marginRight: '15px', borderRadius: '4px', padding: '1px 10px'}}> {player.pointsThisTurn} </div> : null }
-      <span> {name} {user === name ? '(you)' : null} </span>
-      <br/>
-      <span style={{color: '#66CCCC'}}> {player.points} PTS</span>
+      <div style={{fontSize: '120%', textAlign: 'center', verticalAlign: 'middle', vfloat: 'left', lineHeight: '38px', height: '40px', width: '30px', display: 'inline-block', background: user === name ? '#66CCCC' : '#F2777A'}}>{player.points}</div>
+      <span> {name} </span>
   </div>
 );
 

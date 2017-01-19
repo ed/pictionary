@@ -605,9 +605,8 @@ canvas {
 }
 
 .sidebarElement {
-  padding-bottom: 4px;
-  padding-top: 2px;
   display:block;
+  height: 40px;
   width:100%;
   color:white;
   border-radius: 0 3px 3px 0;
