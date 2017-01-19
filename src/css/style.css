@@ -179,7 +179,7 @@ html, body {
 
 .popoverContainer {
   position: absolute;
-  width: 35%;
+  width: 400px;
   height: 50%;
   top:0;
   bottom: 0;
