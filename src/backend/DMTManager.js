@@ -176,23 +176,20 @@ class DMT {
     }
   }
 
-  chatMsg(text) {
-    let author = 'GAME';
-    let msg = createMessage(text, author);
-    msg.color = 'red';
-    io.sockets.in(this.room).emit('update chat', msg);
+  sendNotification(text) {
+    io.sockets.in(this.room).emit('notification', text);
   }
 
   removePlayer(player) {
-    this.chatMsg(`${player} left the room`);
+    this.sendNotification(`${player} left the room`);
     if (player === this.currentArtist()) {
       this.endTurn();
-      this.chatMsg('artist left -- turn ended');
+      this.sendNotification('artist left -- turn ended');
     }
     this.playerOrder.splice(this.playerOrder.indexOf(player),1);
     delete this.players[player];
     if (this.numPlayers() < 2) {
-      this.chatMsg('not enough players left in the room -- game ended');
+      this.sendNotification('not enough players left in the room -- game ended');
       this.endGame();
       clearTimeout(this.gameTimer);
       this.setState({ gameInProgress: false });
@@ -200,7 +197,7 @@ class DMT {
   }
 
   addPlayer(player) {
-    this.chatMsg(`${player} joined the room`);
+    this.sendNotification(`${player} joined the room`);
     this.players[player] = {
       points: 0,
       pointsThisTurn: 0,
@@ -227,13 +224,6 @@ class DMT {
    const guessNoSpaces = guess.replace(/ /g,'');
    if (player !== this.currentArtist() && guessNoSpaces.includes(wordNoSpaces)) {
       this.allocatePoints(player);
-      this.chatMsg(`${player} guessed the word`);
-      this.setState({
-        players: this.players,
-        timeLeft: Math.min(this.gameState.timeLeft, 10),
-        totalTime: this.gameState.timeLeft < 10 ? this.gameState.totalTime : 10,
-      });
-      this.resetInterval();
       return true;
     }
     return false;
@@ -244,6 +234,8 @@ class DMT {
       this.pointsForGuesser[this.correctGuessers] :
       this.pointsForGuesser[this.pointsForGuesser.length-1];
     if (this.players[player].pointsThisTurn === 0) {
+      this.sendNotification(`${player} guessed the word`);
+      this.resetInterval();
       this.players[player].points += guesserPoints;
       this.players[player].pointsThisTurn += guesserPoints;
       this.correctGuessers++;
@@ -253,6 +245,15 @@ class DMT {
       }
       if (this.correctGuessers >= this.numPlayers() - 1) {
         this.endTurn();
+      }
+      else {
+        let timeLeft = Math.min(this.gameState.timeLeft, 10);
+        this.sendNotification(`${timeLeft} seconds left`);
+        this.setState({
+          players: this.players,
+          timeLeft,
+          totalTime: this.gameState.timeLeft < 10 ? this.gameState.totalTime : 10,
+        });
       }
     }
   }
