@@ -108,7 +108,7 @@ const Dropdown = () => (
 
 
 const Player = ({ user, name, player, onClick, isActive }) => (
-  <div className={`sidebarElement${ isActive ? " active" : ""}`} onClick={onClick}>
+  <div className={`sidebarElement${ isActive ? " active" : ""}`} style={{borderColor: isActive && name === user ? '#66CCCC' : ''}} onClick={onClick}>
       {player.pointsThisTurn > 0 ? <div style={{background: '#66CCCC', float: 'right', marginTop: '5px', marginRight: '15px', borderRadius: '4px', padding: '1px 10px'}}> {player.pointsThisTurn} </div> : null }
       <div style={{fontSize: '120%', textAlign: 'center', verticalAlign: 'middle', vfloat: 'left', lineHeight: '38px', height: '40px', width: '30px', display: 'inline-block', background: user === name ? '#66CCCC' : '#F2777A'}}>{player.points}</div>
       <span> {name} </span>
