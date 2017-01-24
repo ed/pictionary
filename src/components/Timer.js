@@ -11,23 +11,15 @@ try {
 
 const Timer = ({ progress, text, strokeWidth=9, trailWidth=10, color="#FF3232", containerStyle }) => {
   if (text === 3) {
-    console.log(countdownURL)
     if (typeof countdownSound === 'undefined') countdownSound = new Audio(countdownURL);
+    countdownSound.volume = .1;
     countdownSound.play();
   }
   return (
-    <div className="timer" style={{display: 'block', position: 'absolute', borderRadius: '50%', width: '50px', margin: 'auto', marginTop: '10px', background:'white', left:0, right:0}}>
-    <Circle
-          progress={progress}
-          options={{
-            strokeWidth,
-            color,
-            duration: 1000,
-            text: { value: text, style: { width:'60%', textAlign: 'center', color: 'grey', position: 'absolute', top: '20%', left: '20%'} },
-            trailColor: '#D6D6D6', trailWidth }}
-          initialAnimate={true}
-          containerStyle={{ border: '2px solid white', boxShadow: '-3px 3px 5px #888888', background: 'white', borderRadius: '50%', width: '80px', height: '80px',  ...containerStyle }}
-          containerClassName={'.progressbar'} />
+    <div style={{fontSize: '800%', position: 'absolute', margin: 0, left: '50%', top:'50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', color: 'white',
+   textShadow:
+       '3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000'}}>
+    <div className="animated zoomIn">{text}</div>
     </div>
   )
 }
