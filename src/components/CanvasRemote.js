@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ActionHistory, Mark, ClearCanvas } from '../utils/CanvasUtils';
 import { CompactPicker } from 'react-color';
 import { connect } from 'react-redux';
+import { setRouteLeaveHook, withRouter } from 'react-router';
 import Timer, { SmallTimer } from './Timer';
 const WorkerTimer = require("worker-timer");
 
@@ -19,6 +20,7 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
+    this.removeLeaveHook = this.props.router.setRouteLeaveHook(this.props.route, this.confirmLeave);
     this.ctx = this.canvas.getContext('2d');
     this.perm_ctx = this.perm_canvas.getContext('2d');
     this.clearCanvas = () => this.perm_ctx.clearRect(0,0,this.state.canvasWidth, this.state.canvasHeight);
@@ -77,6 +79,7 @@ class Canvas extends Component {
   }
 
   componentWillUnmount() {
+    this.removeLeaveHook();
     this.props.socket.off('stroke');
     this.props.socket.off('update canvas');
     for (let loop in this.drawRemoteLoops) {
@@ -99,6 +102,10 @@ class Canvas extends Component {
 
   componentWillMount() {
     window.addEventListener('resize', () => this.setCanvasSize());
+  }
+
+  confirmLeave(event) {
+    return "Leaving this page will exit the game. Is that ok?";
   }
 
   setCanvasSize() {
@@ -158,7 +165,7 @@ class Canvas extends Component {
           null
         }
         {this.props.turnStatus === 'starting' ?
-        <div style={{position: 'absolute', top:'25%', right:'50%', width: '300px', height: '300px'}}>
+        <div className="container" style={{background:'red'}}>
           <Timer containerStyle={{fontSize: '300%', width: '300px', height: '300px'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft + 1} key={this.props.timeLeft}/>
         </div>
         : null}
@@ -192,7 +199,7 @@ const mapStateToProps = (state) => {
 
 export default connect(
     mapStateToProps,
-)(Canvas)
+)(withRouter(Canvas))
 
 
 const CanvasMessage = ({ guessers, numPlayers, word, artist, turnStatus, color="#f7b733" }) => (

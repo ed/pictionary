@@ -33,6 +33,7 @@ export default class Popover extends Component {
     let opacity = this.state.active ? 1 : 0;
     return (
       <Modal
+        contentLabel="Modal"
         isOpen={this.props.isOpen}
         style={{
           overlay : {

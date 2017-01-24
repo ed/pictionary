@@ -65,7 +65,7 @@ class GameView extends Component {
       {this.state.roomDataReceived ?
         <div className="container">
           <Sidebar />
-          <WhiteBoard />
+          <WhiteBoard route={this.props.route}/>
           <MessageSection socket={this.props.socket}/>
         </div>
       :

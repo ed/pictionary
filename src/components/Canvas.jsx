@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ActionHistory, Mark, ClearCanvas } from '../utils/CanvasUtils';
 import { CompactPicker } from 'react-color';
 import { connect } from 'react-redux';
+import { setRouteLeaveHook, withRouter } from 'react-router';
 import Timer, { SmallTimer } from './Timer';
 
 
@@ -22,6 +23,7 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
+    this.removeLeaveHook = this.props.router.setRouteLeaveHook(this.props.route, this.confirmLeave);
     this.strokeID = 0;
     this.ctx = this.canvas.getContext('2d');
 	  this.perm_ctx = this.perm_canvas.getContext('2d');
@@ -32,6 +34,14 @@ class Canvas extends Component {
 
   componentWillMount() {
     window.addEventListener('resize', () => this.setCanvasSize());
+  }
+
+  componentWillUnmount() {
+    this.removeLeaveHook();
+  }
+
+  confirmLeave() {
+    return "Leaving this page will exit the game. Is that ok?";
   }
 
   remakeCanvas() {
@@ -127,6 +137,7 @@ class Canvas extends Component {
 
   render() {
     let { displayControls, turnStatus, timeLeft, totalTime, canIDraw, isSpectating } = this.props;
+    console.log(timeLeft)
     return (
       <div className="canvasContainer">
         <canvas
@@ -154,7 +165,7 @@ class Canvas extends Component {
           null
         }
         {turnStatus === 'starting' ?
-        <div style={{position: 'absolute', top:'25%', right:'50%', width: '300px', height: '300px'}}>
+        <div className="container" style={{background:'red'}}>
           <Timer containerStyle={{fontSize: '300%', width: '300px', height: '300px'}} color="white" strokeWidth={50} trailWidth={0} progress={1} text={this.props.timeLeft + 1} key={timeLeft}/>
         </div>
         : null}
@@ -199,7 +210,7 @@ const mapStateToProps = (state, props) => {
 
 export default connect(
     mapStateToProps,
-)(Canvas)
+)(withRouter(Canvas))
 
 
 const CanvasMessage = ({ guessers, numPlayers, word, turnStatus, color="#f7b733" }) => (

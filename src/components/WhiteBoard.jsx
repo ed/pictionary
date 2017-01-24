@@ -21,9 +21,9 @@ export class WhiteBoard extends Component {
       <div className="whiteboard">
         { gameInProgress ?
           artist === user ?
-            <Canvas displayControls={true} key={turnStatus !== 'starting'} />
+            <Canvas route={this.props.route} displayControls={true} key={turnStatus !== 'starting'} />
             :
-            <CanvasRemote key={turnStatus !== 'starting'} />
+            <CanvasRemote route={this.props.route} key={turnStatus !== 'starting'} />
           :
           displayWinners === true ?
             <div className='popoverContainer' style={{fontFamily: ' "Inconsolata", monospace', width: '100%', height: '400px'}}>

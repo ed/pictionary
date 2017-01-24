@@ -102,21 +102,23 @@ class DMTManager {
     console.log(`end game in room ${room}`)
     if ( room in this.rooms && this.rooms[room].gameInProgress ){
       this.rooms[room].gameInProgress = false;
-      this.rooms[room].displayWinners = true;
-      this.rooms[room].winners = winners;
-      let curRoom = this.getRoom(room);
-      let rooms = this.getRooms();
-      let roomData = {
-        rooms,
-        curRoom,
+      if (winners && winners.length > 0) {
+        this.rooms[room].displayWinners = true;
+        this.rooms[room].winners = winners;
+        let curRoom = this.getRoom(room);
+        let rooms = this.getRooms();
+        let roomData = {
+          rooms,
+          curRoom,
+        }
+        io.sockets.in(room).emit('update room', roomData);
+        this.rooms[room].displayWinners = false;
+        let roomDataAfter = {
+          rooms: this.getRooms(),
+          curRoom: this.getRoom(room)
+        }
+        setTimeout(() => io.sockets.in(room).emit('update room', roomDataAfter), 10000);
       }
-      io.sockets.in(room).emit('update room', roomData);
-      this.rooms[room].displayWinners = false;
-      let roomDataAfter = {
-        rooms: this.getRooms(),
-        curRoom: this.getRoom(room)
-      }
-      setTimeout(() => io.sockets.in(room).emit('update room', roomDataAfter), 10000);
     }
   }
 
@@ -270,7 +272,7 @@ class DMT {
       }, this.players);
       props.sort(function(p1, p2) { return p2.score - p1.score; });
       let winners = props.slice(0, 3);
-      this.endGame(winners);
+      this.endGame(winners || []);
       clearTimeout(this.gameTimer);
       this.setState({ gameInProgress: false });
     }
