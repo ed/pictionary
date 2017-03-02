@@ -1,27 +1,25 @@
-const crypto = require('crypto')
+const sodium = require('sodium').api;
 
 module.exports = {
   hash(password, cb) {
-    const salt = crypto.randomBytes(32);
-    console.log(salt.toString('hex'), password)
-    crypto.pbkdf2(password, salt.toString('hex'), 100000, 512, 'sha512', (err, key) => {
-      if (err) cb(err);
-      cb(null, {key: key.toString('hex'), salt: salt.toString('hex')});
-    });
+    const b = Buffer.from(password);
+    cb(sodium.crypto_pwhash_str(b, sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+      sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE));
   },
 
   tokenize(cb) {
-    cb(crypto.randomBytes(32).toString('hex'));
+    cb(sodium.randombytes_random().toString(16));
   },
 
   tokenHash(token, cb) {
-    cb(crypto.createHash('sha256').update(token).digest('hex'));
+    const key = Buffer.allocUnsafe(sodium.crypto_hash_sha256_BYTES);
+    const b = Buffer.from(token);
+    cb(sodium.crypto_hash_sha256(b, key).toString('hex'));
   },
 
-  verify(password, salt, hash, cb) {
-    crypto.pbkdf2(password, salt, 100000, 512, 'sha512', (err, key) => {
-      if (err) cb(err);
-      cb(null, key.toString('hex') === hash);
-    });
+  verify(password, hash, cb) {
+    const b = Buffer.from(password);
+    cb(null, sodium.crypto_pwhash_str_verify(hash, b));
   },
-}
+
+};

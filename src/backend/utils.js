@@ -23,8 +23,8 @@ module.exports = {
         }
         else {
           const user = res.rows[0];
-          next(null , { user });
-        }
+          next(null, { user });
+	}
       });
     });
   },
@@ -38,7 +38,7 @@ module.exports = {
       }
       else {
         const user = res.rows[0];
-        auth.verify(password, user.salt, user.password, (err, verified) => {
+        auth.verify(password, user.password, (err, verified) => {
           if (err) return next(err);
           if (!verified) return next(new Error('Incorrect password'));
           auth.tokenize( (token) => {
@@ -64,10 +64,10 @@ module.exports = {
        uid: uuid.v4(),
       }
       auth.hash(password, (err, cb) => {
-        assign(obj, { password: cb.key, salt: cb.salt});
+        assign(obj, { hash: cb });
         auth.tokenize( (token) => {
           auth.tokenHash(token, (tokenHash) => {
-            pool.query('INSERT INTO USERS (USERNAME, PASSWORD, SALT, TOKEN) VALUES ($1, $2, $3, $4)', [obj.username, obj.password, obj.salt, tokenHash], (err) => console.log(err));
+            pool.query('INSERT INTO USERS (USERNAME, HASH, TOKEN) VALUES ($1, $2, $3)', [obj.username, obj.hash, tokenHash], (err) => console.log(err));
             next(null, {token:token, user:obj});
           });
         });
