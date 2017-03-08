@@ -49,7 +49,7 @@ app.post('/signup', (req, res) => {
       }
       if (next) {
         res.writeHead(200, {
-      		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30};HttpOnly;`,
+      		'Set-Cookie': `a=${next.token};max-age=${1*60*60*24*30};HttpOnly;secure`,
       		'Content-Type': 'text/plain',
         });
         res.end();
@@ -66,7 +66,7 @@ app.post('/login', (req, res) => {
     }
     else if (token) {
   		res.writeHead(200, {
-  		  'Set-Cookie': `a=${token};max-age=${1*60*60*24*30};HttpOnly;`,
+  		  'Set-Cookie': `a=${token};max-age=${1*60*60*24*30};HttpOnly;secure;`,
   		  'Content-Type': 'text/plain',
   		});
 	    res.end();
