@@ -6,6 +6,7 @@ const port = (process.env.PORT || 3000);
 server.listen(port);
 
 console.log(`Listening at http://localhost:${port}`);
+console.log(`RUNNIN JS DEV SERVER ${process.env.NODE_ENV}`);
 
 //DATABASE_URL=$(heroku config:get DATABASE_URL -a afternoon-citadel-52337) npm start
 
@@ -16,7 +17,6 @@ if (process.env.NODE_ENV !== 'production') {
   new WebpackDevServer(webpack(config), {
     publicPath: "/bin/",
     hot: true,
-    colors: true,
     inline: true,
     proxy: {
       '/socket.io': {
@@ -39,7 +39,7 @@ if (process.env.NODE_ENV !== 'production') {
         target: 'http://localhost:3000',
         secure: false
       },
-      '/roomData/**': {
+      '/room/**': {
         target: 'http://localhost:3000',
         secure: false
       },

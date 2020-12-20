@@ -6,37 +6,34 @@ import CreateRoom from './src/components/CreateRoom'
 import BrowseRooms from './src/components/BrowseRooms'
 import Home from './src/components/Home'
 import AppContainer from './src/components/AppContainer'
-import GuestLogin from  './src/components/GuestLogin'
-
 
 const CreateRoomWrapper = () => (
-    <div style={{ height:'70%', paddingTop:'100px'}} className="popoverContainer">
+  <div
+    style={{ height: '70%', paddingTop: '100px' }}
+    className="popoverContainer"
+  >
     <CreateRoom />
-    </div>
+  </div>
 )
-
 
 const BrowseRoomsWrapper = () => (
-    <div style={{ height:'70%', paddingTop:'100px'}} className="popoverContainer">
+  <div
+    style={{ height: '70%', paddingTop: '100px' }}
+    className="popoverContainer"
+  >
     <BrowseRooms />
-    </div>
+  </div>
 )
 
-const Container = ({children}) => (
-    <div className="container">
-        {children}
-    </div>
+const Container = ({ children }) => <div className="container">{children}</div>
+
+const routes = (
+  <Route path="/" component={AppContainer}>
+    <IndexRoute component={Home} />
+    <Route path="browse" component={BrowseRoomsWrapper} />
+    <Route path="new" component={CreateRoomWrapper} />
+    <Route path="/:roomName" component={GameView} />
+  </Route>
 )
 
-
-module.exports = (
-    <Route path='/' component={AppContainer}>
-        <IndexRoute component={Home}/>
-        <Route path='guest' component={GuestLogin}/>
-        <Route path='game' component={GameContainer}>
-            <IndexRoute component={CreateRoomWrapper} />
-            <Route path='browse' component={BrowseRoomsWrapper} />
-            <Route path='r/:roomName' component={GameView} />
-        </Route>
-    </Route>
-)
+export default routes

@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import Modal from 'react-modal';
 import { closeModal } from '../actions';
 import { connect } from 'react-redux';
-import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
 
 class Popover extends Component {
 

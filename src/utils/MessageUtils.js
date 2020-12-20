@@ -1,4 +1,4 @@
-var uuid = require('node-uuid');
+const { nanoid } = require('nanoid');
 
 var moment = require('moment');
 moment().format();
@@ -14,7 +14,7 @@ module.exports = {
     },
     createMessage: function(text, author) {
         return {
-            id: 'm_'+uuid.v4(),
+            id: 'm_'+nanoid(),
             author,
             text: text,
             timestamp: moment(Date.now()).format("h:mm a")

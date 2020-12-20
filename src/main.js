@@ -1,13 +1,14 @@
 import React from 'react';
 import { render } from 'react-dom';
-import root from 'reducers';
-import configureStore from 'store';
 import { Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import routes from '../routes';
+import root from './reducers';
+import configureStore from './store';
 import './css/style.css';
 import './css/switch.css';
+// import './main.css'
 import { OrderedSet } from 'immutable';
 
 let preloadedState = window.__PRELOADED_STATE__

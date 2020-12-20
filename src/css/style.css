@@ -346,7 +346,7 @@ canvas {
 }
 
 .timer {
-  font-size: 250%;
+  font-size: 150%;
 }
 
 .word {
@@ -409,6 +409,27 @@ canvas {
 .container {
   height:100%;
   width:100%;
+}
+
+.container-m {
+  height:100%;
+  width:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.whiteboard-m {
+    width: 100%;
+}
+
+
+#message-section-m {
+    align-self: center;
+    position: fixed;
+    z-index: 1000;
+    height: 90vh;
+    width: 20%;
 }
 
 #message-section {
@@ -649,12 +670,18 @@ canvas {
   -webkit-border-radius: 100px;
   border-radius: 100px;
 }
-
 ::-webkit-scrollbar-thumb:vertical {
   background: rgba(0,0,0,0.23);
   -webkit-border-radius: 100px;
   border-radius: 100px;
 }
+
+@media (max-width: 1224px) {
+    -webkit-scrollbar-thumb:vertical {
+        content: none
+    }
+}
+
 
 .redirect {
   text-align: center;

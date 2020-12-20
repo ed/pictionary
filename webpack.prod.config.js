@@ -1,57 +1,74 @@
 const path = require('path')
 const webpack = require('webpack')
 
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+
 module.exports = {
   devtool: 'source-map',
 
-  entry: [
-    './src/main'
-  ],
+  entry: ['./src/main'],
 
   output: {
-    path: path.join(__dirname, 'bin'),
+    path: path.join(__dirname, 'bin/'),
     filename: 'bundle.js',
     publicPath: '/bin/'
   },
 
+  optimization: {
+    minimize: true
+  },
   plugins: [
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true,
-      compress: {
-        warnings: false
-      }
-    }),
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('production')
+        NODE_ENV: JSON.stringify('production')
       }
     })
   ],
 
   resolve: {
-    extensions: ['', '.js', '.jsx'],
-    root: [
-      path.resolve('./src')
-    ]
+    extensions: ['.js', '.jsx'],
+    roots: [path.resolve('./src')]
   },
 
   module: {
-    loaders: [
-      { test: /\.jsx?$/,
-        loader: 'babel',
-        exclude: /node_modules/ },
-      { test: /\.js?$/,
-        loader: 'babel',
-        exclude: /node_modules/ },
-      { test: /\.scss?$/,
-        loader: 'style!css!sass',
-        include: path.join(__dirname, 'src', 'styles') },
-      { test: /\.(ico|png|jpg|wav|mp3)$/,
-        loader: 'file?hash=sha512&digest=hex&name=[hash].[ext]' },
-      { test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-        loader: 'file'},
-      { test: /\.css$/, loader: 'style!css' }
+    rules: [
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
+      {
+        test: /\.jsx$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader'
+        }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader, // instead of style-loader
+          'css-loader'
+        ]
+      },
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/,
+        use: [
+          {
+            loader: 'file-loader'
+          }
+        ]
+      },
+      {
+        test: /\.(ico|wav|mp3)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[hash].[ext]',
+              digestType: 'hex',
+              hashType: 'sha512'
+            }
+          }
+        ]
+      }
     ]
-  }
+  },
+  plugins: [new MiniCssExtractPlugin({ filename: 'styles.css' })]
 }

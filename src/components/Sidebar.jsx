@@ -101,9 +101,7 @@ export default connect(
 
 
 const Dropdown = () => (
-  <div style={{ borderRadius: '3px', zIndex: 3, width: '200px', height: '500px', position: 'absolute', top: '60px', left: '10px', background: 'white'}}>
-    asdasd
-  </div>
+  <div style={{ borderRadius: '3px', zIndex: 3, width: '200px', height: '500px', position: 'absolute', top: '60px', left: '10px', background: 'white'}}/>
 )
 
 

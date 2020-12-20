@@ -1,20 +1,7 @@
 import React, { Component } from 'react';
-import { Circle } from 'react-progressbar.js';
-
-let countdownSound;
-let countdownURL;
-try {
-  countdownURL = require("../../img/countdown2.wav");
-  countdownSound = new Audio(countdownURL);
-} catch (e) {}
-
+import Circle from './Circle';
 
 const Timer = ({ progress, text, strokeWidth=9, trailWidth=10, color="#FF3232", containerStyle }) => {
-  if (text === 3) {
-    if (typeof countdownSound === 'undefined') countdownSound = new Audio(countdownURL);
-    countdownSound.volume = .1;
-    countdownSound.play();
-  }
   return (
     <div style={{fontSize: '800%', position: 'absolute', margin: 0, left: '50%', top:'50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', color: 'white',
    textShadow:

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { PropTypes } from 'prop-types'
 import { newRoom } from '../actions';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
@@ -9,7 +10,7 @@ class CreateRoom extends Component {
 
     this.state = {
       roomName: '',
-      private: false,
+      private: true,
       roomNameError: ''
     };
   }
@@ -101,14 +102,14 @@ class CreateRoom extends Component {
          </div>
 	       }
         <button className={`myButton${buttonActive ? ' active' : ''}`} onClick={() => this.createRoom()}>Create Room</button>
-        <div > or <Link onClick={() => this.setState({private: true})} to="/game/browse">join a public room </Link></div>
+        <div > or <Link onClick={() => this.setState({private: true})} to="/browse">join a public room </Link></div>
         </div>
     );
   }
 }
 
 CreateRoom.contextTypes = {
-  router: React.PropTypes.object
+  router: PropTypes.object
 }
 
 const mapStateToProps = (state) => {

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-var ReactPropTypes = React.PropTypes;
 
 const Message = ({ message, displayHeader }) => (
     <div className="message">

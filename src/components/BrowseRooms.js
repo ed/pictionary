@@ -28,8 +28,7 @@ class BrowseRooms extends Component {
 
   _onChange(e) {
     this.setState({
-      roomName: e.target.value,
-      rooms: this.filterRooms(e.target.value)
+      roomName: e.target.value
     });
   }
 
@@ -99,11 +98,6 @@ class BrowseRooms extends Component {
 				  <span><span style={{ fontSize: '200%', fontWeight:'bold' }}>Join a room</span> <button onClick={() => this.props.dispatch(push('/game'))}className="myButton active" style={{marginTop: '5px', padding: '8px 20px', float:'right'}}>Make Channel</button> </span>
 				</div>
 				  <textarea autoFocus={true} placeholder='Find a room' spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
-          {this.state.isFetching ? <Spinner/> :
-  				  <div className="rooms">
-  				    { rooms.length > 0 ? rooms : <span>No rooms match <span style={{fontWeight:'bold'}}>{this.state.roomName}</span></span>}
-  				  </div>
-          }
 			  </div>
 			</div>
 		);
@@ -115,7 +109,7 @@ const Room = ({ name, room, onClick, onMouseOut, onMouseOver, displayBorderTop, 
 		onMouseEnter={onMouseOver}
 		onMouseLeave={onMouseOut}
 		onClick={onClick}
-		to={`/game/r/${name}`}
+		to={`/${name}`}
 		className="room"
 		style={{
 		 borderTop: displayBorderTop? '1px solid #DEDEDE' : isHovered? '' : '1px solid white', paddingLeft: '10px',

@@ -127,8 +127,7 @@ function notifications(state=OrderedSet(), action) {
       action: <i className="ion-ios-close-empty" aria-hidden="true"></i>,
       actionStyle: {color: 'white', width: '1px', fontSize: '200%'},
       dismissAfter: 3400,
-      onClick: (deactivate) => {
-        deactivate();
+      onClick: () => {
         setTimeout(() => action.removeNotification(key),400);
       }
     })
