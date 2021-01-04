@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { ActionHistory, Mark, ClearCanvas } from '../utils/CanvasUtils'
-import { CompactPicker } from 'react-color'
+import { CirclePicker } from 'react-color'
 import { connect } from 'react-redux'
 import { setRouteLeaveHook, withRouter } from 'react-router'
 import Timer, { SmallTimer } from './Timer'
@@ -37,6 +37,12 @@ class Canvas extends Component {
       )
     this.actionHistory = new ActionHistory(this.clearCanvas)
     this.setCanvasSize()
+
+    this.canvas.addEventListener(
+      'touchmove',
+      (e) => (this.props.canIDraw ? this.updatePosition(this.xy(e)) : null),
+      { passive: false }
+    )
   }
 
   componentWillMount() {
@@ -144,6 +150,7 @@ class Canvas extends Component {
       clientX = e.changedTouches[0].clientX
       clientY = e.changedTouches[0].clientY
     }
+
     const pos = {
       x: (clientX - left) / this.state.canvasWidth,
       y: (clientY - top) / this.state.canvasHeight
@@ -192,9 +199,9 @@ class Canvas extends Component {
       timeLeft,
       totalTime,
       canIDraw,
+      isMobile,
       isSpectating
     } = this.props
-    console.log(timeLeft)
     return (
       <div className="canvasContainer">
         <canvas
@@ -221,12 +228,7 @@ class Canvas extends Component {
             canIDraw ? this.endStroke(this.xy(e)) : null
           }}
           onTouchStart={(e) => {
-            e.preventDefault()
             canIDraw ? this.startStroke(this.xy(e)) : null
-          }}
-          onTouchMove={(e) => {
-            e.preventDefault()
-            canIDraw ? this.updatePosition(this.xy(e)) : null
           }}
           onTouchEnd={(e) => {
             e.preventDefault()
@@ -241,25 +243,17 @@ class Canvas extends Component {
           height={this.state.canvasHeight}
           ref={(canvas) => (this.canvas = canvas)}
         />
-
-        {turnStatus === 'drawing' ? (
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: '20px',
-              width: '100px',
-              height: '100px'
-            }}
-          >
+        <CanvasMessage {...this.props} />
+        {turnStatus === 'drawing' || (turnStatus === 'starting' && isMobile) ? (
+          <div className="timerContainer">
             <SmallTimer
               key={this.props.totalTime}
               progress={timeLeft / totalTime}
-              text={timeLeft}
+              text={parseInt(timeLeft) < 10 ? '0' + timeLeft : timeLeft}
             />
           </div>
         ) : null}
-        {turnStatus === 'starting' ? (
+        {turnStatus === 'starting' && !isMobile ? (
           <div className="container" style={{ background: 'red' }}>
             <Timer
               containerStyle={{
@@ -276,11 +270,11 @@ class Canvas extends Component {
             />
           </div>
         ) : null}
-        <CanvasMessage {...this.props} />
         {displayControls ? (
           <ArtistOptions
             color={this.state.brushColor}
             radius={this.state.brushSize}
+            mobile={isMobile}
             clear={() => this.clear()}
             redo={() => this.redo()}
             undo={() => this.undo()}
@@ -290,6 +284,10 @@ class Canvas extends Component {
       </div>
     )
   }
+}
+
+Canvas.defaultProps = {
+  timeLeft: 0
 }
 
 const mapStateToProps = (state, props) => {
@@ -382,16 +380,19 @@ class ArtistOptions extends Component {
         />
         <div className="editOptions">
           <CanvasButton
+            mobile
             id="clear"
             iconName="square-o"
             onClick={() => this.props.clear()}
           />
           <CanvasButton
+            mobile
             id="undo"
             iconName="undo"
             onClick={() => this.props.undo()}
           />
           <CanvasButton
+            mobile
             id="redo"
             iconName="repeat"
             onClick={() => this.props.redo()}
@@ -402,9 +403,13 @@ class ArtistOptions extends Component {
   }
 }
 
-export const CanvasButton = ({ children, id, onClick, iconName }) => (
+export const CanvasButton = ({ mobile, children, id, onClick, iconName }) => (
   <div className={`option ${id}`} onClick={onClick}>
-    <i id={id} className={`fa fa-${iconName}`} aria-hidden="true"></i>
+    <i
+      id={id}
+      className={mobile ? `fa fa-${iconName} fa-xs` : `fa fa-${iconName}`}
+      aria-hidden="true"
+    ></i>
   </div>
 )
 
@@ -460,7 +465,7 @@ export class ColorCircle extends Component {
         {this.state.displayColorPicker ? (
           <div>
             <div className="cover" onClick={() => this.hideColorPicker()} />
-            <CompactPicker
+            <CirclePicker
               className="colorPicker"
               color={this.props.color}
               onChange={(color) => this.handleChange(color)}

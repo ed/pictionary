@@ -4,7 +4,7 @@ const { customAlphabet } = require('nanoid/non-secure')
 var DMTManager = require('./DMTManager')
 
 const nanoid = customAlphabet(
-  '1234567890abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ',
+  'abcdefghijklmnopqrstuvxyz',
   4
 )
 
@@ -81,7 +81,7 @@ module.exports = (app, io) => {
       )
       if (!dmtManager.testWinner(socket.curRoom, msg)) {
         msg['color'] = socket.color
-        io.sockets.in(socket.curRoom).emit('update chat', msg)
+        io.to(socket.curRoom).emit('update chat', msg)
       }
     })
 

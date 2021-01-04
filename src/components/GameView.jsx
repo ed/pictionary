@@ -93,17 +93,13 @@ class GameView extends Component {
         {this.state.roomDataReceived ? (
           <>
             <MediaQuery maxDeviceWidth={1224}>
-              <div className="container-m">
                 <WhiteBoard mobile={true} route={this.props.route} />
                 <MessageSection mobile={true} socket={this.props.socket} />
-              </div>
             </MediaQuery>
             <MediaQuery minDeviceWidth={1224}>
-              <div className="container">
                 <Sidebar />
                 <WhiteBoard route={this.props.route} />
                 <MessageSection socket={this.props.socket} />
-              </div>
             </MediaQuery>
           </>
         ) : (

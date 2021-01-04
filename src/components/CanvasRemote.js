@@ -136,7 +136,7 @@ class Canvas extends Component {
   }
 
   render() {
-    let { canIDraw, isSpectating } = this.props;
+      let { timeLeft, totalTime, canIDraw, isSpectating } = this.props;
     return (
       <div className="canvasContainer">
         <canvas
@@ -158,8 +158,12 @@ class Canvas extends Component {
         {isSpectating ? <div className="word"> <span>you're just watching this one but you'll be able to play next round :)</span></div> : null}
 
         {this.props.turnStatus === 'drawing' ?
-          <div style={{position: 'absolute', top:0, right:'20px', width: '100px', height: '100px'}}>
-            <SmallTimer key={this.props.totalTime} progress={this.props.timeLeft/this.props.totalTime} text={this.props.timeLeft}/>
+          <div className="timerContainer">
+            <SmallTimer
+              key={this.props.totalTime}
+              progress={timeLeft / totalTime}
+              text={parseInt(timeLeft) < 10 ? '0' + timeLeft : timeLeft}
+            />
           </div>
           :
           null

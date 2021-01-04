@@ -95,7 +95,7 @@ class BrowseRooms extends Component {
 			<div className="container">
 			  <div className="container" style={{ position: 'relative',display: 'flex',flexDirection: 'column' }}>
 				<div style={{marginBottom: '25px'}}>
-				  <span><span style={{ fontSize: '200%', fontWeight:'bold' }}>Join a room</span> <button onClick={() => this.props.dispatch(push('/game'))}className="myButton active" style={{marginTop: '5px', padding: '8px 20px', float:'right'}}>Make Channel</button> </span>
+				  <span><span style={{ fontSize: '200%', fontWeight:'bold' }}>Join a room</span> <button onClick={() => this.props.dispatch(push('/new'))}className="myButton active" style={{marginTop: '5px', padding: '8px 20px', float:'right'}}>Make Channel</button> </span>
 				</div>
 				  <textarea autoFocus={true} placeholder='Find a room' spellCheck={false} className="message-composer" style={textBoxStyle} value={this.state.roomName} onChange={(e) => this._onChange(e)} onKeyDown={(e) => this._onKeyDown(e)}/>
 			  </div>

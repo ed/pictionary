@@ -6,6 +6,7 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import createHistory from 'react-router/lib/createMemoryHistory'
 import { Provider } from 'react-redux'
 import configureStore from '../store'
+import { generateName } from '../utils/generateName'
 /*
  *   Run 'npm run build' to run production envioronment
  */
@@ -104,19 +105,14 @@ let tempUsers = {}
 
 let userNum = 0
 app.post('/tempUserInfo', (req, res) => {
-  // dispatch sets username + status based on cookie
-  let { name } = req.body
-  name = name.trim()
-  if (name.length < 1) {
-    res.send({ err: 'Name cannot be empty' })
-  } else if (!/^[A-Za-z0-9]+$/.test(name)) {
-    res.send({ err: 'Temporary names must contain only letters and numbers' })
-  } else if (name in tempUsers) {
-    res.send({ err: 'Name in use' })
-  } else {
-    tempUsers[name] = true
-    res.send({ user: `nerd_${name}` })
+  let name
+  let nameTaken = true
+  while (nameTaken) {
+    name = generateName()
+    nameTaken = name in tempUsers
   }
+  tempUsers[name] = true
+  res.send({ user: `${name}` })
   res.end()
 })
 
@@ -160,6 +156,7 @@ const renderPage = (html, preloadedState) => {
 	<script src="https://use.fontawesome.com/07b9ea0f1c.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/keymaster/1.6.1/keymaster.min.js"></script>
 	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>Pretty Pictures</title>
 	<script src="https://cdn.socket.io/socket.io-3.0.3.js"></script>
 	</head>

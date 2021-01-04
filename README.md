@@ -1,7 +1,7 @@
-install node && npm
+to get started:
 
-npm install   
-npm start  
-localhost:3000
+`docker-compose up`
 
-https://afternoon-citadel-52337.herokuapp.com/
+TODO:
+rewrite client -> server socket logic into webrtc.
+mobile browsers time out the socket after a while + web sockets are heavier than webrtc

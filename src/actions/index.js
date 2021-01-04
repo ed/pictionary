@@ -75,7 +75,7 @@ export const onSuccess = (user) => (dispatch) => {
 }
 
 export const returnToSavePath = () => (dispatch) => {
-  const returnPath = saveData.returnPath || '/'
+  const returnPath = saveData.returnPath || '/new'
   delete saveData.returnPath
   return dispatch(replace(returnPath))
 }
@@ -208,6 +208,7 @@ export const setTempUserInfo = (name) => (dispatch) => {
         return dispatch(addNotification(json.err))
       } else {
         dispatch(setSocket())
+        console.log('SETTING USER INFO')
         dispatch({ type: 'SET_USER_INFO', user: json.user })
         dispatch(returnToSavePath())
         return dispatch(fetchRooms())
@@ -248,7 +249,7 @@ export const fetchRoomData = (room) => (dispatch) => {
     .then((response) => response.json())
     .then((roomData) => {
       if (roomData.error) {
-        dispatch(replace('/'))
+        dispatch(replace('/new'))
         return {
           error: true
         }

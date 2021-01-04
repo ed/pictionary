@@ -1,6 +1,17 @@
 html {
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+body {
+  height: 100%;
+  font-size: 1em;
+  overflow: auto;
+  position: relative;
+  touch-action: none;
 }
 
 a>span {
@@ -411,27 +422,6 @@ canvas {
   width:100%;
 }
 
-.container-m {
-  height:100%;
-  width:100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.whiteboard-m {
-    width: 100%;
-}
-
-
-#message-section-m {
-    align-self: center;
-    position: fixed;
-    z-index: 1000;
-    height: 90vh;
-    width: 20%;
-}
-
 #message-section {
   float: right;
   display: flex;
@@ -460,6 +450,7 @@ canvas {
   padding-bottom: 4px;
   white-space: nowrap;
   direction: ltr;
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
 .message:hover {
@@ -487,11 +478,16 @@ canvas {
   flex: 0 1 60px;
   width: 100%;
   height: 60px;
+  display: flex;
+}
+
+.message-container {
+  height: 20px;
+  width: 90%;
 }
 
 .message-composer {
   font-family: 'Lato', sans-serif;
-  font-size: 102%;
   border: 2px solid #dddddd;
   height: 20px;
   width: 85%;
@@ -499,6 +495,7 @@ canvas {
   margin:auto;
   border-radius: 4px;
   resize:none;
+  white-space: pre;
   padding-right: 10px;
   padding-top: 8px;
   padding-bottom: 7px;
@@ -682,6 +679,150 @@ canvas {
     }
 }
 
+
+.timerContainer {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  width: 100px;
+  height: 100px;
+}
+
+
+@media screen and (max-device-width: 1224px) {
+.editOptions {
+  border-bottom: 0px;
+  border-top: 0px;
+  height: 50px;
+  right: 0px;
+  margin: 0px auto 0px auto;
+  display: flex;
+  align-content: flex-start;
+  justify-content: flex-start;
+  width: 30%;
+  flex-direction: row;
+  flex-flow: row wrap;
+  position: fixed;
+  bottom: 150px;
+  flex-grow: 1;
+}
+
+#startGame {
+  line-height: 60px;
+  color: #e0e0e0;
+  position:absolute;
+  top:50%;
+  right:50%;
+  font-size: 100%;
+  opacity: .5;
+}
+
+#msg-send {
+  flex: 0 1 60px;
+  width: 100%;
+  justify-self: flex-end;
+  touch-action: none;
+  height: 200px;
+  padding-bottom: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.canvasMessage {
+  font-size: 75%;
+  padding-top: 25px;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top:0;
+}
+
+.container {
+  height:100%;
+  width:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tmp_canvas {
+  touch-action: none;
+  position: absolute;
+	left: 0px; right: 0;
+	bottom: 0; top: 0;
+}
+
+.whiteboard {
+  width: 100%;
+  height: 80%;
+  touch-action: none;
+  display: flex;
+}
+
+.colorCircle {
+  cursor: pointer;
+  border-radius: 50%;
+  height: 50px !important;
+  width: 50px !important;
+}
+
+.colorPicker {
+  padding-top: 20px;
+  padding-left: 10px;
+}
+
+#message-section {
+  display: flex;
+  align-self: center;
+  flex-direction: column;
+  touch-action: none;
+  flex-grow: 1;
+  height: 20%;
+  z-index: 1000;
+  width: 100%;
+}
+
+.timerContainer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-top: 20px;
+  
+}
+
+.sendIt {
+    padding-bottom: 15px;
+    padding-right: 45px;
+    bottom: 16px;
+    font-size: 14px;
+    color: #128BFC;
+    position: fixed;
+}
+
+.sendIt:hover {
+    color: #323232;
+}
+
+.fa {
+    font-size: 20px;
+}
+
+.option {
+  line-height: inherit;
+  color: #2f2c2f;
+  transition: font-size 0.5s ease;
+  flex: 1;
+  font-size: 20px;
+  display: flex;
+}
+    
+}
 
 .redirect {
   text-align: center;

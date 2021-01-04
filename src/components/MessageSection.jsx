@@ -17,10 +17,8 @@ class MessageSection extends Component {
   }
 
   render() {
-    const isMobile =
-      this.props.mobile === true ? 'message-section-m' : 'message-section'
     return (
-      <div id={isMobile}>
+      <div id={'message-section'}>
         <div
           className="message-list"
           ref={(messageList) => (this.messageList = messageList)}
@@ -28,7 +26,7 @@ class MessageSection extends Component {
           <div className="messageListHeader"></div>
           {this.displayMessages()}
         </div>
-        <MessageComposer />
+          <MessageComposer mobile={this.props.mobile}/>
       </div>
     )
   }

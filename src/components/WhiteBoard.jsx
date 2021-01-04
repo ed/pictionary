@@ -21,21 +21,22 @@ export class WhiteBoard extends Component {
       artist,
       gameInProgress,
       turnStatus,
-      displayWinners,
-      mobile
+      mobile,
+      displayWinners
     } = this.props
-    const isMobile = mobile === true ? 'whiteboard-m' : 'whiteboard'
     return (
-      <div className={isMobile}>
+      <div className={'whiteboard'}>
         {gameInProgress ? (
           artist === user ? (
             <Canvas
+              mobile
               route={this.props.route}
               displayControls={true}
               key={turnStatus !== 'starting'}
             />
           ) : (
             <CanvasRemote
+              mobile
               route={this.props.route}
               key={turnStatus !== 'starting'}
             />
@@ -49,7 +50,7 @@ export class WhiteBoard extends Component {
               height: '400px'
             }}
           >
-            <WinnersDisplay winners={winners} />
+            <WinnersDisplay mobile winners={winners} />
           </div>
         ) : (
           <div className="container">
@@ -61,15 +62,15 @@ export class WhiteBoard extends Component {
   }
 }
 
-const WinnersDisplay = ({ winners }) => (
+const WinnersDisplay = ({ mobile, winners }) => (
   <ul>
     {winners.map((winner, index) => (
-      <Winner key={index} index={index} {...winner} />
+      <Winner mobile key={index} index={index} {...winner} />
     ))}
   </ul>
 )
 
-const Winner = ({ name, score, index }) => (
+const Winner = ({ mobile, name, score, index }) => (
   <li
     style={{
       height: '50px',
@@ -78,7 +79,17 @@ const Winner = ({ name, score, index }) => (
       width: '90%',
       textAlign: 'center',
       color: '#414141',
-      fontSize: index === 0 ? '250%' : index === 1 ? '220%' : '190%'
+      fontSize: mobile
+        ? index === 0
+          ? '150%'
+          : index === 1
+          ? '120%'
+          : '100%'
+        : index === 0
+        ? '250%'
+        : index === 1
+        ? '220%'
+        : '190%'
     }}
   >
     <span
